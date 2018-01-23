@@ -1,0 +1,25 @@
+{
+  "name": "expense-tracker",
+  "version": "0.0.1",
+  "description": "Expense tracker application to track user's expense and finance details.",
+  "main": "server/index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/muthuskumar/expense-tracker.git"
+  },
+  "keywords": [
+    "expense",
+    "tracker",
+    "MEAN",
+    "microservices"
+  ],
+  "author": "muthuskumar",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/muthuskumar/expense-tracker/issues"
+  },
+  "homepage": "https://github.com/muthuskumar/expense-tracker#readme"
+}
