@@ -21,5 +21,9 @@
   "bugs": {
     "url": "https://github.com/muthuskumar/expense-tracker/issues"
   },
-  "homepage": "https://github.com/muthuskumar/expense-tracker#readme"
+  "homepage": "https://github.com/muthuskumar/expense-tracker#readme",
+  "devDependencies": {},
+  "dependencies": {
+    "express": "^4.16.2"
+  }
 }

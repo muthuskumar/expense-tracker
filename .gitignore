@@ -1,0 +1,23 @@
+# compiled output
+/angular-src/dist
+
+# client dependencies
+/angular-src/node_modules
+
+# client gitignore
+/angular-src/.gitignore
+
+# e2e
+/angular-src/e2e/*.js
+/angular-src/e2e/*.map
+
+# server dependencies
+/node_modules
+
+#log files
+/angular-src/angularoutput.log
+/serveroutput.log
+
+#temp emacs files
+*~
+angular-src/*~
