@@ -11,4 +11,4 @@ gulp.task('lint', () => {
 
 gulp.task('default', () => {
     gulp.watch(['**/*.js', '!node_modules/**', '!angular-src/**'], ['lint'])
-})
+});
