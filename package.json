@@ -23,10 +23,12 @@
   },
   "homepage": "https://github.com/muthuskumar/expense-tracker#readme",
   "devDependencies": {
+    "ansi-colors": "^1.0.1",
     "eslint": "^4.16.0",
     "eslint-config-google": "^0.9.1",
     "gulp": "^3.9.1",
-    "gulp-eslint": "^4.0.2"
+    "gulp-eslint": "^4.0.2",
+    "gulp-nodemon": "^2.2.1"
   },
   "dependencies": {
     "express": "^4.16.2"
