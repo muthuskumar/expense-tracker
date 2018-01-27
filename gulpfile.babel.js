@@ -1,8 +1,9 @@
 // Gulp task runner for whole project.
-var gulp = require('gulp');
-var eslint = require('gulp-eslint');
-var nodemon = require('gulp-nodemon');
-var colors = require('ansi-colors');
+
+import gulp from 'gulp';
+import eslint from 'gulp-eslint';
+import nodemon from 'gulp-nodemon';
+import colors from 'ansi-colors';
 
 function onServerLog(log) {
     console.log(colors.white('[') +
