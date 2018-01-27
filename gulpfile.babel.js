@@ -1,6 +1,6 @@
 // Gulp task runner for whole project.
-var gulp = require('gulp');
-var eslint = require('gulp-eslint');
+import gulp from 'gulp';
+import eslint from 'gulp-eslint';
 
 gulp.task('lint', () => {
     return gulp.src(['**/*.js', '!node_modules/**', '!angular-src/**'])
