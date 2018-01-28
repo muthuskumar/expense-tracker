@@ -21,7 +21,7 @@ gulp.task('lint:server', () => {
 
 gulp.task('start:server', () => {
     let stream = nodemon({
-	script: 'server/app.js'
+	script: 'server/index.js'
     });
 
     stream
