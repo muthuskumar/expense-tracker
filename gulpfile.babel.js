@@ -5,6 +5,7 @@ import eslint from 'gulp-eslint';
 import nodemon from 'gulp-nodemon';
 import colors from 'ansi-colors';
 
+/* Can be used to log events from server with colors using events emitted by nodemon.*/
 function onServerLog(log) {
     console.log(colors.white('[') +
         colors.yellow('nodemon') +
@@ -21,14 +22,20 @@ gulp.task('lint:server', () => {
 
 gulp.task('start:server', () => {
     let stream = nodemon({
-	script: 'server/index.js'
+	script: 'server/index.js',
+	ext: 'js json',
+	watch: [
+	    'server/'
+	],
+	env: {
+	    'NODE_ENV': 'development'
+	}
     });
 
     stream
-	.on('restart', () => {
-	    onServerLog("Server restarted");	    
+	.on('restart', (files) => {
+	    onServerLog('Server restarted', files);	    
 	})
-	.on('log', onServerLog);
 });
 
 gulp.task('default', () => {
