@@ -7,7 +7,7 @@ var app = express();
 var server = http.createServer(app);
 
 server.listen(3000, () => {
-    console.log('App is running on localhost:3000');
+    console.log('App is running on localhost:3000'); // eslint-disable-line no-console
 });
 
 exports = module.exports = app;
