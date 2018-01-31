@@ -14,7 +14,7 @@ function onServerLog(log) {
 }
 
 gulp.task('lint:server', () => {
-    return gulp.src(['**/*.js', '!node_modules/**', '!angular-src/**'])
+    return gulp.src(['server/*.js', '!node_modules/**'])
 	.pipe(eslint())
 	.pipe(eslint.format())
 	.pipe(eslint.failAfterError());
@@ -29,7 +29,10 @@ gulp.task('start:server', () => {
 	],
 	env: {
 	    'NODE_ENV': 'development'
-	}
+	},
+	tasks: [
+	    'lint:server'
+	]
     });
 
     stream
