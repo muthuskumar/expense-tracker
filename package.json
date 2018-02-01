@@ -34,6 +34,7 @@
       "gulp-nodemon": "^2.2.1"
    },
    "dependencies": {
+      "bunyan": "^1.8.12",
       "express": "^4.16.2",
       "lodash": "^4.17.4"
    }

@@ -16,7 +16,7 @@
 
 #log files
 /client/angularoutput.log
-/serveroutput.log
+/*.log
 
 #temp emacs files
 *~

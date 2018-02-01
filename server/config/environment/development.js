@@ -1,6 +1,9 @@
 'use strict';
 /*eslint no-process-env:0*/
 
+import path from 'path';
+import bunyan from 'bunyan';
+
 // Development specific configuration
 // ==================================
 module.exports = {
@@ -10,5 +13,19 @@ module.exports = {
     },
 
     // Seed database on startup
-    seedDB: false
+    seedDB: false,
+
+    loggerConfig: {
+	level: bunyan.DEBUG,
+	streams: [
+	    {
+		level: 'debug',
+		path: path.join(path.normalize(`${__dirname}/../../..`), 'serveroutput-debug.log')
+	    },
+	    {
+		level: 'error',
+		path: path.join(path.normalize(`${__dirname}/../../..`), 'serveroutput-error.log')
+	    }
+	]
+    }
 };

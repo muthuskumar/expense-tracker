@@ -1,13 +1,14 @@
-import express from 'express';
 import http from 'http';
+import express from 'express';
 
-import config from './config/environment';
+import { logger } from './config/app-logger';
+
 
 var app = express();
 var server = http.createServer(app);
 
 server.listen(3000, () => {
-    console.log('App is running on localhost:3000'); // eslint-disable-line no-console
+    logger.info('App is running on localhost:3000');
 });
 
 exports = module.exports = app;
