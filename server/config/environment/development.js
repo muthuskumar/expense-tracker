@@ -25,7 +25,7 @@ module.exports = {
 	    {
 		level: 'error',
 		path: path.join(path.normalize(`${__dirname}/../../..`), 'serveroutput-error.log')
-	    }
+	    } 
 	]
     }
 };
