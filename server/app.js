@@ -9,8 +9,6 @@ var server = http.createServer(app);
 
 new ExpressConfig(app);
 
-logger.info(app.get('TestChange'))
-
 server.listen(3000, () => {
     logger.info('App is running on localhost:3000');
 });
