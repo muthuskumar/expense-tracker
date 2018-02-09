@@ -1,5 +1,5 @@
 # compiled output
-/client/dist
+/dist
 
 # client dependencies
 /client/node_modules
