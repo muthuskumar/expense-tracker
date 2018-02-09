@@ -9,7 +9,12 @@ import bunyan from 'bunyan';
 module.exports = {
     // MongoDB connection options
     mongo: {
-	uri: 'mongodb://localhost:27017/expense-tracker-dev'
+	uri: 'mongodb://localhost:27017/expense-tracker-dev',
+	options: {
+	    reconnectTries: 10,
+	    reconnectInterval: 5000,
+	    poolSize: 10
+	}
     },
 
     // Seed database on startup

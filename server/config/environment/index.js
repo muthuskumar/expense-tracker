@@ -32,12 +32,7 @@ var all = {
 
     // MongoDB connection options
     mongo: {
-	options: {
-	    db: {
-		safe: true
-	    },
-	    useMongoClient: true
-	}
+	options: {}
     },
 
     // Default logger
