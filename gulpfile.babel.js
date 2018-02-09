@@ -8,6 +8,9 @@ import babel from 'gulp-babel';
 import del from 'del';
 import uglify from 'gulp-uglify';
 
+const dist = 'dist';
+const serverPath = 'server';
+
 /* Can be used to log events from server with colors using events emitted by nodemon.*/
 function onServerLog(log) {
     console.log(colors.white('[') +
@@ -17,33 +20,33 @@ function onServerLog(log) {
 }
 
 function clean() {
-    return del(['dist/server']);
+    return del([`${dist}\${serverPath}`]);
 }
 
 gulp.task('clean:server', gulp.series(clean));
 
 gulp.task('lint:server', () => {
-    return gulp.src(['server/*.js'])
+    return gulp.src([`${serverPath}/*.js`])
 	.pipe(eslint())
 	.pipe(eslint.format())
 	.pipe(eslint.failAfterError());
 });
 
 gulp.task('build:server', () => {
-    return gulp.src(['server/**/*.js'])
+    return gulp.src([`${serverPath}/*.js`])
 	.pipe(babel())
 	.pipe(uglify())
-	.pipe(gulp.dest('dist/server'))
+	.pipe(gulp.dest(`${dist}/${serverPath}`))
 });
 
 gulp.task('cleanbuild:server', gulp.series('clean:server', 'lint:server', 'build:server'));
 
 gulp.task('start:server', () => {
     let stream = nodemon({
-	script: 'server/index.js',
+	script: `${serverPath}/index.js`,
 	ext: 'js json',
 	watch: [
-	    'server/'
+	    `${serverPath}/`
 	],
 	env: {
 	    'NODE_ENV': 'development'
