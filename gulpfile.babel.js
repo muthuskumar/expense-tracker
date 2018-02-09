@@ -6,8 +6,6 @@ import nodemon from 'gulp-nodemon';
 import colors from 'ansi-colors';
 import babel from 'gulp-babel';
 import del from 'del';
-import concat from 'gulp-concat';
-import rename from 'gulp-rename';
 import uglify from 'gulp-uglify';
 
 /* Can be used to log events from server with colors using events emitted by nodemon.*/
