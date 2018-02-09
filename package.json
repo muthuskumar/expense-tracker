@@ -34,6 +34,7 @@
       "gulp-nodemon": "^2.2.1"
    },
    "dependencies": {
+      "bluebird": "^3.5.1",
       "body-parser": "^1.18.2",
       "bunyan": "^1.8.12",
       "compression": "^1.7.1",
@@ -41,6 +42,7 @@
       "errorhandler": "^1.5.0",
       "express": "^4.16.2",
       "lodash": "^4.17.4",
-      "method-override": "^2.3.10"
+      "method-override": "^2.3.10",
+      "mongoose": "^5.0.4"
    }
 }
