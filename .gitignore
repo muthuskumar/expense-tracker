@@ -15,7 +15,7 @@
 /node_modules
 
 #log files
-/client/angularoutput.log
+/client/*.log
 /*.log
 
 #temp emacs files
