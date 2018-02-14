@@ -1,15 +1,23 @@
 // Gulp task runner for whole project.
 
 import gulp from 'gulp';
+import del from 'del';
+import colors from 'ansi-colors';
+import uglify from 'gulp-uglify';
 import eslint from 'gulp-eslint';
 import nodemon from 'gulp-nodemon';
-import colors from 'ansi-colors';
 import babel from 'gulp-babel';
-import del from 'del';
-import uglify from 'gulp-uglify';
+import mocha from 'gulp-mocha';
 
 const dist = 'dist';
 const serverPath = 'server';
+const paths = {
+    server: {
+	test: {
+	    unit: [`${serverPath}/**/*.spec.js`]
+	}
+    }
+}
 
 /* Can be used to log events from server with colors using events emitted by nodemon.*/
 function onServerLog(log) {
@@ -30,6 +38,19 @@ gulp.task('lint:server', () => {
 	.pipe(eslint())
 	.pipe(eslint.format())
 	.pipe(eslint.failAfterError());
+});
+
+gulp.task('test:server', () => {
+    return gulp.src(paths.server.test.unit)
+	.pipe(mocha({
+	    ui: 'bdd',
+	    reporter: 'spec',
+	    timeout: 5000,
+	    require: [
+		'babel-core/register',
+		'./mocha.conf'
+	    ]
+	}))
 });
 
 gulp.task('build:server', () => {
