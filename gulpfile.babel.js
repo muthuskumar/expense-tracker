@@ -40,6 +40,20 @@ gulp.task('lint:server', () => {
 	.pipe(eslint.failAfterError());
 });
 
+gulp.task('lint:server:testcases', () => {
+    return gulp.src(paths.server.test.unit)
+	.pipe(eslint({
+	    configFile: './.eslintrc.json',
+	    envs: [
+		'node',
+		'es6',
+		'mocha'
+	    ]
+	}))
+	.pipe(eslint.format())
+	.pipe(eslint.failAfterError());
+});
+
 gulp.task('test:server', () => {
     return gulp.src(paths.server.test.unit)
 	.pipe(mocha({
@@ -51,6 +65,13 @@ gulp.task('test:server', () => {
 		'./mocha.conf'
 	    ]
 	}))
+	.on('error', (err) => {
+	    console.log('An error occurred');
+	});
+});
+
+gulp.task('watch:test:server', () => {
+    gulp.watch(paths.server.test.unit, gulp.series('test:server'));
 });
 
 gulp.task('build:server', () => {
