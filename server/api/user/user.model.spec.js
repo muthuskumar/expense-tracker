@@ -43,19 +43,46 @@ describe('User', function() {
     context('entry', function(done) {
 	var user;
 	
-	it('should be invalid if username is empty', function(done) {
+	it('should be invalid if username is empty', function() {
 	    user = new UserModel();
 
-	    user.validate(function(err) {
-		err.errors.username.name.should.equal('ValidatorError');
-		err.errors.username.kind.should.equal('required');
-		should.exist(err);
-		done();
-	    });
+	    var err = user.validateSync();
+
+	    should.exist(err);
+	    if (err) {
+		err.errors['username'].message.should.equal('Username is mandatory!');
+	    }
+	    
 	});
 	
-	it('should be invalid if username is less than 5 characters');
-	it('should be invalid if username is greater than 10 characters');
+	it('should be invalid if username is less than 5 characters', function() {
+	    user = new UserModel({
+		username: 'test'
+	    });
+
+	    var err = user.validateSync();
+
+	    should.exist(err);
+	    if (err) {
+		err.errors['username'].message.should.equal('Username should be at least 5 characters long.');
+	    }
+	    
+	});
+	
+	it('should be invalid if username is greater than 10 characters', function() {
+	    user = new UserModel({
+		username: 'test1234567890'
+	    });
+
+	    var err = user.validateSync();
+
+	    should.exist(err);
+	    if (err) {
+		err.errors['username'].message.should.equal('Username should not be more than 10 characters long.');
+	    }
+	    
+	});
+	
 	it('should be invalid if username is already registered');
 	
 	it('should be invalid if email is empty');
@@ -75,6 +102,15 @@ describe('User', function() {
 	it('should be invalid if password does not contain lowercase characters');
 	it('should be invalid if password does not contain numerals');
 	it('should be invalid if password does not contain special characters');
+
+	it('should have default active status');
+	it('should be invalid if status is not active or inactive');
+
+	it('should be valid for all valid values');
+	
+	afterEach(function() {
+	    user = undefined;
+	});
     });
 });
 
