@@ -1,5 +1,7 @@
+import mongoose from 'mongoose';
 import chai from 'chai';
-import UserModel from './user.model';
+import { UserModel } from './user.model';
+import { UserSchema } from './user.model';
 
 var should = chai.should();
 
@@ -69,21 +71,39 @@ describe('User', function() {
 	    
 	});
 	
-	it('should be invalid if username is greater than 10 characters', function() {
+	it('should be invalid if username is greater than 20 characters', function() {
 	    user = new UserModel({
-		username: 'test1234567890'
+		username: 'test12345678901234567890'
 	    });
 
 	    var err = user.validateSync();
 
 	    should.exist(err);
 	    if (err) {
-		err.errors['username'].message.should.equal('Username should not be more than 10 characters long.');
+		err.errors['username'].message.should.equal('Username should not be more than 20 characters long.');
 	    }
 	    
 	});
 	
-	it('should be invalid if username is already registered');
+	it('should be invalid if username is already registered', function() {
+	    var user = new UserModel({
+		username: 'testDuplicateUser'
+	    });
+
+	    sinon.stub(mongoose.model('User', UserSchema), 'count').resolves(0);
+
+	    /*return user.validate()
+		.then((value) => {
+		    true.should.be.false;
+		})
+		.catch((err) => {
+		    if (err.errors) {
+			should.exist(err.errors['username']);
+			
+			err.errors['username'].message.should.equal('Username is already registered.');
+		    }
+		});*/
+	});
 	
 	it('should be invalid if email is empty');
 	it('should be invalid if email is not in correct format');
