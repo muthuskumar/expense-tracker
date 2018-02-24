@@ -90,19 +90,27 @@ describe('User', function() {
 		username: 'testDuplicateUser'
 	    });
 
-	    sinon.stub(mongoose.model('User', UserSchema), 'count').resolves(0);
+	    sinon.stub(mongoose.model('User', UserSchema), 'count').resolves(1);
 
-	    /*return user.validate()
+	    return user.validate()
 		.then((value) => {
+		    // If the validation logic fails this part of the code should not exist.
+		    // Inserting a dummy assertion to make sure this part of code doesn't exist.
 		    true.should.be.false;
 		})
 		.catch((err) => {
+		    // Above dummy assertion will throw an AssertionError when validation logic fails
+		    // because of which the promise will fail and catch block will be called which
+		    // needs to be identify this from the actual error thrown when validation fails.
 		    if (err.errors) {
+			// Assert actual validation failure error.
 			should.exist(err.errors['username']);
-			
 			err.errors['username'].message.should.equal('Username is already registered.');
+		    } else if (err.message === 'expected true to be false') {
+			// Assert the validation logic failure, so that it is printed in the console.
+			should.not.exist(err, 'Duplicate username validation logic failed.');
 		    }
-		});*/
+		});
 	});
 	
 	it('should be invalid if email is empty');
