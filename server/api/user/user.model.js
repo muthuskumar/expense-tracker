@@ -9,7 +9,10 @@ var UserSchema = new mongoose.Schema({
 	minlength: [ 5, 'Username should be at least 5 characters long.' ],
 	maxlength: [ 20, 'Username should not be more than 20 characters long.' ]
     },
-    email: String,
+    email: {
+	type: String,
+	required: [true, 'email is mandatory!']
+    },
     firstName: String,
     lastName: String,
     password: String,
@@ -18,11 +21,11 @@ var UserSchema = new mongoose.Schema({
 
 UserSchema.path('username').validate({
     isAsync: true,
-    validator: function(value, cb) {
-	logger.debug('Inside username unique validator with username: ', value);
+    validator: function(username, cb) {
+	logger.debug('Inside username unique validator with username: ', username);
 
 	mongoose.model('User', UserSchema)
-	    .count({ username: value })
+	    .count({ username: username })
 	    .then((count) => {
 		logger.debug("Username count: ", count);
 		cb(!count);
@@ -35,6 +38,40 @@ UserSchema.path('username').validate({
 	logger.debug('End of count validator');
     },
     message: 'Username is already registered.' });
+
+UserSchema.path('email').validate({
+    isAsync: false,
+    validator: function(email) {
+	logger.debug('Inside email format validator with email: ', email);
+
+	const regExp = new RegExp(/^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/);
+	
+	logger.debug('email id is: ', regExp.test(email));
+	logger.debug('End of email validity validator');
+
+	return regExp.test(email);
+    },
+    message: 'email id is not of correct format.'});
+
+UserSchema.path('email').validate({
+    isAsync: true,
+    validator: function(email, cb) {
+	logger.debug('Inside email unique validator with username: ', email);
+
+	mongoose.model('User', UserSchema)
+	    .count({ email: email })
+	    .then((count) => {
+		logger.debug('email count: ', count);
+		cb(!count);
+	    })
+	    .catch((err) => {
+		logger.error("An error occurred while retrieving count - ", err);
+		cb(false);
+	    });
+
+	logger.debug('End of count validator');
+    },
+    message: 'email is already registered.' });
 
 module.exports.UserModel = mongoose.model('User', UserSchema);
 module.exports.UserSchema = UserSchema;

@@ -86,11 +86,11 @@ describe('User', function() {
 	});
 	
 	it('should be invalid if username is already registered', function() {
-	    var user = new UserModel({
+	    user = new UserModel({
 		username: 'testDuplicateUser'
 	    });
 
-	    sinon.stub(mongoose.model('User', UserSchema), 'count').resolves(1);
+	    var userCountStub = sinon.stub(mongoose.model('User', UserSchema), 'count').resolves(1);
 
 	    return user.validate()
 		.then((value) => {
@@ -110,12 +110,67 @@ describe('User', function() {
 			// Assert the validation logic failure, so that it is printed in the console.
 			should.not.exist(err, 'Duplicate username validation logic failed.');
 		    }
+
+		    userCountStub.restore();
 		});
 	});
 	
-	it('should be invalid if email is empty');
-	it('should be invalid if email is not in correct format');
-	it('should be invalid if email is already registered');
+	it('should be invalid if email is empty', function() {
+	    user = new UserModel({
+		username: 'testUser'
+	    });
+
+	    var err = user.validateSync();
+
+	    should.exist(err);
+	    if (err) {
+		err.errors['email'].message.should.equal('email is mandatory!');
+	    }
+	});
+	
+	it('should be invalid if email is not in correct format', function() {
+	    user = new UserModel({
+		username: 'testUser',
+		email: 'testUser'
+	    });
+
+	    var err = user.validateSync();
+
+	    should.exist(err);
+	    if (err) {
+		err.errors['email'].message.should.equal('email id is not of correct format.');
+	    }
+	});
+	
+	it('should be invalid if email is already registered', function() {
+	    user = new UserModel({
+		username: 'testDuplicateUser',
+		email: 'someone@somewhere.com'
+	    });
+
+	    var userCountStub = sinon.stub(mongoose.model('User', UserSchema), 'count').resolves(1);
+
+	    return user.validate()
+		.then((value) => {
+		    // If the validation logic fails this part of the code should not exist.
+		    // Inserting a dummy assertion to make sure this part of code doesn't exist.
+		    true.should.be.false;
+		})
+		.catch((err) => {
+		    // Above dummy assertion will throw an AssertionError when validation logic fails
+		    // because of which the promise will fail and catch block will be called which
+		    // needs to be identify this from the actual error thrown when validation fails.
+		    if (err.errors) {
+			// Assert actual validation failure error.
+			should.exist(err.errors['email']);
+			err.errors['email'].message.should.equal('email is already registered.');
+		    } else if (err.message === 'expected true to be false') {
+			// Assert the validation logic failure, so that it is printed in the console.
+			should.not.exist(err, 'Duplicate email validation logic failed.');
+		    }
+		    userCountStub.restore();		    
+		});
+	});
 	
 	it('should be invalid if first name is empty');
 	it('should be invalid if first name contains special characters');
@@ -130,6 +185,7 @@ describe('User', function() {
 	it('should be invalid if password does not contain lowercase characters');
 	it('should be invalid if password does not contain numerals');
 	it('should be invalid if password does not contain special characters');
+	it('should be encrypted');
 
 	it('should have default active status');
 	it('should be invalid if status is not active or inactive');
@@ -141,4 +197,3 @@ describe('User', function() {
 	});
     });
 });
-
