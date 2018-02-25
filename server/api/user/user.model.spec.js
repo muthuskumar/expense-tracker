@@ -46,7 +46,9 @@ describe('User', function() {
 	var user;
 	
 	it('should be invalid if username is empty', function() {
-	    user = new UserModel();
+	    user = new UserModel({
+		username: ''
+	    });
 
 	    var err = user.validateSync();
 
@@ -117,7 +119,8 @@ describe('User', function() {
 	
 	it('should be invalid if email is empty', function() {
 	    user = new UserModel({
-		username: 'testUser'
+		username: 'testUser',
+		email: ''
 	    });
 
 	    var err = user.validateSync();
@@ -172,13 +175,76 @@ describe('User', function() {
 		});
 	});
 	
-	it('should be invalid if first name is empty');
-	it('should be invalid if first name contains special characters');
+	it('should be invalid if first name is empty', function() {
+	    user = new UserModel({
+		username: 'testUser',
+		firstName: ''
+	    });
+
+	    var err = user.validateSync();
+
+	    should.exist(err);
+	    if (err) {
+		err.errors['firstName'].message.should.equal('First name is mandatory!');
+	    }
+	});
 	
-	it('should be invalid if last name is empty');
-	it('should be invalid if last name contains special characters');
+	it('should be invalid if first name contains special characters', function() {
+	    user = new UserModel({
+		username: 'testUser',
+		firstName: 'test@'
+	    });
+
+	    var err = user.validateSync();
+
+	    should.exist(err);
+	    if (err) {
+		err.errors['firstName'].message.should.equal('First name cannot contain special characters.');
+	    }
+	});
 	
-	it('should be invalid if password is empty');
+	it('should be invalid if last name is empty', function() {
+	    user = new UserModel({
+		username: 'testUser',
+		lastName: ''
+	    });
+
+	    var err = user.validateSync();
+
+	    should.exist(err);
+	    if (err) {
+		err.errors['lastName'].message.should.equal('Last name is mandatory!');
+	    }
+	});
+	
+	it('should be invalid if last name contains special characters', function() {
+	    user = new UserModel({
+		username: 'testUser',
+		lastName: 'test@'
+	    });
+
+	    var err = user.validateSync();
+
+	    should.exist(err);
+	    if (err) {
+		err.errors['lastName'].message.should.equal('Last name cannot contain special characters.');
+	    }
+	});
+	
+	it('should be invalid if password is empty', function() {
+	    user = new UserModel({
+		username: 'testUser',
+		password: ''
+	    });
+
+	    var err = user.validateSync();
+
+	    should.exist(err);
+	    if (err) {
+		err.errors['password'].message.should.equal('Password is mandatory!');
+	    }
+	});
+	
 	it('should be invalid if password is less than 8 characters');
 	it('should be invalid if password is greater than 15 characters');
 	it('should be invalid if password does not contain uppercase characters');

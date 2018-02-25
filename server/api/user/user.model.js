@@ -1,5 +1,6 @@
 import mongoose from 'mongoose';
 
+import { specialCharValidator } from '../../utils/validatorUtils';
 import { logger } from '../../config/app-logger';
 
 var UserSchema = new mongoose.Schema({
@@ -11,11 +12,20 @@ var UserSchema = new mongoose.Schema({
     },
     email: {
 	type: String,
-	required: [true, 'email is mandatory!']
+	required: [ true, 'email is mandatory!' ]
     },
-    firstName: String,
-    lastName: String,
-    password: String,
+    firstName: {
+	type: String,
+	required: [ true, 'First name is mandatory!' ]
+    },
+    lastName: {
+	type: String,
+	required: [ true, 'Last name is mandatory!' ]
+    },
+    password: {
+	type: String,
+	required: [ true, 'Password is mandatory!']
+    },
     status: String
 });
 
@@ -40,7 +50,6 @@ UserSchema.path('username').validate({
     message: 'Username is already registered.' });
 
 UserSchema.path('email').validate({
-    isAsync: false,
     validator: function(email) {
 	logger.debug('Inside email format validator with email: ', email);
 
@@ -72,6 +81,28 @@ UserSchema.path('email').validate({
 	logger.debug('End of count validator');
     },
     message: 'email is already registered.' });
+
+UserSchema.path('firstName').validate({
+    validator: function(firstName) {
+	logger.debug('Inside first name validation: ', firstName);
+
+	logger.debug('First name is ', specialCharValidator(firstName));
+
+	return specialCharValidator(firstName);
+    },
+    message: 'First name cannot contain special characters.'
+});
+
+UserSchema.path('lastName').validate({
+    validator: function(firstName) {
+	logger.debug('Inside last name validation: ', lastName);
+
+	logger.debug('Last name is ', specialCharValidator(lastName));
+
+	return specialCharValidator(lastName);
+    },
+    message: 'Last name cannot contain special characters.'
+});
 
 module.exports.UserModel = mongoose.model('User', UserSchema);
 module.exports.UserSchema = UserSchema;
