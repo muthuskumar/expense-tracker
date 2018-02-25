@@ -259,7 +259,20 @@ describe('User', function() {
 	    }
 	});
 	
-	it('should be invalid if password is greater than 15 characters');
+	it('should be invalid if password is greater than 15 characters', function() {
+	    user = new UserModel({
+		username: 'testUser',
+		password: 'test123456789012345'
+	    });
+
+	    var err = user.validateSync();
+
+	    should.exist(err);
+	    if (err) {
+		err.errors['password'].message.should.equal('Password should not be more than 15 characters long.');
+	    }
+	});
+	
 	it('should be invalid if password does not contain uppercase characters');
 	it('should be invalid if password does not contain lowercase characters');
 	it('should be invalid if password does not contain numerals');
