@@ -245,7 +245,20 @@ describe('User', function() {
 	    }
 	});
 	
-	it('should be invalid if password is less than 8 characters');
+	it('should be invalid if password is less than 8 characters', function() {
+	    user = new UserModel({
+		username: 'testUser',
+		password: 'test'
+	    });
+
+	    var err = user.validateSync();
+
+	    should.exist(err);
+	    if (err) {
+		err.errors['password'].message.should.equal('Password should be at least 8 characters long.');
+	    }
+	});
+	
 	it('should be invalid if password is greater than 15 characters');
 	it('should be invalid if password does not contain uppercase characters');
 	it('should be invalid if password does not contain lowercase characters');
