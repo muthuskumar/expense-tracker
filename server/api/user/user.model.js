@@ -2,7 +2,7 @@ import mongoose from 'mongoose';
 
 import { specialCharValidator } from '../../utils/validatorUtils';
 import { logger } from '../../config/app-logger';
-
+n
 var UserSchema = new mongoose.Schema({
     username: {
 	type: String,
@@ -105,6 +105,19 @@ UserSchema.path('lastName').validate({
     },
     message: 'Last name cannot contain special characters.'
 });
+
+UserSchema.path('password').validate({
+    validator: function(email) {
+	logger.debug('Inside email format validator with email: ', email);
+
+	const regExp = new RegExp(/^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/);
+	
+	logger.debug('email id is: ', regExp.test(email));
+	logger.debug('End of email validity validator');
+
+	return regExp.test(email);
+    },
+    message: 'passwrod is not of correcbt format.'});
 
 module.exports.UserModel = mongoose.model('User', UserSchema);
 module.exports.UserSchema = UserSchema;

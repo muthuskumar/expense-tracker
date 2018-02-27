@@ -273,10 +273,58 @@ describe('User', function() {
 	    }
 	});
 	
-	it('should be invalid if password does not contain uppercase characters');
-	it('should be invalid if password does not contain lowercase characters');
-	it('should be invalid if password does not contain numerals');
-	it('should be invalid if password does not contain special characters');
+	it('should be invalid if password does not contain uppercase characters', function() {
+	    user = new UserModel({
+		password: 'test1user!'
+	    });
+
+	    var err = user.validateSync();
+	    
+	    should.exist(err);
+	    if (err) {
+		err.errors['password'].message.should.equal('Password should contain at least one upper character.');
+	    }
+	});
+	
+	it('should be invalid if password does not contain lowercase characters', function() {
+	    user = new UserModel({
+		password: 'TEST1USER!'
+	    });
+
+	    var err = user.validateSync();
+	    
+	    should.exist(err);
+	    if (err) {
+		err.errors['password'].message.should.equal('Password should contain at least one lower character.');
+	    }
+	});
+	
+	it('should be invalid if password does not contain numerals', function() {
+	    user = new UserModel({
+		password: 'TestUser!'
+	    });
+
+	    var err = user.validateSync();
+	    
+	    should.exist(err);
+	    if (err) {
+		err.errors['password'].message.should.equal('Password should contain at least one number.');
+	    }
+	});
+	
+	it('should be invalid if password does not contain special characters', function() {
+	    user = new UserModel({
+		password: 'Test1User'
+	    });
+
+	    var err = user.validateSync();
+	    
+	    should.exist(err);
+	    if (err) {
+		err.errors['password'].message.should.equal('Password should contain at least one special character.');
+	    }
+	});
+	
 	it('should be encrypted');
 
 	it('should have default active status');
