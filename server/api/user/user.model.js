@@ -1,8 +1,8 @@
 import mongoose from 'mongoose';
 
-import { specialCharValidator } from '../../utils/validatorUtils';
+import { isSpecialChar } from '../../utils/custom.validators';
 import { logger } from '../../config/app-logger';
-n
+
 var UserSchema = new mongoose.Schema({
     username: {
 	type: String,
@@ -117,7 +117,7 @@ UserSchema.path('password').validate({
 
 	return regExp.test(email);
     },
-    message: 'passwrod is not of correcbt format.'});
+    message: 'Password should contain at least a uppercase character, a lowercase character, a number and a special character.'});
 
 module.exports.UserModel = mongoose.model('User', UserSchema);
 module.exports.UserSchema = UserSchema;

@@ -282,7 +282,7 @@ describe('User', function() {
 	    
 	    should.exist(err);
 	    if (err) {
-		err.errors['password'].message.should.equal('Password should contain at least one upper character.');
+		err.errors['password'].message.should.equal('Password should contain at least a uppercase character, a lowercase character, a number and a special character.');
 	    }
 	});
 	
@@ -295,7 +295,7 @@ describe('User', function() {
 	    
 	    should.exist(err);
 	    if (err) {
-		err.errors['password'].message.should.equal('Password should contain at least one lower character.');
+		err.errors['password'].message.should.equal('Password should contain at least a uppercase character, a lowercase character, a number and a special character.');
 	    }
 	});
 	
@@ -308,7 +308,7 @@ describe('User', function() {
 	    
 	    should.exist(err);
 	    if (err) {
-		err.errors['password'].message.should.equal('Password should contain at least one number.');
+		err.errors['password'].message.should.equal('Password should contain at least a uppercase character, a lowercase character, a number and a special character.');
 	    }
 	});
 	
@@ -321,7 +321,7 @@ describe('User', function() {
 	    
 	    should.exist(err);
 	    if (err) {
-		err.errors['password'].message.should.equal('Password should contain at least one special character.');
+		err.errors['password'].message.should.equal('Password should contain at least a uppercase character, a lowercase character, a number and a special character.');
 	    }
 	});
 	
