@@ -400,7 +400,30 @@ describe('User', function() {
 	    }
 	});
 
-	it('should be valid for all valid values');
+	it('should be valid for all valid values', function() {
+	    user = new UserModel({
+		username: 'testuser',
+		email: 'testuser@test.com',
+		firstName: 'Test',
+		lastName: 'User',
+		password: 'Test@123'
+	    });
+
+	    var err = user.validateSync();
+	    should.not.exist(err);
+
+	    var userCountStub = sinon.stub(mongoose.model('User', UserSchema), 'count').resolves(0);
+
+	    return user.validate()
+		.then((value) => {
+		    true.should.equal(true);
+		    userCountStub.restore();
+		})
+		.catch((err) => {
+		    should.not.exist(err);
+		    userCountStub.restore();
+		});
+	});
 	
 	afterEach(function() {
 	    user = undefined;

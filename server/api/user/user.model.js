@@ -1,6 +1,6 @@
 import mongoose from 'mongoose';
 
-import { isSpecialChar } from '../../utils/custom.validators';
+import { containsSpecialChar } from '../../utils/custom.validators';
 import { logger } from '../../config/app-logger';
 
 const STATUSES = ['ACTIVE', 'DEACTIVATED'];
@@ -73,7 +73,7 @@ UserSchema.path('email').validate({
 UserSchema.path('email').validate({
     isAsync: true,
     validator: function(email, cb) {
-	logger.debug('Inside email unique validator with username: ', email);
+	logger.debug('Inside email unique validator with email: ', email);
 
 	mongoose.model('User', UserSchema)
 	    .count({ email: email })
@@ -94,20 +94,20 @@ UserSchema.path('firstName').validate({
     validator: function(firstName) {
 	logger.debug('Inside first name validation: ', firstName);
 
-	logger.debug('First name is ', specialCharValidator(firstName));
+	logger.debug('First name is ', containsSpecialChar(firstName));
 
-	return specialCharValidator(firstName);
+	return containsSpecialChar(firstName);
     },
     message: 'First name cannot contain special characters.'
 });
 
 UserSchema.path('lastName').validate({
-    validator: function(firstName) {
+    validator: function(lastName) {
 	logger.debug('Inside last name validation: ', lastName);
 
-	logger.debug('Last name is ', specialCharValidator(lastName));
+	logger.debug('Last name is ', containsSpecialChar(lastName));
 
-	return specialCharValidator(lastName);
+	return containsSpecialChar(lastName);
     },
     message: 'Last name cannot contain special characters.'
 });
