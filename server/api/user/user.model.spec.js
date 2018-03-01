@@ -230,6 +230,31 @@ describe('User', function() {
 		err.errors['lastName'].message.should.equal('Last name cannot contain special characters.');
 	    }
 	});
+
+	it('should return full name from first name and last name', function() {
+	    user = new UserModel({
+		firstName: 'test',
+		lastName: 'user'
+	    });
+
+	    user.fullname.should.equal('test user');
+	});
+
+	it('should return full name equal to first name when last name is empty', function() {
+	    user = new UserModel({
+		firstName: 'test'
+	    });
+
+	    user.fullname.should.equal('test');
+	});
+
+	it('should return full name equal to last name when full name is empty', function() {
+	    user = new UserModel({
+		lastName: 'user'
+	    });
+
+	    user.fullname.should.equal('user');
+	});
 	
 	it('should be invalid if password is empty', function() {
 	    user = new UserModel({
@@ -257,6 +282,14 @@ describe('User', function() {
 	    if (err) {
 		err.errors['password'].message.should.equal('Password should be at least 8 characters long.');
 	    }
+
+	    user = new UserModel({
+		username: 'testUser',
+		password: 'Test@123'
+	    });
+
+	    var err = user.validateSync();
+	    should.not.exist(err.errors['password']);
 	});
 	
 	it('should be invalid if password is greater than 15 characters', function() {
@@ -271,6 +304,15 @@ describe('User', function() {
 	    if (err) {
 		err.errors['password'].message.should.equal('Password should not be more than 15 characters long.');
 	    }
+
+    	    user = new UserModel({
+		username: 'testUser',
+		password: 'Test@1234567890'
+	    });
+
+	    var err = user.validateSync();
+
+	    should.not.exist(err.errors['password']);
 	});
 	
 	it('should be invalid if password does not contain uppercase characters', function() {
@@ -325,10 +367,38 @@ describe('User', function() {
 	    }
 	});
 	
-	it('should be encrypted');
+	it('should be encrypted', function() {
+	    const pwd = 'Test@123';
+	    user = new UserModel({
+		password: pwd
+	    });
 
-	it('should have default active status');
-	it('should be invalid if status is not active or inactive');
+	    user.password.should.not.equal(pwd);
+	});
+
+	it('should have default active status', function() {
+	    user = new UserModel({});
+	    
+	    var err = user.validateSync();
+
+	    if (err) {
+		should.not.exist(err.errors['status']);
+	    }
+	    user.status.should.equal('ACTIVE');
+	});
+	
+	it('should be invalid if status is not active or inactive', function() {
+	    user = new UserModel({
+		status: 'INACTIVE'
+	    });
+
+	    var err = user.validateSync();
+
+	    should.exist(err);
+	    if (err) {
+		err.errors['status'].message.should.equal('`INACTIVE` is not a valid enum value for path `status`.');
+	    }
+	});
 
 	it('should be valid for all valid values');
 	

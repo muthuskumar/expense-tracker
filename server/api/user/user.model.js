@@ -3,6 +3,8 @@ import mongoose from 'mongoose';
 import { isSpecialChar } from '../../utils/custom.validators';
 import { logger } from '../../config/app-logger';
 
+const STATUSES = ['ACTIVE', 'DEACTIVATED'];
+
 var UserSchema = new mongoose.Schema({
     username: {
 	type: String,
@@ -28,7 +30,11 @@ var UserSchema = new mongoose.Schema({
 	minlength: [ 8, 'Password should be at least 8 characters long.' ],
 	maxlength: [ 15, 'Password should not be more than 15 characters long.' ]
     },
-    status: String
+    status: {
+	type: String,
+	enum: ['ACTIVE', 'DEACTIVATED'],
+	default: STATUSES[0]
+    }
 });
 
 UserSchema.path('username').validate({
@@ -107,17 +113,25 @@ UserSchema.path('lastName').validate({
 });
 
 UserSchema.path('password').validate({
-    validator: function(email) {
-	logger.debug('Inside email format validator with email: ', email);
+    validator: function(password) {
+	logger.debug('Inside password format validator with password: ', password);
 
-	const regExp = new RegExp(/^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/);
+	const regExp = new RegExp(/^(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9])(?=.*[!@#\$%\^&\*])(?=.{8,15})/);
 	
-	logger.debug('email id is: ', regExp.test(email));
-	logger.debug('End of email validity validator');
+	logger.debug('password id is: ', regExp.test(password));
+	logger.debug('End of password validity validator');
 
-	return regExp.test(email);
+	return regExp.test(password);
     },
     message: 'Password should contain at least a uppercase character, a lowercase character, a number and a special character.'});
+
+UserSchema.virtual('fullname').get(function() {
+    const firstName = this.firstName ? this.firstName : '';
+    const lastName = this.lastName ? this.lastName : '';
+    const separator = firstName && lastName ? ' ' : '';
+    
+    return firstName + separator + lastName;
+});
 
 module.exports.UserModel = mongoose.model('User', UserSchema);
 module.exports.UserSchema = UserSchema;
