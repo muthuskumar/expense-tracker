@@ -1,5 +1,7 @@
 import mongoose from 'mongoose';
 import chai from 'chai';
+import _bind from 'lodash/bind';
+
 import { UserModel } from './user.model';
 import { UserSchema } from './user.model';
 
@@ -287,13 +289,26 @@ describe('User', function() {
 		password: 'test'
 	    });
 
-	    var err = user.validateSync();
-
-	    should.exist(err);
-	    if (err) {
-		err.errors['password'].message.should.equal('Password should be at least 8 characters long.');
-	    }
-
+	    return user.validate()
+		.then((value) => {
+		    // If the validation logic fails this part of the code should not exist.
+		    // Inserting a dummy assertion to make sure this part of code doesn't exist.
+		    true.should.be.false;
+		})
+		.catch((err) => {
+		    // Above dummy assertion will throw an AssertionError when validation logic fails
+		    // because of which the promise will fail and catch block will be called which
+		    // needs to be identify this from the actual error thrown when validation fails.
+		    if (err.errors) {
+			// Assert actual validation failure error.
+			should.exist(err.errors['password']);
+			err.errors['password'].message.should.include('The password must be at least 8 characters long.');
+		    } else if (err.message === 'expected true to be false') {
+			// Assert the validation logic failure, so that it is printed in the console.
+			should.not.exist(err, 'Password validation logic failed.');
+		    }
+		});
+	    
 	    user = new UserModel({
 		username: 'testUser',
 		password: 'Test@123'
@@ -309,13 +324,26 @@ describe('User', function() {
 		password: 'test123456789012345'
 	    });
 
-	    var err = user.validateSync();
-
-	    should.exist(err);
-	    if (err) {
-		err.errors['password'].message.should.equal('Password should not be more than 15 characters long.');
-	    }
-
+	    return user.validate()
+		.then((value) => {
+		    // If the validation logic fails this part of the code should not exist.
+		    // Inserting a dummy assertion to make sure this part of code doesn't exist.
+		    true.should.be.false;
+		})
+		.catch((err) => {
+		    // Above dummy assertion will throw an AssertionError when validation logic fails
+		    // because of which the promise will fail and catch block will be called which
+		    // needs to be identify this from the actual error thrown when validation fails.
+		    if (err.errors) {
+			// Assert actual validation failure error.
+			should.exist(err.errors['password']);
+			err.errors['password'].message.should.include('The password must be fewer than 15 characters.');
+		    } else if (err.message === 'expected true to be false') {
+			// Assert the validation logic failure, so that it is printed in the console.
+			should.not.exist(err, 'Password validation logic failed.');
+		    }
+		});
+	    
     	    user = new UserModel({
 		username: 'testUser',
 		password: 'Test@1234567890'
@@ -331,12 +359,25 @@ describe('User', function() {
 		password: 'test1user!'
 	    });
 
-	    var err = user.validateSync();
-	    
-	    should.exist(err);
-	    if (err) {
-		err.errors['password'].message.should.equal('Password should contain at least a uppercase character, a lowercase character, a number and a special character.');
-	    }
+	    return user.validate()
+		.then((value) => {
+		    // If the validation logic fails this part of the code should not exist.
+		    // Inserting a dummy assertion to make sure this part of code doesn't exist.
+		    true.should.be.false;
+		})
+		.catch((err) => {
+		    // Above dummy assertion will throw an AssertionError when validation logic fails
+		    // because of which the promise will fail and catch block will be called which
+		    // needs to be identify this from the actual error thrown when validation fails.
+		    if (err.errors) {
+			// Assert actual validation failure error.
+			should.exist(err.errors['password']);
+			err.errors['password'].message.should.include('The password must contain at least one uppercase letter.');
+		    } else if (err.message === 'expected true to be false') {
+			// Assert the validation logic failure, so that it is printed in the console.
+			should.not.exist(err, 'Password validation logic failed.');
+		    }
+		});
 	});
 	
 	it('should be invalid if password does not contain lowercase characters', function() {
@@ -344,25 +385,51 @@ describe('User', function() {
 		password: 'TEST1USER!'
 	    });
 
-	    var err = user.validateSync();
-	    
-	    should.exist(err);
-	    if (err) {
-		err.errors['password'].message.should.equal('Password should contain at least a uppercase character, a lowercase character, a number and a special character.');
-	    }
+	    return user.validate()
+		.then((value) => {
+		    // If the validation logic fails this part of the code should not exist.
+		    // Inserting a dummy assertion to make sure this part of code doesn't exist.
+		    true.should.be.false;
+		})
+		.catch((err) => {
+		    // Above dummy assertion will throw an AssertionError when validation logic fails
+		    // because of which the promise will fail and catch block will be called which
+		    // needs to be identify this from the actual error thrown when validation fails.
+		    if (err.errors) {
+			// Assert actual validation failure error.
+			should.exist(err.errors['password']);
+			err.errors['password'].message.should.include('The password must contain at least one lowercase letter.');
+		    } else if (err.message === 'expected true to be false') {
+			// Assert the validation logic failure, so that it is printed in the console.
+			should.not.exist(err, 'Password validation logic failed.');
+		    }
+		});	    
 	});
 	
-	it('should be invalid if password does not contain numerals', function() {
+	it('should be invalid if password does not contain numbers', function() {
 	    user = new UserModel({
 		password: 'TestUser!'
 	    });
 
-	    var err = user.validateSync();
-	    
-	    should.exist(err);
-	    if (err) {
-		err.errors['password'].message.should.equal('Password should contain at least a uppercase character, a lowercase character, a number and a special character.');
-	    }
+	    return user.validate()
+		.then((value) => {
+		    // If the validation logic fails this part of the code should not exist.
+		    // Inserting a dummy assertion to make sure this part of code doesn't exist.
+		    true.should.be.false;
+		})
+		.catch((err) => {
+		    // Above dummy assertion will throw an AssertionError when validation logic fails
+		    // because of which the promise will fail and catch block will be called which
+		    // needs to be identify this from the actual error thrown when validation fails.
+		    if (err.errors) {
+			// Assert actual validation failure error.
+			should.exist(err.errors['password']);
+			err.errors['password'].message.should.include('The password must contain at least one number.');
+		    } else if (err.message === 'expected true to be false') {
+			// Assert the validation logic failure, so that it is printed in the console.
+			should.not.exist(err, 'Password validation logic failed.');
+		    }
+		});
 	});
 	
 	it('should be invalid if password does not contain special characters', function() {
@@ -370,21 +437,45 @@ describe('User', function() {
 		password: 'Test1User'
 	    });
 
-	    var err = user.validateSync();
-	    
-	    should.exist(err);
-	    if (err) {
-		err.errors['password'].message.should.equal('Password should contain at least a uppercase character, a lowercase character, a number and a special character.');
-	    }
+	    return user.validate()
+		.then((value) => {
+		    // If the validation logic fails this part of the code should not exist.
+		    // Inserting a dummy assertion to make sure this part of code doesn't exist.
+		    true.should.be.false;
+		})
+		.catch((err) => {
+		    // Above dummy assertion will throw an AssertionError when validation logic fails
+		    // because of which the promise will fail and catch block will be called which
+		    // needs to be identify this from the actual error thrown when validation fails.
+		    if (err.errors) {
+			// Assert actual validation failure error.
+			should.exist(err.errors['password']);
+			err.errors['password'].message.should.include('The password must contain at least one special character.');
+		    } else if (err.message === 'expected true to be false') {
+			// Assert the validation logic failure, so that it is printed in the console.
+			should.not.exist(err, 'Password validation logic failed.');
+		    }
+		});
 	});
 	
-	it('should be encrypted', function() {
+	it('should encrypt password', function() {
 	    const pwd = 'Test@123';
 	    user = new UserModel({
-		password: pwd
+		username: 'testuser',
+		email: 'testuser@test.com',
+		firstName: 'Test',
+		lastName: 'User',
+		password: 'Test@123'
 	    });
 
+	    var thisContext = user;
+	    var boundMiddleWareFn = _bind(UserSchema._middlewareFunctions.encryptPassword, thisContext);
+	    var next = sinon.spy();
+	    
+	    boundMiddleWareFn(next);
+
 	    user.password.should.not.equal(pwd);
+	    sinon.assert.calledOnce(next);
 	});
 
 	it('should have default active status', function() {

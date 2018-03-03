@@ -1,5 +1,6 @@
 import mongoose from 'mongoose';
 import bcrypt from 'bcryptjs';
+import owasp from 'owasp-password-strength-test';
 
 import { containsSpecialChar } from '../../utils/custom.validators';
 import { logger } from '../../config/app-logger';
@@ -28,9 +29,7 @@ var UserSchema = new mongoose.Schema({
     },
     password: {
 	type: String,
-	required: [ true, 'Password is mandatory!'],
-	minlength: [ 8, 'Password should be at least 8 characters long.' ],
-	maxlength: [ 15, 'Password should not be more than 15 characters long.' ]
+	required: [ true, 'Password is mandatory!']
     },
     status: {
 	type: String,
@@ -114,19 +113,6 @@ UserSchema.path('lastName').validate({
     message: 'Last name cannot contain special characters.'
 });
 
-UserSchema.path('password').validate({
-    validator: function(password) {
-	logger.debug('Inside password format validator with password: ', password);
-
-	const regExp = new RegExp(/^(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9])(?=.*[!@#\$%\^&\*])(?=.{8,15})/);
-	
-	logger.debug('password id is: ', regExp.test(password));
-	logger.debug('End of password validity validator');
-
-	return regExp.test(password);
-    },
-    message: 'Password should contain at least a uppercase character, a lowercase character, a number and a special character.'});
-
 UserSchema.virtual('fullname')
     .get(function() {
 	const firstName = this.firstName ? this.firstName : '';
@@ -136,6 +122,33 @@ UserSchema.virtual('fullname')
 	return firstName + separator + lastName;
     });
 
+
+UserSchema.pre('validate', function(next) {
+    logger.debug('Inside pre validator');
+
+    owasp.config({
+	allowPassphrases       : false,
+	maxLength              : 15,
+	minLength              : 8,
+	minPhraseLength        : 20,
+	minOptionalTestsToPass : 4,
+    });
+
+    var validationError;
+    var results = owasp.test(this.password);
+
+    logger.debug('Validation results errors: ', results.errors);
+
+    if (results.errors.length) {
+	var err = results.errors.join('\n');
+	logger.debug('Joined error: \n', err);
+	validationError = this.invalidate('password', err);
+    }
+    
+    next(validationError);
+    
+    logger.debug('End of pre validator');
+});
 
 UserSchema.methods = {
     authenticate: function(plainTextPassword) {
@@ -151,17 +164,21 @@ UserSchema.methods = {
     }
 }
 
-UserSchema.pre('validate', function(next) {
-    logger.debug('Inside validate function');
-    logger.debug('Is password modified: ', this.isModified('password'));
-    
-    if(this.isModified('password'))
-	this.password = this.encryptPassword(this.password);
 
-    logger.debug('Encrypted Password: ', this.password );
+UserSchema._middlewareFunctions = {
+    encryptPassword: function(next) {
+	logger.debug('Inside validate function');
+	logger.debug('Is password modified: ', this.isModified('password'));
+	
+	if(this.isModified('password'))
+	    this.password = this.encryptPassword(this.password);
 
-    next();
-});
+	logger.debug('Encrypted Password: ', this.password );
+
+	next();
+    }
+};
+UserSchema.pre('save', UserSchema._middlewareFunctions.encryptPassword);
 
 module.exports.UserModel = mongoose.model('User', UserSchema);
 module.exports.UserSchema = UserSchema;
