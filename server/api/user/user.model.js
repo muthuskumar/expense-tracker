@@ -1,4 +1,5 @@
 import mongoose from 'mongoose';
+import bcrypt from 'bcryptjs';
 
 import { containsSpecialChar } from '../../utils/custom.validators';
 import { logger } from '../../config/app-logger';
@@ -9,6 +10,7 @@ var UserSchema = new mongoose.Schema({
     username: {
 	type: String,
 	required: [ true, 'Username is mandatory!'],
+	lowercase: true,
 	minlength: [ 5, 'Username should be at least 5 characters long.' ],
 	maxlength: [ 20, 'Username should not be more than 20 characters long.' ]
     },
@@ -125,12 +127,40 @@ UserSchema.path('password').validate({
     },
     message: 'Password should contain at least a uppercase character, a lowercase character, a number and a special character.'});
 
-UserSchema.virtual('fullname').get(function() {
-    const firstName = this.firstName ? this.firstName : '';
-    const lastName = this.lastName ? this.lastName : '';
-    const separator = firstName && lastName ? ' ' : '';
+UserSchema.virtual('fullname')
+    .get(function() {
+	const firstName = this.firstName ? this.firstName : '';
+	const lastName = this.lastName ? this.lastName : '';
+	const separator = firstName && lastName ? ' ' : '';
+	
+	return firstName + separator + lastName;
+    });
+
+
+UserSchema.methods = {
+    authenticate: function(plainTextPassword) {
+	return bcrypt.compareSync(plainTextPassword, this.password);
+    },
+    encryptPassword: function(plainTextPassword) {
+	if (!plainTextPassword) {
+	    return '';
+	} else {
+	    var salt = bcrypt.genSaltSync(10);
+	    return bcrypt.hashSync(plainTextPassword, salt);
+	}
+    }
+}
+
+UserSchema.pre('validate', function(next) {
+    logger.debug('Inside validate function');
+    logger.debug('Is password modified: ', this.isModified('password'));
     
-    return firstName + separator + lastName;
+    if(this.isModified('password'))
+	this.password = this.encryptPassword(this.password);
+
+    logger.debug('Encrypted Password: ', this.password );
+
+    next();
 });
 
 module.exports.UserModel = mongoose.model('User', UserSchema);

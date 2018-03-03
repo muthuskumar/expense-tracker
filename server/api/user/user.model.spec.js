@@ -116,6 +116,17 @@ describe('User', function() {
 		    userCountStub.restore();
 		});
 	});
+
+	it('should always store username in lowercase', function() {
+	    const username = 'TESTUSER';
+	    user = new UserModel({
+		username: username
+	    });
+
+	    user.validateSync();
+
+	    user.username.should.equal(username.toLowerCase());
+	});
 	
 	it('should be invalid if email is empty', function() {
 	    user = new UserModel({
@@ -424,7 +435,7 @@ describe('User', function() {
 		    userCountStub.restore();
 		});
 	});
-	
+
 	afterEach(function() {
 	    user = undefined;
 	});
