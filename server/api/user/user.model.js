@@ -2,7 +2,7 @@ import mongoose from 'mongoose';
 import bcrypt from 'bcryptjs';
 import owasp from 'owasp-password-strength-test';
 
-import { containsSpecialChar } from '../../utils/custom.validators';
+import { specialCharValidationRegex, emailFormatValidationRegex } from '../../utils/custom.validators';
 import { logger } from '../../config/app-logger';
 
 const STATUSES = ['ACTIVE', 'DEACTIVATED'];
@@ -17,15 +17,18 @@ var UserSchema = new mongoose.Schema({
     },
     email: {
 	type: String,
-	required: [ true, 'email is mandatory!' ]
+	required: [ true, 'email is mandatory!' ],
+	match: [ emailFormatValidationRegex, 'email id is not of correct format.' ]
     },
     firstName: {
 	type: String,
-	required: [ true, 'First name is mandatory!' ]
+	required: [ true, 'First name is mandatory!' ],
+	match: [ specialCharValidationRegex, 'First name cannot contain special characters.' ]
     },
     lastName: {
 	type: String,
-	required: [ true, 'Last name is mandatory!' ]
+	required: [ true, 'Last name is mandatory!' ],
+	match: [ /^[a-zA-Z0-9]+$/, 'Last name cannot contain special characters.' ]	
     },
     password: {
 	type: String,
@@ -59,19 +62,6 @@ UserSchema.path('username').validate({
     message: 'Username is already registered.' });
 
 UserSchema.path('email').validate({
-    validator: function(email) {
-	logger.debug('Inside email format validator with email: ', email);
-
-	const regExp = new RegExp(/^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/);
-	
-	logger.debug('email id is: ', regExp.test(email));
-	logger.debug('End of email validity validator');
-
-	return regExp.test(email);
-    },
-    message: 'email id is not of correct format.'});
-
-UserSchema.path('email').validate({
     isAsync: true,
     validator: function(email, cb) {
 	logger.debug('Inside email unique validator with email: ', email);
@@ -90,28 +80,6 @@ UserSchema.path('email').validate({
 	logger.debug('End of count validator');
     },
     message: 'email is already registered.' });
-
-UserSchema.path('firstName').validate({
-    validator: function(firstName) {
-	logger.debug('Inside first name validation: ', firstName);
-
-	logger.debug('First name is ', containsSpecialChar(firstName));
-
-	return containsSpecialChar(firstName);
-    },
-    message: 'First name cannot contain special characters.'
-});
-
-UserSchema.path('lastName').validate({
-    validator: function(lastName) {
-	logger.debug('Inside last name validation: ', lastName);
-
-	logger.debug('Last name is ', containsSpecialChar(lastName));
-
-	return containsSpecialChar(lastName);
-    },
-    message: 'Last name cannot contain special characters.'
-});
 
 UserSchema.virtual('fullname')
     .get(function() {
