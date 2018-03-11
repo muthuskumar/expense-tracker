@@ -31,6 +31,11 @@ function clean() {
     return del([`${dist}\${serverPath}`]);
 }
 
+gulp.task('set-test-node-env', function(done) {
+    process.env.NODE_ENV = 'test';
+    done();
+});
+
 gulp.task('clean:server', gulp.series(clean));
 
 gulp.task('lint:server', () => {
@@ -71,7 +76,7 @@ gulp.task('test:server', () => {
 });
 
 gulp.task('watch:test:server', () => {
-    gulp.watch(paths.server.test.unit, gulp.series('test:server'));
+    gulp.watch(paths.server.test.unit, gulp.series('set-test-node-env', 'test:server'));
 });
 
 gulp.task('build:server', () => {
