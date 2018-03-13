@@ -205,16 +205,30 @@ describe('User', function() {
 	it('should be invalid if first name contains special characters', function() {
 	    user = new UserModel({
 		username: 'testUser',
-		firstName: 'test@'
+		firstName: 'test@1'
 	    });
 
 	    var err = user.validateSync();
 
 	    should.exist(err);
 	    if (err) {
-		err.errors['firstName'].message.should.equal('First name cannot contain special characters.');
+		err.errors['firstName'].message.should.equal('Name cannot contain special characters.');
 	    }
 	});
+
+	it('should be invalid if first name contain numbers', function() {
+	    user = new UserModel({
+		username: 'testUser',
+		firstName: 'test1'
+	    });
+
+	    var err = user.validateSync();
+	    
+	    should.exist(err);
+	    if (err) {
+		err.errors['firstName'].message.should.equal('Name cannot contain numbers.');
+	    }
+	});	
 	
 	it('should be invalid if last name is empty', function() {
 	    user = new UserModel({
@@ -240,7 +254,21 @@ describe('User', function() {
 
 	    should.exist(err);
 	    if (err) {
-		err.errors['lastName'].message.should.equal('Last name cannot contain special characters.');
+		err.errors['lastName'].message.should.equal('Name cannot contain special characters.');
+	    }
+	});
+
+	it('should be invalid if last name contain numbers', function() {
+	    user = new UserModel({
+		username: 'testUser',
+		lastName: 'test1'
+	    });
+
+	    var err = user.validateSync();
+
+	    should.exist(err);
+	    if (err) {
+		err.errors['lastName'].message.should.equal('Name cannot contain numbers.');
 	    }
 	});
 
@@ -532,3 +560,4 @@ describe('User', function() {
 	});
     });
 });
+

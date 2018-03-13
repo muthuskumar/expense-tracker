@@ -2,10 +2,28 @@ import mongoose from 'mongoose';
 import bcrypt from 'bcryptjs';
 import owasp from 'owasp-password-strength-test';
 
-import { specialCharValidationRegex, emailFormatValidationRegex } from '../../utils/custom.validators';
+import { noSpecialCharValidationRegex, numberValidationRegex, emailFormatValidationRegex } from '../../utils/custom.validators';
 import { logger } from '../../config/app-logger';
 
 const STATUSES = ['ACTIVE', 'DEACTIVATED'];
+
+var nameValidator = [
+    {
+	validator: function(name) {
+	    return noSpecialCharValidationRegex.test(name);
+	},
+	message: 'Name cannot contain special characters.'
+    },
+    {
+	validator: function(name) {
+	    logger.debug('Inside number validation for: ', name);
+
+	    logger.debug('Name contains number: ', numberValidationRegex.test(name));
+	    return !numberValidationRegex.test(name);
+	},
+	message: 'Name cannot contain numbers.'
+    }
+];
 
 var UserSchema = new mongoose.Schema({
     username: {
@@ -23,12 +41,12 @@ var UserSchema = new mongoose.Schema({
     firstName: {
 	type: String,
 	required: [ true, 'First name is mandatory!' ],
-	match: [ specialCharValidationRegex, 'First name cannot contain special characters.' ]
+	validate: nameValidator
     },
     lastName: {
 	type: String,
 	required: [ true, 'Last name is mandatory!' ],
-	match: [ /^[a-zA-Z0-9]+$/, 'Last name cannot contain special characters.' ]	
+	validate: nameValidator
     },
     password: {
 	type: String,
