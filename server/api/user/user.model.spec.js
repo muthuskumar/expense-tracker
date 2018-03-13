@@ -5,6 +5,8 @@ import _bind from 'lodash/bind';
 import { UserModel } from './user.model';
 import { UserSchema } from './user.model';
 
+import { VALIDATION_MESSAGES } from './user.constants';
+
 var should = chai.should();
 
 describe('User', function() {
@@ -56,7 +58,7 @@ describe('User', function() {
 
 	    should.exist(err);
 	    if (err) {
-		err.errors['username'].message.should.equal('Username is mandatory!');
+		err.errors['username'].message.should.equal(VALIDATION_MESSAGES.USERNAME_MANDATORY);
 	    }
 	    
 	});
@@ -70,7 +72,7 @@ describe('User', function() {
 
 	    should.exist(err);
 	    if (err) {
-		err.errors['username'].message.should.equal('Username should be at least 5 characters long.');
+		err.errors['username'].message.should.equal(VALIDATION_MESSAGES.USERNAME_MINLENGTH);
 	    }
 	    
 	});
@@ -84,7 +86,7 @@ describe('User', function() {
 
 	    should.exist(err);
 	    if (err) {
-		err.errors['username'].message.should.equal('Username should not be more than 20 characters long.');
+		err.errors['username'].message.should.equal(VALIDATION_MESSAGES.USERNAME_MAXLENGTH);
 	    }
 	    
 	});
@@ -109,7 +111,7 @@ describe('User', function() {
 		    if (err.errors) {
 			// Assert actual validation failure error.
 			should.exist(err.errors['username']);
-			err.errors['username'].message.should.equal('Username is already registered.');
+			err.errors['username'].message.should.equal(VALIDATION_MESSAGES.USERNAME_UNAVAILABLE);
 		    } else if (err.message === 'expected true to be false') {
 			// Assert the validation logic failure, so that it is printed in the console.
 			should.not.exist(err, 'Duplicate username validation logic failed.');
@@ -140,7 +142,7 @@ describe('User', function() {
 
 	    should.exist(err);
 	    if (err) {
-		err.errors['email'].message.should.equal('email is mandatory!');
+		err.errors['email'].message.should.equal(VALIDATION_MESSAGES.EMAIL_MANDATORY);
 	    }
 	});
 	
@@ -154,7 +156,7 @@ describe('User', function() {
 
 	    should.exist(err);
 	    if (err) {
-		err.errors['email'].message.should.equal('email id is not of correct format.');
+		err.errors['email'].message.should.equal(VALIDATION_MESSAGES.EMAIL_BADFORMAT);
 	    }
 	});
 	
@@ -179,7 +181,7 @@ describe('User', function() {
 		    if (err.errors) {
 			// Assert actual validation failure error.
 			should.exist(err.errors['email']);
-			err.errors['email'].message.should.equal('email is already registered.');
+			err.errors['email'].message.should.equal(VALIDATION_MESSAGES.EMAIL_UNAVAILABLE);
 		    } else if (err.message === 'expected true to be false') {
 			// Assert the validation logic failure, so that it is printed in the console.
 			should.not.exist(err, 'Duplicate email validation logic failed.');
@@ -198,7 +200,7 @@ describe('User', function() {
 
 	    should.exist(err);
 	    if (err) {
-		err.errors['firstName'].message.should.equal('First name is mandatory!');
+		err.errors['firstName'].message.should.equal(VALIDATION_MESSAGES.FIRST_NAME_MANDATORY);
 	    }
 	});
 	
@@ -212,7 +214,7 @@ describe('User', function() {
 
 	    should.exist(err);
 	    if (err) {
-		err.errors['firstName'].message.should.equal('Name cannot contain special characters.');
+		err.errors['firstName'].message.should.equal(VALIDATION_MESSAGES.NAME_SPECIALCHAR);
 	    }
 	});
 
@@ -226,7 +228,7 @@ describe('User', function() {
 	    
 	    should.exist(err);
 	    if (err) {
-		err.errors['firstName'].message.should.equal('Name cannot contain numbers.');
+		err.errors['firstName'].message.should.equal(VALIDATION_MESSAGES.NAME_NUMBERS);
 	    }
 	});	
 	
@@ -240,7 +242,7 @@ describe('User', function() {
 
 	    should.exist(err);
 	    if (err) {
-		err.errors['lastName'].message.should.equal('Last name is mandatory!');
+		err.errors['lastName'].message.should.equal(VALIDATION_MESSAGES.LAST_NAME_MANDATORY);
 	    }
 	});
 	
@@ -254,7 +256,7 @@ describe('User', function() {
 
 	    should.exist(err);
 	    if (err) {
-		err.errors['lastName'].message.should.equal('Name cannot contain special characters.');
+		err.errors['lastName'].message.should.equal(VALIDATION_MESSAGES.NAME_SPECIALCHAR);
 	    }
 	});
 
@@ -268,7 +270,7 @@ describe('User', function() {
 
 	    should.exist(err);
 	    if (err) {
-		err.errors['lastName'].message.should.equal('Name cannot contain numbers.');
+		err.errors['lastName'].message.should.equal(VALIDATION_MESSAGES.NAME_NUMBERS);
 	    }
 	});
 
@@ -307,7 +309,7 @@ describe('User', function() {
 
 	    should.exist(err);
 	    if (err) {
-		err.errors['password'].message.should.equal('Password is mandatory!');
+		err.errors['password'].message.should.equal(VALIDATION_MESSAGES.PASSWORD_MANDATORY);
 	    }
 	});
 	
@@ -330,7 +332,7 @@ describe('User', function() {
 		    if (err.errors) {
 			// Assert actual validation failure error.
 			should.exist(err.errors['password']);
-			err.errors['password'].message.should.include('The password must be at least 8 characters long.');
+			err.errors['password'].message.should.include(VALIDATION_MESSAGES.PASSWORD_MINLENGTH);
 		    } else if (err.message === 'expected true to be false') {
 			// Assert the validation logic failure, so that it is printed in the console.
 			should.not.exist(err, 'Password validation logic failed.');
@@ -365,7 +367,7 @@ describe('User', function() {
 		    if (err.errors) {
 			// Assert actual validation failure error.
 			should.exist(err.errors['password']);
-			err.errors['password'].message.should.include('The password must be fewer than 15 characters.');
+			err.errors['password'].message.should.include(VALIDATION_MESSAGES.PASSWORD_MAXLENGTH);
 		    } else if (err.message === 'expected true to be false') {
 			// Assert the validation logic failure, so that it is printed in the console.
 			should.not.exist(err, 'Password validation logic failed.');
@@ -400,7 +402,7 @@ describe('User', function() {
 		    if (err.errors) {
 			// Assert actual validation failure error.
 			should.exist(err.errors['password']);
-			err.errors['password'].message.should.include('The password must contain at least one uppercase letter.');
+			err.errors['password'].message.should.include(VALIDATION_MESSAGES.PASSWORD_UPPERCASE);
 		    } else if (err.message === 'expected true to be false') {
 			// Assert the validation logic failure, so that it is printed in the console.
 			should.not.exist(err, 'Password validation logic failed.');
@@ -426,7 +428,7 @@ describe('User', function() {
 		    if (err.errors) {
 			// Assert actual validation failure error.
 			should.exist(err.errors['password']);
-			err.errors['password'].message.should.include('The password must contain at least one lowercase letter.');
+			err.errors['password'].message.should.include(VALIDATION_MESSAGES.PASSWORD_LOWERCASE);
 		    } else if (err.message === 'expected true to be false') {
 			// Assert the validation logic failure, so that it is printed in the console.
 			should.not.exist(err, 'Password validation logic failed.');
@@ -452,7 +454,7 @@ describe('User', function() {
 		    if (err.errors) {
 			// Assert actual validation failure error.
 			should.exist(err.errors['password']);
-			err.errors['password'].message.should.include('The password must contain at least one number.');
+			err.errors['password'].message.should.include(VALIDATION_MESSAGES.PASSWORD_NUMBERS);
 		    } else if (err.message === 'expected true to be false') {
 			// Assert the validation logic failure, so that it is printed in the console.
 			should.not.exist(err, 'Password validation logic failed.');
@@ -478,7 +480,7 @@ describe('User', function() {
 		    if (err.errors) {
 			// Assert actual validation failure error.
 			should.exist(err.errors['password']);
-			err.errors['password'].message.should.include('The password must contain at least one special character.');
+			err.errors['password'].message.should.include(VALIDATION_MESSAGES.PASSWORD_SPECIALCHAR);
 		    } else if (err.message === 'expected true to be false') {
 			// Assert the validation logic failure, so that it is printed in the console.
 			should.not.exist(err, 'Password validation logic failed.');

@@ -3,54 +3,51 @@ import bcrypt from 'bcryptjs';
 import owasp from 'owasp-password-strength-test';
 
 import { noSpecialCharValidationRegex, numberValidationRegex, emailFormatValidationRegex } from '../../utils/custom.validators';
-import { logger } from '../../config/app-logger';
+import { STATUSES, VALIDATION_MESSAGES } from './user.constants';
 
-const STATUSES = ['ACTIVE', 'DEACTIVATED'];
+import { logger } from '../../config/app-logger';
 
 var nameValidator = [
     {
 	validator: function(name) {
 	    return noSpecialCharValidationRegex.test(name);
 	},
-	message: 'Name cannot contain special characters.'
+	message: VALIDATION_MESSAGES.NAME_SPECIALCHAR
     },
     {
 	validator: function(name) {
-	    logger.debug('Inside number validation for: ', name);
-
-	    logger.debug('Name contains number: ', numberValidationRegex.test(name));
 	    return !numberValidationRegex.test(name);
 	},
-	message: 'Name cannot contain numbers.'
+	message: VALIDATION_MESSAGES.NAME_NUMBERS
     }
 ];
 
 var UserSchema = new mongoose.Schema({
     username: {
 	type: String,
-	required: [ true, 'Username is mandatory!'],
+	required: [ true, VALIDATION_MESSAGES.USERNAME_MANDATORY],
 	lowercase: true,
-	minlength: [ 5, 'Username should be at least 5 characters long.' ],
-	maxlength: [ 20, 'Username should not be more than 20 characters long.' ]
+	minlength: [ 5, VALIDATION_MESSAGES.USERNAME_MINLENGTH ],
+	maxlength: [ 20, VALIDATION_MESSAGES.USERNAME_MAXLENGTH ]
     },
     email: {
 	type: String,
-	required: [ true, 'email is mandatory!' ],
-	match: [ emailFormatValidationRegex, 'email id is not of correct format.' ]
+	required: [ true, VALIDATION_MESSAGES.EMAIL_MANDATORY ],
+	match: [ emailFormatValidationRegex, VALIDATION_MESSAGES.EMAIL_BADFORMAT ]
     },
     firstName: {
 	type: String,
-	required: [ true, 'First name is mandatory!' ],
+	required: [ true, VALIDATION_MESSAGES.FIRST_NAME_MANDATORY ],
 	validate: nameValidator
     },
     lastName: {
 	type: String,
-	required: [ true, 'Last name is mandatory!' ],
+	required: [ true, VALIDATION_MESSAGES.LAST_NAME_MANDATORY ],
 	validate: nameValidator
     },
     password: {
 	type: String,
-	required: [ true, 'Password is mandatory!']
+	required: [ true, VALIDATION_MESSAGES.PASSWORD_MANDATORY ]
     },
     status: {
 	type: String,
@@ -77,7 +74,7 @@ UserSchema.path('username').validate({
 
 	logger.debug('End of count validator');
     },
-    message: 'Username is already registered.' });
+    message: VALIDATION_MESSAGES.USERNAME_UNAVAILABLE });
 
 UserSchema.path('email').validate({
     isAsync: true,
@@ -97,7 +94,7 @@ UserSchema.path('email').validate({
 
 	logger.debug('End of count validator');
     },
-    message: 'email is already registered.' });
+    message: VALIDATION_MESSAGES.EMAIL_UNAVAILABLE });
 
 UserSchema.virtual('fullname')
     .get(function() {
