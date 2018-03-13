@@ -54,7 +54,7 @@ var UserSchema = new mongoose.Schema({
     },
     status: {
 	type: String,
-	enum: ['ACTIVE', 'DEACTIVATED'],
+	enum: STATUSES,
 	default: STATUSES[0]
     }
 });
