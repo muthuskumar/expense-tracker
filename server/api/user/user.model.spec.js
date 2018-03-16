@@ -1,5 +1,6 @@
 import mongoose from 'mongoose';
 import chai from 'chai';
+import chaiAsPromised from 'chai-as-promised';
 import _bind from 'lodash/bind';
 
 import { UserModel } from './user.model';
@@ -8,12 +9,13 @@ import { UserSchema } from './user.model';
 import { VALIDATION_MESSAGES } from './user.constants';
 
 var should = chai.should();
+chai.use(chaiAsPromised);
 
 describe('User', function() {
     context('schema defintion', function() {
 	var user;
 	
-	before(function() {
+	beforeEach(function() {
 	    user = new UserModel();
 	});
 
@@ -41,13 +43,20 @@ describe('User', function() {
 	    user.should.have.property('status');
 	});
 
-	after(function() {
+	afterEach(function() {
 	    user = undefined;
 	});
     });
 
-    context('entry', function(done) {
+    context('entry', function() {
 	var user;
+	var userCountStub;
+
+	afterEach(() => {
+	    if (userCountStub) {
+		userCountStub.restore();
+	    }
+	});
 	
 	it('should be invalid if username is empty', function() {
 	    user = new UserModel({
@@ -96,29 +105,9 @@ describe('User', function() {
 		username: 'testDuplicateUser'
 	    });
 
-	    var userCountStub = sinon.stub(mongoose.model('User', UserSchema), 'count').resolves(1);
-
-	    return user.validate()
-		.then((value) => {
-		    // If the validation logic fails this part of the code should not exist.
-		    // Inserting a dummy assertion to make sure this part of code doesn't exist.
-		    true.should.be.false;
-		})
-		.catch((err) => {
-		    // Above dummy assertion will throw an AssertionError when validation logic fails
-		    // because of which the promise will fail and catch block will be called which
-		    // needs to be identify this from the actual error thrown when validation fails.
-		    if (err.errors) {
-			// Assert actual validation failure error.
-			should.exist(err.errors['username']);
-			err.errors['username'].message.should.equal(VALIDATION_MESSAGES.USERNAME_UNAVAILABLE);
-		    } else if (err.message === 'expected true to be false') {
-			// Assert the validation logic failure, so that it is printed in the console.
-			should.not.exist(err, 'Duplicate username validation logic failed.');
-		    }
-
-		    userCountStub.restore();
-		});
+	    userCountStub = sinon.stub(mongoose.model('User', UserSchema), 'count').resolves(1);
+	    
+	    return user.validate().should.eventually.be.rejectedWith(VALIDATION_MESSAGES.USERNAME_UNAVAILABLE);
 	});
 
 	it('should always store username in lowercase', function() {
@@ -166,28 +155,8 @@ describe('User', function() {
 		email: 'someone@somewhere.com'
 	    });
 
-	    var userCountStub = sinon.stub(mongoose.model('User', UserSchema), 'count').resolves(1);
-
-	    return user.validate()
-		.then((value) => {
-		    // If the validation logic fails this part of the code should not exist.
-		    // Inserting a dummy assertion to make sure this part of code doesn't exist.
-		    true.should.be.false;
-		})
-		.catch((err) => {
-		    // Above dummy assertion will throw an AssertionError when validation logic fails
-		    // because of which the promise will fail and catch block will be called which
-		    // needs to be identify this from the actual error thrown when validation fails.
-		    if (err.errors) {
-			// Assert actual validation failure error.
-			should.exist(err.errors['email']);
-			err.errors['email'].message.should.equal(VALIDATION_MESSAGES.EMAIL_UNAVAILABLE);
-		    } else if (err.message === 'expected true to be false') {
-			// Assert the validation logic failure, so that it is printed in the console.
-			should.not.exist(err, 'Duplicate email validation logic failed.');
-		    }
-		    userCountStub.restore();		    
-		});
+	    userCountStub = sinon.stub(UserModel, 'count').resolves(1);
+	    return user.validate().should.eventually.be.rejectedWith(VALIDATION_MESSAGES.EMAIL_UNAVAILABLE);
 	});
 	
 	it('should be invalid if first name is empty', function() {
@@ -319,33 +288,7 @@ describe('User', function() {
 		password: 'test'
 	    });
 
-	    return user.validate()
-		.then((value) => {
-		    // If the validation logic fails this part of the code should not exist.
-		    // Inserting a dummy assertion to make sure this part of code doesn't exist.
-		    true.should.be.false;
-		})
-		.catch((err) => {
-		    // Above dummy assertion will throw an AssertionError when validation logic fails
-		    // because of which the promise will fail and catch block will be called which
-		    // needs to be identify this from the actual error thrown when validation fails.
-		    if (err.errors) {
-			// Assert actual validation failure error.
-			should.exist(err.errors['password']);
-			err.errors['password'].message.should.include(VALIDATION_MESSAGES.PASSWORD_MINLENGTH);
-		    } else if (err.message === 'expected true to be false') {
-			// Assert the validation logic failure, so that it is printed in the console.
-			should.not.exist(err, 'Password validation logic failed.');
-		    }
-		});
-	    
-	    user = new UserModel({
-		username: 'testUser',
-		password: 'Test@123'
-	    });
-
-	    var err = user.validateSync();
-	    should.not.exist(err.errors['password']);
+	    return user.validate().should.eventually.be.rejectedWith(VALIDATION_MESSAGES.PASSWORD_MINLENGTH);
 	});
 	
 	it('should be invalid if password is greater than 15 characters', function() {
@@ -353,6 +296,8 @@ describe('User', function() {
 		username: 'testUser',
 		password: 'test123456789012345'
 	    });
+
+	    return user.validate().should.eventually.be.rejectedWith(VALIDATION_MESSAGES.PASSWORD_MAXLENGTH);
 
 	    return user.validate()
 		.then((value) => {
@@ -389,25 +334,8 @@ describe('User', function() {
 		password: 'test1user!'
 	    });
 
-	    return user.validate()
-		.then((value) => {
-		    // If the validation logic fails this part of the code should not exist.
-		    // Inserting a dummy assertion to make sure this part of code doesn't exist.
-		    true.should.be.false;
-		})
-		.catch((err) => {
-		    // Above dummy assertion will throw an AssertionError when validation logic fails
-		    // because of which the promise will fail and catch block will be called which
-		    // needs to be identify this from the actual error thrown when validation fails.
-		    if (err.errors) {
-			// Assert actual validation failure error.
-			should.exist(err.errors['password']);
-			err.errors['password'].message.should.include(VALIDATION_MESSAGES.PASSWORD_UPPERCASE);
-		    } else if (err.message === 'expected true to be false') {
-			// Assert the validation logic failure, so that it is printed in the console.
-			should.not.exist(err, 'Password validation logic failed.');
-		    }
-		});
+	    return user.validate().should.eventually.be.rejectedWith(VALIDATION_MESSAGES.PASSWORD_UPPERCASE);
+
 	});
 	
 	it('should be invalid if password does not contain lowercase characters', function() {
@@ -415,25 +343,8 @@ describe('User', function() {
 		password: 'TEST1USER!'
 	    });
 
-	    return user.validate()
-		.then((value) => {
-		    // If the validation logic fails this part of the code should not exist.
-		    // Inserting a dummy assertion to make sure this part of code doesn't exist.
-		    true.should.be.false;
-		})
-		.catch((err) => {
-		    // Above dummy assertion will throw an AssertionError when validation logic fails
-		    // because of which the promise will fail and catch block will be called which
-		    // needs to be identify this from the actual error thrown when validation fails.
-		    if (err.errors) {
-			// Assert actual validation failure error.
-			should.exist(err.errors['password']);
-			err.errors['password'].message.should.include(VALIDATION_MESSAGES.PASSWORD_LOWERCASE);
-		    } else if (err.message === 'expected true to be false') {
-			// Assert the validation logic failure, so that it is printed in the console.
-			should.not.exist(err, 'Password validation logic failed.');
-		    }
-		});	    
+	    return user.validate().should.eventually.be.rejectedWith(VALIDATION_MESSAGES.PASSWORD_LOWERCASE);
+	    
 	});
 	
 	it('should be invalid if password does not contain numbers', function() {
@@ -441,25 +352,8 @@ describe('User', function() {
 		password: 'TestUser!'
 	    });
 
-	    return user.validate()
-		.then((value) => {
-		    // If the validation logic fails this part of the code should not exist.
-		    // Inserting a dummy assertion to make sure this part of code doesn't exist.
-		    true.should.be.false;
-		})
-		.catch((err) => {
-		    // Above dummy assertion will throw an AssertionError when validation logic fails
-		    // because of which the promise will fail and catch block will be called which
-		    // needs to be identify this from the actual error thrown when validation fails.
-		    if (err.errors) {
-			// Assert actual validation failure error.
-			should.exist(err.errors['password']);
-			err.errors['password'].message.should.include(VALIDATION_MESSAGES.PASSWORD_NUMBERS);
-		    } else if (err.message === 'expected true to be false') {
-			// Assert the validation logic failure, so that it is printed in the console.
-			should.not.exist(err, 'Password validation logic failed.');
-		    }
-		});
+	    return user.validate().should.eventually.be.rejectedWith(VALIDATION_MESSAGES.PASSWORD_NUMBERS);
+
 	});
 	
 	it('should be invalid if password does not contain special characters', function() {
@@ -467,25 +361,8 @@ describe('User', function() {
 		password: 'Test1User'
 	    });
 
-	    return user.validate()
-		.then((value) => {
-		    // If the validation logic fails this part of the code should not exist.
-		    // Inserting a dummy assertion to make sure this part of code doesn't exist.
-		    true.should.be.false;
-		})
-		.catch((err) => {
-		    // Above dummy assertion will throw an AssertionError when validation logic fails
-		    // because of which the promise will fail and catch block will be called which
-		    // needs to be identify this from the actual error thrown when validation fails.
-		    if (err.errors) {
-			// Assert actual validation failure error.
-			should.exist(err.errors['password']);
-			err.errors['password'].message.should.include(VALIDATION_MESSAGES.PASSWORD_SPECIALCHAR);
-		    } else if (err.message === 'expected true to be false') {
-			// Assert the validation logic failure, so that it is printed in the console.
-			should.not.exist(err, 'Password validation logic failed.');
-		    }
-		});
+	    return user.validate().should.eventually.be.rejectedWith(VALIDATION_MESSAGES.PASSWORD_SPECIALCHAR);
+
 	});
 	
 	it('should encrypt password', function() {

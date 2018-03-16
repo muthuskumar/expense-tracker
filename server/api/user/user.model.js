@@ -65,7 +65,7 @@ UserSchema.path('username').validate({
 	    .count({ username: username })
 	    .then((count) => {
 		logger.debug("Username count: ", count);
-		cb(!count);
+		cb(count === 0);
 	    })
 	    .catch((err) => {
 		logger.error("An error occurred while retrieving count - ", err);
@@ -85,7 +85,7 @@ UserSchema.path('email').validate({
 	    .count({ email: email })
 	    .then((count) => {
 		logger.debug('email count: ', count);
-		cb(!count);
+		cb(count === 0);
 	    })
 	    .catch((err) => {
 		logger.error("An error occurred while retrieving count - ", err);
@@ -118,14 +118,16 @@ UserSchema.pre('validate', function(next) {
     });
 
     var validationError;
-    var results = owasp.test(this.password);
+    if (this.password) {
+	var results = owasp.test(this.password);
 
-    logger.debug('Validation results errors: ', results.errors);
+	logger.debug('Validation results errors: ', results.errors);
 
-    if (results.errors.length) {
-	var err = results.errors.join('\n');
-	logger.debug('Joined error: \n', err);
-	validationError = this.invalidate('password', err);
+	if (results.errors.length) {
+	    var err = results.errors.join('\n');
+	    logger.debug('Joined error: \n', err);
+	    validationError = this.invalidate('password', err);
+	}
     }
     
     next(validationError);
