@@ -298,35 +298,6 @@ describe('User', function() {
 	    });
 
 	    return user.validate().should.eventually.be.rejectedWith(VALIDATION_MESSAGES.PASSWORD_MAXLENGTH);
-
-	    return user.validate()
-		.then((value) => {
-		    // If the validation logic fails this part of the code should not exist.
-		    // Inserting a dummy assertion to make sure this part of code doesn't exist.
-		    true.should.be.false;
-		})
-		.catch((err) => {
-		    // Above dummy assertion will throw an AssertionError when validation logic fails
-		    // because of which the promise will fail and catch block will be called which
-		    // needs to be identify this from the actual error thrown when validation fails.
-		    if (err.errors) {
-			// Assert actual validation failure error.
-			should.exist(err.errors['password']);
-			err.errors['password'].message.should.include(VALIDATION_MESSAGES.PASSWORD_MAXLENGTH);
-		    } else if (err.message === 'expected true to be false') {
-			// Assert the validation logic failure, so that it is printed in the console.
-			should.not.exist(err, 'Password validation logic failed.');
-		    }
-		});
-	    
-    	    user = new UserModel({
-		username: 'testUser',
-		password: 'Test@1234567890'
-	    });
-
-	    var err = user.validateSync();
-
-	    should.not.exist(err.errors['password']);
 	});
 	
 	it('should be invalid if password does not contain uppercase characters', function() {
@@ -335,7 +306,6 @@ describe('User', function() {
 	    });
 
 	    return user.validate().should.eventually.be.rejectedWith(VALIDATION_MESSAGES.PASSWORD_UPPERCASE);
-
 	});
 	
 	it('should be invalid if password does not contain lowercase characters', function() {
@@ -344,7 +314,6 @@ describe('User', function() {
 	    });
 
 	    return user.validate().should.eventually.be.rejectedWith(VALIDATION_MESSAGES.PASSWORD_LOWERCASE);
-	    
 	});
 	
 	it('should be invalid if password does not contain numbers', function() {
@@ -353,7 +322,6 @@ describe('User', function() {
 	    });
 
 	    return user.validate().should.eventually.be.rejectedWith(VALIDATION_MESSAGES.PASSWORD_NUMBERS);
-
 	});
 	
 	it('should be invalid if password does not contain special characters', function() {
@@ -362,7 +330,6 @@ describe('User', function() {
 	    });
 
 	    return user.validate().should.eventually.be.rejectedWith(VALIDATION_MESSAGES.PASSWORD_SPECIALCHAR);
-
 	});
 	
 	it('should encrypt password', function() {
