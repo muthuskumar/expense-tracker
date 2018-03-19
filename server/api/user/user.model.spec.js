@@ -1,15 +1,10 @@
 import mongoose from 'mongoose';
-import chai from 'chai';
-import chaiAsPromised from 'chai-as-promised';
 import _bind from 'lodash/bind';
 
 import { UserModel } from './user.model';
 import { UserSchema } from './user.model';
 
 import { VALIDATION_MESSAGES } from './user.constants';
-
-var should = chai.should();
-chai.use(chaiAsPromised);
 
 describe('User', function() {
     context('schema defintion', function() {
