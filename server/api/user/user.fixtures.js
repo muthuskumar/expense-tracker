@@ -6,21 +6,21 @@ module.exports.testUsers = Object.freeze([
 	email: 'testuser1@test.com',
 	password: 'Test@123',
 	firstName: 'test',
-	lastName: 'user1'
+	lastName: 'user one'
     }),
     new UserModel({
 	username: 'testuser2',
 	email: 'testuser2@test.com',
 	password: 'Test@123',
 	firstName: 'test',
-	lastName: 'user2'
+	lastName: 'user two'
     }),
     new UserModel({
 	username: 'testuser3',
 	email: 'testuser3@test.com',
 	password: 'Test@123',
 	firstName: 'test',
-	lastName: 'user3',
+	lastName: 'user three',
 	status: 'DEACTIVATED'
 	
     }),
@@ -29,14 +29,14 @@ module.exports.testUsers = Object.freeze([
 	email: 'testuser4@test.com',
 	password: 'Test@123',
 	firstName: 'test',
-	lastName: 'user4'
+	lastName: 'user four'
     }),
     new UserModel({
 	username: 'testuser5',
 	email: 'testuser5@test.com',
 	password: 'Test@123',
 	firstName: 'test',
-	lastName: 'user5',
+	lastName: 'user five',
 	status: 'DEACTIVATED'
     })
 ]);
@@ -46,11 +46,18 @@ module.exports.testValidUser = Object.freeze({
     email: 'testuser1@test.com',
     password: 'Test@123',
     firstName: 'test',
-    lastName: 'user1'});
+    lastName: 'user one'});
 
 module.exports.testUserWithoutUsername = Object.freeze({
 	email: 'testuser1@test.com',
 	password: 'Test@123',
 	firstName: 'test',
-	lastName: 'user1'
+	lastName: 'user one'
+});
+
+module.exports.testInvalidUser = Object.freeze({
+    username: 'test',
+    email: 'nottherightformat',
+    firstName: 'contains1',
+    lastName: 'contains@'
 });

@@ -1,5 +1,7 @@
-import { createRequest, createResponse } from 'node-mocks-http';
 var events = require('events');
+var mongoose = require('mongoose');
+
+import { createRequest, createResponse } from 'node-mocks-http';
 
 import { UserModel } from './user.model';
 import { UserController } from './user.controller';
@@ -403,18 +405,288 @@ describe('User Controller ', function() {
     });
 
     context('#update user', function() {
-	it('should respond with updated user & status code');
-	it('should respond with error message & status code if user id is not provided');
-	it('should respond with error message & status code if user is not found.');
-	it('should respond with error message & status code when user details are not provided');
-	it('should respond with error message & status code for db exceptions');
+	var userModelMock;
+
+	beforeEach(function() {
+	    userModelMock = sinon.mock(UserModel);
+	});
+	
+	afterEach(function() {
+	    userModelMock.verify();
+	    userModelMock.restore();
+	});
+	
+	it('should respond with updated user & status code', function(done) {
+	    const TESTUSERID = 1;
+	    httpReq = createRequest({
+		method: 'PUT',
+		params: {
+		    id: TESTUSERID
+		},
+		body: testUsers[1]
+	    });
+
+	    userModelMock
+		.expects('findOneAndUpdate').withArgs({ _id: TESTUSERID }, testUsers[1], { runValidators: true })
+		.chain('exec')
+		.resolves(testUsers[1]);
+
+	    httpRes.on('end', () => {
+		try {
+		    httpRes.statusCode.should.equal(200);
+
+		    var user = JSON.parse(httpRes._getData());
+		    should.exist(user);
+		    user.username.should.equal(testUsers[1].username);
+
+		    done();
+		} catch(err) {
+		    done(err);
+		}
+	    });
+	    
+	    const userCtrl = new UserController();
+	    userCtrl.updateUser(httpReq, httpRes);
+	});
+	
+	it('should respond with error message & status code if user id is not provided', function(done) {
+	    httpReq = createRequest({
+		method: 'PUT'
+	    });
+	    
+	    httpRes.on('end', () => {
+		try {
+		    httpRes.statusCode.should.equal(500);
+
+		    var err = httpRes._getData();
+		    should.exist(err);
+		    err.name.should.equal('Internal Server Error');
+		    err.message.should.equal('UserId is not provided.');
+
+		    done();
+		} catch(err) {
+		    done(err);
+		}
+	    });
+	    
+	    const userCtrl = new UserController();
+	    userCtrl.updateUser(httpReq, httpRes);
+	});
+	
+	it('should respond with error message & status code when user details are not provided', function(done) {
+	    httpReq = createRequest({
+		method: 'PUT',
+		params: {
+		    id: 1
+		}
+	    });
+
+	    httpRes.on('end', () => {
+		try {
+		    httpRes.statusCode.should.equal(500);
+
+		    var err = httpRes._getData();
+		    should.exist(err);
+		    err.name.should.equal('Internal Server Error');
+		    err.message.should.equal('User details is not provided.');
+
+		    done();
+		} catch(err) {
+		    done(err);
+		}
+	    });
+	    
+	    const userCtrl = new UserController();
+	    userCtrl.updateUser(httpReq, httpRes);
+	});
+
+	it('should respond with error message & status code if user is not found.', function(done) {
+	    const TESTUSERID = 12345;
+	    httpReq = createRequest({
+		method: 'PUT',
+		params: {
+		    id: TESTUSERID
+		},
+		body: testUsers[1]
+	    });
+
+	    userModelMock
+		.expects('findOneAndUpdate').withArgs({ _id: TESTUSERID }, testUsers[1], { runValidators: true })
+		.chain('exec')
+		.resolves(null);
+
+	    httpRes.on('end', () => {
+		try {
+		    httpRes.statusCode.should.equal(404);
+
+		    done();
+		} catch(err) {
+		    done(err);
+		}
+	    });
+	    
+	    const userCtrl = new UserController();
+	    userCtrl.updateUser(httpReq, httpRes);
+
+	});
+	
+	it('should respond with error message & status code for db exceptions', function(done) {
+	    const TESTUSERID = 1;
+	    httpReq = createRequest({
+		method: 'PUT',
+		params: {
+		    id: TESTUSERID
+		},
+		body: testUsers[1]
+	    });
+
+	    userModelMock
+		.expects('findOneAndUpdate').withArgs({ _id: TESTUSERID }, testUsers[1], { runValidators: true })
+		.chain('exec')
+		.rejects({ name: 'MongoError', code: 1 });
+
+	    httpRes.on('end', () => {
+		try {
+		    httpRes.statusCode.should.equal(500);
+
+		    var err = httpRes._getData();
+		    should.exist(err);
+		    err.name.should.equal('MongoError');
+
+		    done();
+		} catch(err) {
+		    done(err);
+		}
+	    });	    
+	    
+	    const userCtrl = new UserController();
+	    userCtrl.updateUser(httpReq, httpRes);
+	});
     });
 
     context('#remove user', function() {
-	it('should respond with status code');
-	it('should respond with error message & status code if user id is not provided');
-	it('should respond with error message status code if user is not found.');
-	it('should respond with error message & status code for db exceptions');
+	var userModelMock;
+
+	beforeEach(function() {
+	    userModelMock = sinon.mock(UserModel);
+	});
+	
+	afterEach(function() {
+	    userModelMock.verify();
+	    userModelMock.restore();
+	});
+	
+	it('should respond with status code', function(done) {
+	    const TESTUSERID = mongoose.Types.ObjectId(1);
+	    httpReq = createRequest({
+		method: 'DELETE',
+		params: {
+		    id: TESTUSERID
+		}
+	    });
+
+	    userModelMock
+		.expects('findByIdAndRemove').withArgs(TESTUSERID)
+		.chain('exec')
+		.resolves(testUsers[0]);
+
+	    httpRes.on('end', () => {
+		try {
+		    httpRes.statusCode.should.equal(204);
+
+		    done();
+		} catch(err) {
+		    done(err);
+		}
+	    });
+	    
+	    const userCtrl = new UserController();
+	    userCtrl.removeUser(httpReq, httpRes);
+	});
+	
+	it('should respond with error message & status code if user id is not provided', function(done) {
+	    httpReq = createRequest({
+		method: 'DELETE'
+	    });
+
+	    httpRes.on('end', () => {
+		try {
+		    httpRes.statusCode.should.equal(500);
+
+		    var err = httpRes._getData();
+		    should.exist(err);
+		    err.name.should.equal('Internal Server Error');
+		    err.message.should.equal('UserId is not provided.');
+
+		    done();
+		} catch(err) {
+		    done(err);
+		}
+	    });
+	    
+	    const userCtrl = new UserController();
+	    userCtrl.removeUser(httpReq, httpRes);
+	});
+	
+	it('should respond with error message status code if user is not found.', function(done) {
+	    const TESTUSERID = mongoose.Types.ObjectId(1);
+	    httpReq = createRequest({
+		method: 'DELETE',
+		params: {
+		    id: TESTUSERID
+		}
+	    });
+
+    	    userModelMock
+		.expects('findByIdAndRemove').withArgs(TESTUSERID)
+		.chain('exec')
+		.resolves(null);
+
+	    httpRes.on('end', () => {
+		try {
+		    httpRes.statusCode.should.equal(404);
+
+		    done();
+		} catch(err) {
+		    done(err);
+		}
+	    });
+	    
+	    const userCtrl = new UserController();
+	    userCtrl.removeUser(httpReq, httpRes);
+	});
+	
+	it('should respond with error message & status code for db exceptions', function(done) {
+	    const TESTUSERID = mongoose.Types.ObjectId(1);
+	    httpReq = createRequest({
+		method: 'DELETE',
+		params: {
+		    id: TESTUSERID
+		}
+	    });
+
+    	    userModelMock
+		.expects('findByIdAndRemove').withArgs(TESTUSERID)
+		.chain('exec')
+		.rejects({ name: 'MongoError', code: 1 });	    
+
+	    httpRes.on('end', () => {
+		try {
+		    httpRes.statusCode.should.equal(500);
+
+		    var err = httpRes._getData();
+		    should.exist(err);
+		    err.name.should.equal('MongoError');
+
+		    done();
+		} catch(err) {
+		    done(err);
+		}
+	    });
+	    
+	    const userCtrl = new UserController();
+	    userCtrl.removeUser(httpReq, httpRes);
+	});
     });
 });
 

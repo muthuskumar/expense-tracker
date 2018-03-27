@@ -14,7 +14,8 @@ const serverPath = 'server';
 const paths = {
     server: {
 	test: {
-	    unit: [`${serverPath}/**/*.spec.js`]
+	    unit: [`${serverPath}/**/*.spec.js`],
+	    integration: [`${serverPath}/**/*.integration.js`]
 	}
     }
 }
@@ -59,7 +60,7 @@ gulp.task('lint:server:testcases', () => {
 	.pipe(eslint.failAfterError());
 });
 
-gulp.task('test:server', () => {
+gulp.task('unit-test:server', () => {
     return gulp.src(paths.server.test.unit)
 	.pipe(mocha({
 	    ui: 'bdd',
@@ -75,8 +76,24 @@ gulp.task('test:server', () => {
 	});
 });
 
+gulp.task('integrate-test:server', () => {
+    return gulp.src(paths.server.test.integration)
+    	.pipe(mocha({
+	    ui: 'bdd',
+	    reporter: 'spec',
+	    timeout: 5000,
+	    require: [
+		'babel-core/register',
+		'./mocha.conf'
+	    ]
+	}))
+	.on('error', (err) => {
+	    console.log('An error occurred');
+	});
+});
+
 gulp.task('watch:test:server', () => {
-    gulp.watch(paths.server.test.unit, gulp.series('set-test-node-env', 'test:server'));
+    gulp.watch([paths.server.test.integration, paths.server.test.unit ], gulp.series('set-test-node-env', 'integrate-test:server'/*, 'unit-test:server'*/));
 });
 
 gulp.task('build:server', () => {
