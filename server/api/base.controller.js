@@ -9,7 +9,7 @@ export class BaseController {
 	logger.debug('_statusCode: ', _statusCode);
 	
 	return (entity) => {
-	    logger.debug('Entity: ', entity);
+	    logger.debug('Entity result: ', entity);
 	    
 	    if(entity) {
 		return res.status(_statusCode).json(entity);
@@ -25,10 +25,12 @@ export class BaseController {
 	logger.debug('_statusCode: ', _statusCode);
 	
 	return (entity) => {
-	    logger.debug('Entity: ', entity);
+	    logger.debug('Entity not found: ', entity);
 	    
 	    if(!entity) {
-		return res.status(_statusCode).end();
+		logger.debug('Sending ' + _statusCode + ' as response.');
+		res.status(_statusCode).end();
+		return null;
 	    }
 	    return entity;
 	}

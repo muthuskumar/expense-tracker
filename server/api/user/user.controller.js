@@ -40,13 +40,32 @@ function _isUserAvailableInRequest(req) {
     });
 }
 
+function _stripUniqueIdsBeforeUpdate(req) {
+    logger.debug('---------------_stripUniqueIdsBeforeUpdate---------------');
+
+    if (req.body._id)
+	Reflect.deleteProperty(req.body, '_id');
+
+    if (req.body.username)
+	Reflect.deleteProperty(req.body, 'username');
+
+    if (req.body.email)
+	Reflect.deleteProperty(req.body, 'email');
+
+    logger.debug('Request body after removal: ', req.body);
+}
+
 export default class UserController extends BaseController {
     
     getUsers(req, res) {
 	logger.debug('---------------UserController.getUsers---------------');
 	
-	var searchCriteria = req.body || {};
-	return UserModel.find(searchCriteria).exec()
+	var searchCriteria = req.query || {};
+	logger.debug('Search Criteria: ', searchCriteria);
+
+	return UserModel.find(searchCriteria)
+	    .sort({ _id: 'asc'})
+	    .exec()
 	    .then(super.respondWithResult(res))
 	    .catch(super.handleError(res));
     }
@@ -86,7 +105,10 @@ export default class UserController extends BaseController {
 		logger.debug('req body available: ', areAvailable[1]);
 		
 		if (areAvailable[0] && areAvailable[1]) {
-		    UserModel.findOneAndUpdate({ _id: req.params.id }, req.body, { runValidators: true })
+		    _stripUniqueIdsBeforeUpdate(req);
+
+		    UserModel.findByIdAndUpdate(req.params.id, req.body, { new: true, runValidators: true })
+			.exec()
 			.then(super.handleEntityNotFound(res))
 			.then(super.respondWithResult(res))
 			.catch(super.handleError(res));

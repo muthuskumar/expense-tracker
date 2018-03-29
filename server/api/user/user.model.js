@@ -117,10 +117,11 @@ UserSchema.pre('validate', function(next) {
 	minOptionalTestsToPass : 4,
     });
 
+    logger.debug('Password to be validated is: ', this.password);
+    
     var validationError;
     if (this.password) {
 	var results = owasp.test(this.password);
-
 	logger.debug('Validation results errors: ', results.errors);
 
 	if (results.errors.length) {
@@ -147,12 +148,11 @@ UserSchema.methods = {
 	    return bcrypt.hashSync(plainTextPassword, salt);
 	}
     }
-}
-
+};
 
 UserSchema._middlewareFunctions = {
     encryptPassword: function(next) {
-	logger.debug('Inside validate function');
+	logger.debug('Inside encryptPassword function');
 	logger.debug('Is password modified: ', this.isModified('password'));
 	
 	if(this.isModified('password'))
@@ -163,6 +163,7 @@ UserSchema._middlewareFunctions = {
 	next();
     }
 };
+
 UserSchema.pre('save', UserSchema._middlewareFunctions.encryptPassword);
 
 module.exports.UserModel = mongoose.model('User', UserSchema);

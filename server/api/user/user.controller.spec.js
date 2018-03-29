@@ -4,8 +4,8 @@ var mongoose = require('mongoose');
 import { createRequest, createResponse } from 'node-mocks-http';
 
 import { UserModel } from './user.model';
-import { UserController } from './user.controller';
-import { testUsers, testValidUser, testUserWithoutUsername } from './user.fixtures';
+import UserController from './user.controller';
+import { testUsers, testValidUser, testUserWithoutUsername, testUpdatedUser } from './user.fixtures';
 
 describe('User Controller ', function() {
 
@@ -406,9 +406,13 @@ describe('User Controller ', function() {
 
     context('#update user', function() {
 	var userModelMock;
-
+	var userDetailsWithoutUniqueFields;
+	
 	beforeEach(function() {
 	    userModelMock = sinon.mock(UserModel);
+	    userDetailsWithoutUniqueFields  = Object.assign({}, testUsers[1]);
+	    Reflect.deleteProperty(userDetailsWithoutUniqueFields, 'username');
+	    Reflect.deleteProperty(userDetailsWithoutUniqueFields, 'email');
 	});
 	
 	afterEach(function() {
@@ -423,13 +427,13 @@ describe('User Controller ', function() {
 		params: {
 		    id: TESTUSERID
 		},
-		body: testUsers[1]
+		body: Object.assign({}, testUsers[1])
 	    });
 
 	    userModelMock
-		.expects('findOneAndUpdate').withArgs({ _id: TESTUSERID }, testUsers[1], { runValidators: true })
+		.expects('findByIdAndUpdate').withArgs(TESTUSERID, userDetailsWithoutUniqueFields, { new: true, runValidators: true })
 		.chain('exec')
-		.resolves(testUsers[1]);
+		.resolves(testUpdatedUser);
 
 	    httpRes.on('end', () => {
 		try {
@@ -437,7 +441,9 @@ describe('User Controller ', function() {
 
 		    var user = JSON.parse(httpRes._getData());
 		    should.exist(user);
-		    user.username.should.equal(testUsers[1].username);
+		    console.log('User:', user);
+		    user.username.should.not.equal(testUsers[1].username);
+		    user.username.should.equal(testUsers[0].username);
 
 		    done();
 		} catch(err) {
@@ -511,7 +517,7 @@ describe('User Controller ', function() {
 	    });
 
 	    userModelMock
-		.expects('findOneAndUpdate').withArgs({ _id: TESTUSERID }, testUsers[1], { runValidators: true })
+		.expects('findByIdAndUpdate').withArgs(TESTUSERID, userDetailsWithoutUniqueFields, { new: true, runValidators: true })
 		.chain('exec')
 		.resolves(null);
 
@@ -541,7 +547,7 @@ describe('User Controller ', function() {
 	    });
 
 	    userModelMock
-		.expects('findOneAndUpdate').withArgs({ _id: TESTUSERID }, testUsers[1], { runValidators: true })
+		.expects('findByIdAndUpdate').withArgs(TESTUSERID, userDetailsWithoutUniqueFields, { new: true, runValidators: true })
 		.chain('exec')
 		.rejects({ name: 'MongoError', code: 1 });
 
