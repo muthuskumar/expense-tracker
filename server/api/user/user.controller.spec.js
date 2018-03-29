@@ -67,7 +67,7 @@ describe('User Controller ', function() {
 	    var searchCriteria = { username: testUsers[0].username };
 	    httpReq = createRequest({
 		method: 'GET',
-		body: searchCriteria
+		query: searchCriteria
 	    });
 
 	    userModelMock
@@ -98,7 +98,7 @@ describe('User Controller ', function() {
 	    var searchCriteria = { username: 'testusername' };
 	    httpReq = createRequest({
 		method: 'GET',
-		body: searchCriteria
+		query: searchCriteria
 	    });
 
 	    userModelMock
@@ -441,7 +441,6 @@ describe('User Controller ', function() {
 
 		    var user = JSON.parse(httpRes._getData());
 		    should.exist(user);
-		    console.log('User:', user);
 		    user.username.should.not.equal(testUsers[1].username);
 		    user.username.should.equal(testUsers[0].username);
 
