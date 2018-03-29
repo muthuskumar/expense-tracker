@@ -97,7 +97,7 @@ gulp.task('watch:test:server', () => {
 });
 
 gulp.task('build:server', () => {
-    return gulp.src([`${serverPath}/*.js`])
+    return gulp.src([`${serverPath}/**/*.js`])
 	.pipe(babel())
 	.pipe(uglify())
 	.pipe(gulp.dest(`${dist}/${serverPath}`))
