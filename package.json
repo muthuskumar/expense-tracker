@@ -1,64 +1,64 @@
 {
-   "name": "expense-tracker",
-   "version": "0.0.1",
-   "description": "Expense tracker application to track user's expense and finance details.",
-   "main": "server/index.js",
-   "scripts": {
-      "test": "echo \"Error: no test specified\" && exit 1"
-   },
-   "repository": {
-      "type": "git",
-      "url": "git+https://github.com/muthuskumar/expense-tracker.git"
-   },
-   "keywords": [
-      "expense",
-      "tracker",
-      "MEAN",
-      "microservices"
-   ],
-   "author": "muthuskumar",
-   "license": "MIT",
-   "bugs": {
-      "url": "https://github.com/muthuskumar/expense-tracker/issues"
-   },
-   "homepage": "https://github.com/muthuskumar/expense-tracker#readme",
-   "devDependencies": {
-      "ansi-colors": "^1.0.1",
-      "babel-core": "^6.26.0",
-      "babel-preset-env": "^1.6.1",
-      "babel-preset-es2015": "^6.24.1",
-      "babel-register": "^6.26.0",
-      "chai": "^4.1.2",
-      "chai-as-promised": "^7.1.1",
-      "del": "^3.0.0",
-      "eslint": "^4.17.0",
-      "eslint-config-google": "^0.9.1",
-      "gulp": "^4.0.0",
-      "gulp-babel": "^7.0.1",
-      "gulp-eslint": "^4.0.2",
-      "gulp-mocha": "^5.0.0",
-      "gulp-nodemon": "^2.2.1",
-      "gulp-uglify": "^3.0.0",
-      "mocha": "^5.0.0",
-      "node-mocks-http": "^1.5.8",
-      "sinon": "^4.3.0",
-      "sinon-chai": "^2.14.0",
-      "sinon-mongoose": "^2.0.2",
-      "sinon-test": "^2.1.3",
-      "supertest": "^3.0.0"
-   },
-   "dependencies": {
-      "bcryptjs": "^2.4.3",
-      "bluebird": "^3.5.1",
-      "body-parser": "^1.18.2",
-      "bunyan": "^1.8.12",
-      "compression": "^1.7.1",
-      "cookie-parser": "^1.4.3",
-      "errorhandler": "^1.5.0",
-      "express": "^4.16.2",
-      "lodash": "^4.17.5",
-      "method-override": "^2.3.10",
-      "mongoose": "^5.0.4",
-      "owasp-password-strength-test": "^1.3.0"
-   }
+			"name": "expense-tracker",
+			"version": "0.0.1",
+			"description": "Expense tracker application to track user's expense and finance details.",
+			"main": "server/index.js",
+			"scripts": {
+						"test": "echo \"Error: no test specified\" && exit 1"
+			},
+			"repository": {
+						"type": "git",
+						"url": "git+https://github.com/muthuskumar/expense-tracker.git"
+			},
+			"keywords": [
+						"expense",
+						"tracker",
+						"MEAN",
+						"microservices"
+			],
+			"author": "muthuskumar",
+			"license": "MIT",
+			"bugs": {
+						"url": "https://github.com/muthuskumar/expense-tracker/issues"
+			},
+			"homepage": "https://github.com/muthuskumar/expense-tracker#readme",
+			"devDependencies": {
+						"ansi-colors": "^1.1.0",
+						"babel-core": "^6.26.0",
+						"babel-preset-env": "^1.6.1",
+						"babel-preset-es2015": "^6.24.1",
+						"babel-register": "^6.26.0",
+						"chai": "^4.1.2",
+						"chai-as-promised": "^7.1.1",
+						"del": "^3.0.0",
+						"eslint": "^4.19.1",
+						"eslint-config-google": "^0.9.1",
+						"gulp": "^4.0.0",
+						"gulp-babel": "^7.0.1",
+						"gulp-eslint": "^4.0.2",
+						"gulp-mocha": "^5.0.0",
+						"gulp-nodemon": "^2.2.1",
+						"gulp-uglify": "^3.0.0",
+						"mocha": "^5.0.0",
+						"node-mocks-http": "^1.5.8",
+						"sinon": "^4.3.0",
+						"sinon-chai": "^2.14.0",
+						"sinon-mongoose": "^2.0.2",
+						"sinon-test": "^2.1.3",
+						"supertest": "^3.0.0"
+			},
+			"dependencies": {
+						"bcryptjs": "^2.4.3",
+						"bluebird": "^3.5.1",
+						"body-parser": "^1.18.2",
+						"bunyan": "^1.8.12",
+						"compression": "^1.7.2",
+						"cookie-parser": "^1.4.3",
+						"errorhandler": "^1.5.0",
+						"mongoose": "^5.0.4",
+						"owasp-password-strength-test": "^1.3.0",
+						"express": "^4.16.3",
+						"lodash": "^4.17.5",
+						"method-override": "^2.3.10"
+			}
 }
