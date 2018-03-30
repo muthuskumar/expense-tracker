@@ -8,6 +8,12 @@ import { testUsers, testValidUser, testUserWithoutUsername, testInvalidUser, tes
 import { VALIDATION_MESSAGES, STATUSES } from './user.constants';
 
 describe('User API:', function() {
+    after(function() {
+	mongoose.connection.close(() => {
+	    console.log('Closing mongoose database connection.');
+	});
+    });
+    
     describe('GET users', function() {
 	beforeEach(function(done) {
 	    UserModel.deleteMany({ username: /testuser/})
