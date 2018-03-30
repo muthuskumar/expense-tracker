@@ -30,6 +30,7 @@
 	"test:unit:watch": "npm run test:unit -- --watch",
 	"pretest:integration": "export NODE_ENV=test",
 	"test:integration": "mocha --require babel-core/register --require mocha.conf --reporter spec --timeout 5000 $npm_package_config_paths_server_test_integration",
+	"test:integration:watch": "npm run test:integration -- --watch",
 	"lint": "eslint --config .eslintrc.json --format stylish $npm_package_config_serverPath/**/*.js --ignore-pattern $npm_package_config_paths_server_test_unit --ignore-pattern $npm_package_config_paths_server_test_integration",
 	"precompile": "npm run clean",
 	"compile": "babel $npm_package_config_serverPath --ignore $npm_package_config_paths_server_test_unit, $npm_package_config_paths_server_test_integration --out-dir dist/$npm_package_config_serverPath",

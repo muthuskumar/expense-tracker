@@ -1,7 +1,7 @@
 import request from 'supertest';
 import mongoose from 'mongoose';
 
-import app from '../../';
+import app from '../../app';
 import { UserModel } from './user.model';
 
 import { testUsers, testValidUser, testUserWithoutUsername, testInvalidUser, testInvalidId } from './user.fixtures';
@@ -9,6 +9,9 @@ import { VALIDATION_MESSAGES, STATUSES } from './user.constants';
 
 describe('User API:', function() {
     after(function() {
+	mongoose.models = {};
+	mongoose.modelSchemas = {};
+
 	mongoose.connection.close(() => {
 	    console.log('Closing mongoose database connection.');
 	});
