@@ -7,6 +7,11 @@ import { UserSchema } from './user.model';
 import { VALIDATION_MESSAGES } from './user.constants';
 
 describe('User', function() {
+    after(function() {
+	mongoose.models = {};
+	mongoose.modelSchemas = {};
+    });
+    
     context('schema defintion', function() {
 	var user;
 	
