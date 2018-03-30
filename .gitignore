@@ -21,3 +21,6 @@
 #temp emacs files
 *~
 client/*~
+
+#nyc outputs
+.nyc_output

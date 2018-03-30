@@ -4,44 +4,34 @@
     "description": "Expense tracker application to track user's expense and finance details.",
     "config": {
 	"serverPath": "server",
-	"paths": {
-	    "server": {
-		"test": {
-		    "unit": "server/**/*.spec.js",
-		    "integration": "server/**/*.integration.js"
-		}
-	    }
-	}
+	"serverUnitTests": "server/**/*.spec.js",
+	"serverIntTests": "server/**/*integration.js",
+	"serverTests": "server/**/*.{spec,integration}.js"
     },
     "nodemonConfig": {
 	"ext": "[ js, json ]",
-	"ignore": "[ $npm_package_config_paths_server_test_unit, $npm_package_config_paths_server_test_integration ]"
+	"ignore": "$npm_package_config_serverTests"
     },
     "main": "dist/server/index.js",
     "scripts": {
 	"start": "node dist/server/",
 	"start:dev": "export NODE_ENV=development && nodemon server",
-	
+	"pretest:unit": "export NODE_ENV=test",
+	"test:unit": "mocha $npm_package_config_serverUnitTests --require babel-core/register --require mocha.conf --reporter spec --timeout 5s",
+	"test:unit:watch": "npm run test:unit -- --watch",
+	"pretest:integration": "export NODE_ENV=test",
+	"test:integration": "mocha $npm_package_config_serverIntTests --require babel-core/register --require mocha.conf --reporter spec --timeout 5s",
+	"test:integration:watch": "npm run test:integration -- --watch",
 	"pretest": "export NODE_ENV=test",
 	"test": "npm run test:unit && npm run test:integration",
-	"test:watch": "mocha server/**/*.{integration,spec}.js --require babel-core/register --require mocha.conf --reporter spec --timetout 5000 --watch",
-	
-	"pretest:unit": "export NODE_ENV=test",
-	"test:unit": "mocha $npm_package_config_paths_server_test_unit --require babel-core/register --require mocha.conf --reporter spec --timeout 5000",
-	"test:unit:watch": "npm run test:unit -- --watch",
-
-	"pretest:integration": "export NODE_ENV=test",
-	"test:integration": "mocha --require babel-core/register --require mocha.conf --reporter spec --timeout 5000 $npm_package_config_paths_server_test_integration",
-	"test:integration:watch": "npm run test:integration -- --watch",
-
-	"lint": "eslint --config .eslintrc.json --format stylish $npm_package_config_serverPath/**/*.js --ignore-pattern $npm_package_config_paths_server_test_unit --ignore-pattern $npm_package_config_paths_server_test_integration",
-	"lint:testcases": "eslint --config .eslintrc.json --format stylish server/**/*.spec.js server/**/*.integration.js",
-	
+	"test:watch": "concurrently \"npm run test:unit -- --watch\" \" npm run test:integration -- --watch\"",
+	"code-coverage": "nyc npm run test",
+	"lint": "eslint --config .eslintrc.json --format stylish $npm_package_config_serverPath/**/*.js --ignore-pattern $npm_package_config_serverUnitTests --ignore-pattern $npm_package_config_serverIntTests",
+	"lint:testcases": "eslint --config .eslintrc.json --format stylish $npm_package_config_serverUnitTests $npm_package_config_serverIntTests",
 	"clean": "rm -rf dist/$npm_package_config_serverPath/*",
 	"precompile": "npm run clean",
-	"compile": "babel $npm_package_config_serverPath --ignore $npm_package_config_paths_server_test_unit, $npm_package_config_paths_server_test_integration --out-dir dist/$npm_package_config_serverPath",
+	"compile": "babel $npm_package_config_serverPath --ignore $npm_package_config_serverUnitTests, $npm_package_config_serverIntTests --out-dir dist/$npm_package_config_serverPath",
 	"build": "npm run lint && npm run compile",
-
 	"debug": "echo dist/$npm_package_config_serverPath"
     },
     "repository": {
@@ -68,10 +58,12 @@
 	"babel-register": "^6.26.0",
 	"chai": "^4.1.2",
 	"chai-as-promised": "^7.1.1",
+	"concurrently": "^3.5.1",
 	"eslint": "^4.19.1",
 	"eslint-config-google": "^0.9.1",
 	"mocha": "^5.0.0",
 	"node-mocks-http": "^1.5.8",
+	"nyc": "^11.6.0",
 	"sinon": "^4.3.0",
 	"sinon-chai": "^2.14.0",
 	"sinon-mongoose": "^2.0.2",
