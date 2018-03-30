@@ -24,7 +24,21 @@ new ExpressConfig(app);
 registerRoutes(app);
 
 server.listen(3000, () => {
-    logger.info('App is running on localhost:3000');
+    console.log('App is running on localhost:3000');
 });
+
+var closeConnections = () => {
+    server.close(() => {
+	console.log('Closing server connections.');
+    });
+
+    setTimeout(() => {
+	console.log('Could not close connections. Forcing shut down.');
+	process.exit(1);
+    }, 30*1000);
+};
+
+process.on('SIGINT', closeConnections);
+process.on('SIGTERM', closeConnections);
 
 exports = module.exports = app;
