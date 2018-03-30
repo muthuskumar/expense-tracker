@@ -19,8 +19,8 @@
     },
     "main": "dist/server/index.js",
     "scripts": {
-	"start": "node dist/server/index.js",
-	"start:dev": "export NODE_ENV=development && nodemon",
+	"start": "node dist/server/",
+	"start:dev": "export NODE_ENV=development && nodemon server",
 	"lint:testcases": "eslint --config .eslintrc.json --format stylish $npm_package_config_paths_server_test_unit, $npm_package_config_paths_server_test_integration",
 	"pretest": "export NODE_ENV=test",
 	"test": "npm run test:unit && npm run test:integration",
