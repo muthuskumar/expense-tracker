@@ -1,4 +1,3 @@
-import http from 'http';
 import express from 'express';
 import mongoose from 'mongoose';
 import bluebird from 'bluebird';
@@ -18,31 +17,9 @@ mongoose.connect(config.mongo.uri, config.mongo.options)
     });
 
 var app = express();
-var server = http.createServer(app);
 
 new ExpressConfig(app);
 registerRoutes(app);
 
-server.listen(3000, () => {
-    logger.info('App is running on localhost:3000');
-});
-
-var closeConnections = () => {
-    mongoose.connection.close(() => {
-	logger.info('Closing mongoose connections on app termination.');
-    });
-    
-    server.close(() => {
-	logger.info('Closing server connections.');
-    });
-
-    setTimeout(() => {
-	logger.error('Could not close connections. Forcing shut down.');
-	process.exit(1);
-    }, 30*1000);
-};
-
-process.on('SIGINT', closeConnections);
-process.on('SIGTERM', closeConnections);
-
 exports = module.exports = app;
+
