@@ -24,16 +24,20 @@ new ExpressConfig(app);
 registerRoutes(app);
 
 server.listen(3000, () => {
-    console.log('App is running on localhost:3000');
+    logger.info('App is running on localhost:3000');
 });
 
 var closeConnections = () => {
+    mongoose.connection.close(() => {
+	logger.info('Closing mongoose connections on app termination.');
+    });
+    
     server.close(() => {
-	console.log('Closing server connections.');
+	logger.info('Closing server connections.');
     });
 
     setTimeout(() => {
-	console.log('Could not close connections. Forcing shut down.');
+	logger.error('Could not close connections. Forcing shut down.');
 	process.exit(1);
     }, 30*1000);
 };
