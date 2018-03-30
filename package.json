@@ -35,7 +35,7 @@
 	"test:integration:watch": "npm run test:integration -- --watch",
 
 	"lint": "eslint --config .eslintrc.json --format stylish $npm_package_config_serverPath/**/*.js --ignore-pattern $npm_package_config_paths_server_test_unit --ignore-pattern $npm_package_config_paths_server_test_integration",
-	"lint:testcases": "eslint --config .eslintrc.json --format stylish $npm_package_config_paths_server_test_unit, $npm_package_config_paths_server_test_integration",
+	"lint:testcases": "eslint --config .eslintrc.json --format stylish server/**/*.spec.js server/**/*.integration.js",
 	
 	"clean": "rm -rf dist/$npm_package_config_serverPath/*",
 	"precompile": "npm run clean",

@@ -1,3 +1,4 @@
+/*global should, sinon*/
 import mongoose from 'mongoose';
 import _bind from 'lodash/bind';
 
@@ -391,7 +392,7 @@ describe('User', function() {
 	    var userCountStub = sinon.stub(mongoose.model('User', UserSchema), 'count').resolves(0);
 
 	    return user.validate()
-		.then((value) => {
+		.then((value) => { // eslint-disable-line no-unused-vars
 		    true.should.equal(true);
 		    userCountStub.restore();
 		})

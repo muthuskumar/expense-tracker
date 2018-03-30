@@ -10,7 +10,7 @@ export class BaseController {
 	
 	return (entity) => {
 	    logger.debug('Entity result: ', entity);
-	    
+
 	    if(entity) {
 		return res.status(_statusCode).json(entity);
 	    }

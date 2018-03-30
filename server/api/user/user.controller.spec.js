@@ -1,3 +1,4 @@
+/*global should, sinon, Reflect*/
 var events = require('events');
 var mongoose = require('mongoose');
 

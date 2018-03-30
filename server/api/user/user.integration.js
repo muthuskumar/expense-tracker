@@ -1,11 +1,14 @@
+/*global should*/
 import request from 'supertest';
 import mongoose from 'mongoose';
 
 import app from '../../app';
 import { UserModel } from './user.model';
 
-import { testUsers, testValidUser, testUserWithoutUsername, testInvalidUser, testInvalidId } from './user.fixtures';
+import { testUsers, testInvalidUser, testInvalidId } from './user.fixtures';
 import { VALIDATION_MESSAGES, STATUSES } from './user.constants';
+
+import { logger } from '../../config/app-logger';
 
 describe('User API:', function() {
     after(function() {
@@ -13,7 +16,7 @@ describe('User API:', function() {
 	mongoose.modelSchemas = {};
 
 	mongoose.connection.close(() => {
-	    console.log('Closing mongoose database connection.');
+	    logger.info('Closing mongoose database connection.');
 	});
     });
     
@@ -23,7 +26,7 @@ describe('User API:', function() {
 		.exec()
 		.then(() => {
 		    UserModel.create(testUsers)
-			.then((users) => {
+			.then((users) => { // eslint-disable-line no-unused-vars
 			    done();
 			})
 			.catch((err) => {
@@ -339,7 +342,7 @@ describe('User API:', function() {
 		.put('/api/users/' + testInvalidId)
 		.send(testUsers[0])
 		.expect(404)
-		.end(function(err, res) {
+		.end(function(err, res) { // eslint-disable-line no-unused-vars
 		    if (err)
 			done(err);
 		    else
@@ -402,7 +405,7 @@ describe('User API:', function() {
 	    request(app)
 		.get('/api/users/' + testInvalidId)
 		.expect(404)
-		.end(function(err, res) {
+		.end(function(err, res) { // eslint-disable-line no-unused-vars
 		    if (err)
 			done(err);
 		    else
@@ -448,7 +451,7 @@ describe('User API:', function() {
 	    request(app)
 		.delete('/api/users/' + originalUser._id)
 		.expect(204)
-		.end(function(err, res) {
+		.end(function(err, res) { // eslint-disable-line no-unused-vars
 		    if (err)
 			done(err);
 		    else
@@ -460,7 +463,7 @@ describe('User API:', function() {
 	    request(app)
 		.delete('/api/users/' + testInvalidId)
 		.expect(404)
-		.end(function(err, res) {
+		.end(function(err, res) { // eslint-disable-line no-unused-vars
 		    if (err)
 			done(err);
 		    else
