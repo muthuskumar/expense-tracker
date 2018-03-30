@@ -21,20 +21,27 @@
     "scripts": {
 	"start": "node dist/server/",
 	"start:dev": "export NODE_ENV=development && nodemon server",
-	"lint:testcases": "eslint --config .eslintrc.json --format stylish $npm_package_config_paths_server_test_unit, $npm_package_config_paths_server_test_integration",
+	
 	"pretest": "export NODE_ENV=test",
 	"test": "npm run test:unit && npm run test:integration",
-	"clean": "rm -rf dist/$npm_package_config_serverPath/*",
+	"test:watch": "mocha server/**/*.{integration,spec}.js --require babel-core/register --require mocha.conf --reporter spec --timetout 5000 --watch",
+	
 	"pretest:unit": "export NODE_ENV=test",
 	"test:unit": "mocha $npm_package_config_paths_server_test_unit --require babel-core/register --require mocha.conf --reporter spec --timeout 5000",
 	"test:unit:watch": "npm run test:unit -- --watch",
+
 	"pretest:integration": "export NODE_ENV=test",
 	"test:integration": "mocha --require babel-core/register --require mocha.conf --reporter spec --timeout 5000 $npm_package_config_paths_server_test_integration",
 	"test:integration:watch": "npm run test:integration -- --watch",
+
 	"lint": "eslint --config .eslintrc.json --format stylish $npm_package_config_serverPath/**/*.js --ignore-pattern $npm_package_config_paths_server_test_unit --ignore-pattern $npm_package_config_paths_server_test_integration",
+	"lint:testcases": "eslint --config .eslintrc.json --format stylish $npm_package_config_paths_server_test_unit, $npm_package_config_paths_server_test_integration",
+	
+	"clean": "rm -rf dist/$npm_package_config_serverPath/*",
 	"precompile": "npm run clean",
 	"compile": "babel $npm_package_config_serverPath --ignore $npm_package_config_paths_server_test_unit, $npm_package_config_paths_server_test_integration --out-dir dist/$npm_package_config_serverPath",
 	"build": "npm run lint && npm run compile",
+
 	"debug": "echo dist/$npm_package_config_serverPath"
     },
     "repository": {
