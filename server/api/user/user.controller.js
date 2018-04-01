@@ -75,7 +75,8 @@ export default class UserController extends BaseController {
 	
 	return _isUserIdAvailableInRequest(req)
 	    .then((isAvailable) => {
-		UserModel.findById(req.params.id).exec()
+		UserModel.findById(req.params.id)
+		    .exec()
 		    .then(super.handleEntityNotFound(res))
 		    .then(super.respondWithResult(res))
 		    .catch(super.handleError(res));

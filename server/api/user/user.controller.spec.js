@@ -43,6 +43,7 @@ describe('User Controller ', function() {
 
 	    userModelMock
 		.expects('find')
+		.chain('sort').withArgs({ _id: 'asc' })
 		.chain('exec')
 		.resolves(testUsers);
 
@@ -73,7 +74,8 @@ describe('User Controller ', function() {
 
 	    userModelMock
 		.expects('find').withArgs(searchCriteria)
-		.chain('exec')
+		.chain('sort').withArgs({ _id: 'asc' })
+	    	.chain('exec')
 		.resolves([ testUsers[0] ]);
 
 	    httpRes.on('end', () => {
@@ -94,7 +96,7 @@ describe('User Controller ', function() {
 	    const userCtrl = new UserController();
 	    userCtrl.getUsers(httpReq, httpRes);
 	});
-
+	
 	it('should respond with empty list & status code when no users are found', function(done) {
 	    var searchCriteria = { username: 'testusername' };
 	    httpReq = createRequest({
@@ -104,6 +106,7 @@ describe('User Controller ', function() {
 
 	    userModelMock
 		.expects('find').withArgs(searchCriteria)
+		.chain('sort').withArgs({ _id: 'asc' })
 		.chain('exec')
 		.resolves([]);
 
@@ -132,6 +135,7 @@ describe('User Controller ', function() {
 
 	    userModelMock
 		.expects('find')
+		.chain('sort').withArgs({ _id: 'asc' })
 		.chain('exec')
 		.rejects({ name: 'MongoError', code: 1 });
 

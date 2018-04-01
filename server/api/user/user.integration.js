@@ -122,6 +122,25 @@ describe('User API:', function() {
 		    done();
 		});
 	});
+
+	it('should not return password in it\'s response', function(done) {
+	    request(app)
+		.get('/api/users')
+		.query({ username: testUsers[0].username })
+		.expect(200)
+		.expect('Content-Type', /json/)
+		.end(function(err, res) {
+		    if (err)
+			done(err);
+
+		    var things = res.body;
+		    things.should.be.instanceOf(Array);
+		    things.length.should.equal(1);
+		    should.not.exist(things[0].password);
+		    
+		    done();
+		});
+	});
     });
 
     describe('POST users', function() {
@@ -170,6 +189,23 @@ describe('User API:', function() {
 		});
 	});
 
+	it('should not return password in it\'s response', function(done) {
+	    request(app)
+		.post('/api/users')
+		.send(testUsers[0])
+		.expect(201)
+		.expect('Content-Type', /json/)
+		.end(function(err, res) {
+		    if(err)
+			done(err);
+
+		    newUser = res.body;
+		    should.not.exist(newUser.password);
+		    
+		    done();
+		});
+	});
+	
 	it('should return an error if user details are invalid', function(done) {
 	    request(app)
 		.post('/api/users')
@@ -279,6 +315,23 @@ describe('User API:', function() {
 
     		    updatedUser.username.should.not.equal(testUsers[1].username);
 		    updatedUser.email.should.not.equal(testUsers[1].email);
+
+		    done();
+		});
+	});
+
+	it('should not return password in it\'s response', function(done) {
+	    request(app)
+		.put('/api/users/'+originalUser._id)
+		.send(testUsers[1])
+		.expect(200)
+		.expect('Content-Type', /json/)
+		.end(function(err, res) {
+		    if (err)
+			done(err);
+
+		    var updatedUser = res.body;
+		    should.not.exist(updatedUser.password);
 
 		    done();
 		});
@@ -396,6 +449,24 @@ describe('User API:', function() {
 		    var user = res.body;
 		    should.exist(user);
 		    user.username.should.equal(testUsers[0].username);
+
+		    done();
+		});
+	});
+
+	it('should not return password in it\'s response', function(done) {
+	    request(app)
+		.get('/api/users/' + originalUser._id)
+		.expect(200)
+		.expect('Content-Type', /json/)
+		.end(function(err, res) {
+		    if (err)
+			done(err);
+
+		    var user = res.body;
+		    should.exist(user);
+		    user.username.should.equal(testUsers[0].username);
+		    should.not.exist(user.password);
 
 		    done();
 		});

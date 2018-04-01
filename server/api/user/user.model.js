@@ -166,6 +166,13 @@ UserSchema._middlewareFunctions = {
 
 UserSchema.pre('save', UserSchema._middlewareFunctions.encryptPassword);
 
+if (!UserSchema.options.toJSON)
+    UserSchema.options.toJSON = {};
+UserSchema.options.toJSON.transform = (doc, ret, options) => {
+    delete ret.password;
+    return ret;
+};
+
 module.exports.UserModel = mongoose.model('User', UserSchema);
 module.exports.UserSchema = UserSchema;
 
