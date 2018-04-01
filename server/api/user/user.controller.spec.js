@@ -170,8 +170,9 @@ describe('User Controller ', function() {
 	    userModelMock.restore();
 	});
 	
-	it('should respond with user details & status code when user with given id is found', function(done) {
-	    const TESTUSERID = 1;
+	it('should respond with user details & status code for given user id', function(done) {
+	    const testUser = new UserModel({});
+	    const TESTUSERID = testUser._id;
 	    httpReq = createRequest({
 		method: 'GET',
 		params: {
@@ -180,7 +181,71 @@ describe('User Controller ', function() {
 	    });
 
 	    userModelMock
-		.expects('findById').withArgs(TESTUSERID)
+		.expects('findOne').withArgs({ _id: TESTUSERID })
+		.chain('exec')
+		.resolves(testUsers[0]);
+
+	    httpRes.on('end', () => {
+		try {
+		    httpRes.statusCode.should.equal(200);
+
+		    var user = JSON.parse(httpRes._getData());
+		    should.exist(user);
+		    user.username.should.equal(testUsers[0].username);
+
+		    done();
+		} catch(err) {
+		    done(err);
+		}
+	    });
+	    
+	    const userCtrl = new UserController();
+	    userCtrl.getUser(httpReq, httpRes);
+	});
+
+	it('should respond with user details & status code for given username', function(done) {
+	    const TESTUSERNAME = testUsers[0].username;
+	    httpReq = createRequest({
+		method: 'GET',
+		params: {
+		    id: TESTUSERNAME
+		}
+	    });
+
+	    userModelMock
+		.expects('findOne').withArgs({ username: TESTUSERNAME })
+		.chain('exec')
+		.resolves(testUsers[0]);
+
+	    httpRes.on('end', () => {
+		try {
+		    httpRes.statusCode.should.equal(200);
+
+		    var user = JSON.parse(httpRes._getData());
+		    should.exist(user);
+		    user.username.should.equal(testUsers[0].username);
+
+		    done();
+		} catch(err) {
+		    done(err);
+		}
+	    });
+	    
+	    const userCtrl = new UserController();
+	    userCtrl.getUser(httpReq, httpRes);
+	});
+
+	it('should respond with user details & status code for given email', function(done) {
+	    const TESTUSEREMAIL = testUsers[0].email;
+	    httpReq = createRequest({
+		method: 'GET',
+		params: {
+		    id: TESTUSEREMAIL
+		}
+	    });
+
+	    userModelMock
+		.expects('findOne').withArgs({ email: TESTUSEREMAIL })
 		.chain('exec')
 		.resolves(testUsers[0]);
 
@@ -227,7 +292,8 @@ describe('User Controller ', function() {
 	});
 	
 	it('should respond with error message & status code if user is not found', function(done) {
-	    const TESTUSERID = 123;
+	    const testUser = new UserModel({});
+	    const TESTUSERID = testUser._id;	    
 	    httpReq = createRequest({
 		method: 'GET',
 		params: {
@@ -236,7 +302,7 @@ describe('User Controller ', function() {
 	    });
 
 	    userModelMock
-		.expects('findById').withArgs(TESTUSERID)
+		.expects('findOne').withArgs({ _id: TESTUSERID })
 		.chain('exec')
 		.resolves(null);
 	    
@@ -255,7 +321,8 @@ describe('User Controller ', function() {
 	});
 	
 	it('should respond with error message & status code for db exceptions', function(done) {
-	    const TESTUSERID = 123;
+	    const testUser = new UserModel({});
+	    const TESTUSERID = testUser._id;
 	    httpReq = createRequest({
 		method: 'GET',
 		params: {
@@ -264,7 +331,7 @@ describe('User Controller ', function() {
 	    });
 
 	    userModelMock
-		.expects('findById').withArgs(TESTUSERID)
+		.expects('findOne').withArgs({ _id: TESTUSERID})
 		.chain('exec')
 		.rejects({ name: 'MongoError', code: 1 });
 

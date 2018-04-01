@@ -454,6 +454,40 @@ describe('User API:', function() {
 		});
 	});
 
+	it('should get userdetails for requested username', function(done) {
+	    request(app)
+		.get('/api/users/' + originalUser.username)
+		.expect(200)
+		.expect('Content-Type', /json/)
+		.end(function(err, res) {
+		    if (err)
+			done(err);
+
+		    var user = res.body;
+		    should.exist(user);
+		    user.username.should.equal(testUsers[0].username);
+
+		    done();
+		});
+	});
+
+	it('should get userdetails for requested email', function(done) {
+	    request(app)
+		.get('/api/users/' + originalUser.email)
+		.expect(200)
+		.expect('Content-Type', /json/)
+		.end(function(err, res) {
+		    if (err)
+			done(err);
+
+		    var user = res.body;
+		    should.exist(user);
+		    user.username.should.equal(testUsers[0].username);
+
+		    done();
+		});
+	});
+
 	it('should not return password in it\'s response', function(done) {
 	    request(app)
 		.get('/api/users/' + originalUser._id)
