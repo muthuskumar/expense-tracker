@@ -32,5 +32,7 @@ module.exports = {
 		path: path.join(path.normalize(`${__dirname}/../../..`), 'serveroutput-error.log')
 	    } 
 	]
-    }
+    },
+
+    jwtSecretKey: 'expense-tracker-auth-secret-key'
 };
