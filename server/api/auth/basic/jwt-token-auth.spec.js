@@ -46,7 +46,7 @@ describe('JWT token authenticator', function() {
 
 	    config.jwtSecretKey = secretKey;
 	});
-});
+    });
     
     context('#Verify Token', function() {
 	var jwtTokenAuthenticator;

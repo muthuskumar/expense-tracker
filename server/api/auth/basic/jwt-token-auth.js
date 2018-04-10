@@ -10,7 +10,7 @@ var _options = {
 export default class JWTTokenAuth {
     
     signUserId(userId) {
-	logger.debug('---------------signUserId---------------');
+	logger.info('---------------signUserId---------------');
 
 	var token;
 
@@ -36,7 +36,7 @@ export default class JWTTokenAuth {
     }
 
     verifyUserId(token) {
-	logger.debug('---------------verifyUserId---------------');
+	logger.info('---------------verifyUserId---------------');
 
 	var decoded;
 

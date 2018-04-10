@@ -7,7 +7,7 @@ import { emailFormatValidationRegex } from '../../utils/custom.validators';
 import { logger } from '../../config/app-logger';
 
 function _isUserIdAvailableInRequest(req) {
-    logger.debug('---------------_isUserIdAvailableInRequest---------------');
+    logger.info('---------------_isUserIdAvailableInRequest---------------');
 
     return new Promise((resolve, reject) => {
 	if (req.params.id) {
@@ -23,7 +23,7 @@ function _isUserIdAvailableInRequest(req) {
 }
 
 function _isUserAvailableInRequest(req) {
-    logger.debug('---------------_isUserAvailableInRequest---------------');
+    logger.info('---------------_isUserAvailableInRequest---------------');
     
     return new Promise((resolve, reject) => {
 	if (req.body.constructor === Object && Object.keys(req.body).length === 0) {
@@ -39,7 +39,7 @@ function _isUserAvailableInRequest(req) {
 }
 
 function _stripUniqueIdsBeforeUpdate(req) {
-    logger.debug('---------------_stripUniqueIdsBeforeUpdate---------------');
+    logger.info('---------------_stripUniqueIdsBeforeUpdate---------------');
 
     if (req.body._id)
 	Reflect.deleteProperty(req.body, '_id');
@@ -56,7 +56,7 @@ function _stripUniqueIdsBeforeUpdate(req) {
 export default class UserController extends BaseController {
     
     getUsers(req, res) {
-	logger.debug('---------------UserController.getUsers---------------');
+	logger.info('---------------UserController.getUsers---------------');
 	logger.debug('Query params: ', req.query);
 	
 	var searchCriteria = req.query || {};
@@ -70,7 +70,7 @@ export default class UserController extends BaseController {
     }
 
     getUser(req, res) {
-	logger.debug('---------------UserController.getUser---------------');
+	logger.info('---------------UserController.getUser---------------');
 	logger.debug('Req params: ', req.params);
 
 	var searchCriteria = {}
@@ -98,7 +98,7 @@ export default class UserController extends BaseController {
     }
 
     createUser(req, res) {
-	logger.debug('---------------UserController.createUser---------------');
+	logger.info('---------------UserController.createUser---------------');
 	logger.debug('Req body: ', req.body);
 	
 	return _isUserAvailableInRequest(req)
@@ -112,7 +112,7 @@ export default class UserController extends BaseController {
     }
 
     updateUser(req, res) {
-	logger.debug('---------------UserController.updateUser---------------');
+	logger.info('---------------UserController.updateUser---------------');
 	logger.debug('Req params: ', req.params);
 	logger.debug('Req body', req.body);
 	
@@ -135,7 +135,7 @@ export default class UserController extends BaseController {
     }
 
     removeUser(req, res) {
-	logger.debug('---------------UserController.removeUser---------------');
+	logger.info('---------------UserController.removeUser---------------');
 	logger.debug('Req params: ', req.params);
 	
 	return _isUserIdAvailableInRequest(req)
