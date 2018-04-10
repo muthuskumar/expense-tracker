@@ -6,6 +6,7 @@ import AuthController from './auth.controller';
 import { UserModel } from '../../user/user.model';
 import config from '../../../config/environment';
 
+import { VALIDATION_MESSAGES } from './auth.constants';
 import { testValidUser, testUserWithoutUsername } from '../../user/user.fixtures';
 
 describe('Auth Controller', function() {
@@ -158,7 +159,7 @@ describe('Auth Controller', function() {
 
 		    var response = JSON.parse(httpRes._getData());
 		    should.exist(response.err);
-		    response.err.should.equal('Error: UserId is not provided.');
+		    response.err.should.equal('UserId is not provided.');
 
 		    done();
 		} catch(err) {
@@ -236,8 +237,8 @@ describe('Auth Controller', function() {
 		    console.log(err);
 		    should.exist(err);
 		    should.not.exist(httpRes._getData().token);
-		    err.name.should.equal('Unauthorized user');
-		    err.message.shoul.equal('Unable to authorize user');
+		    err.name.should.equal(VALIDATION_MESSAGES.ERROR_TYPE_UNAUTHORIZED_USER);
+		    err.message.shoul.equal(VALIDATION_MESSAGES.AUTH_FAILED);
 
 		    done();
 		} catch(err) {
@@ -261,8 +262,8 @@ describe('Auth Controller', function() {
 		    var err = JSON.parse(httpRes._getData().errors);
 		    should.exist(err);
 		    should.not.exist(httpRes._getData().token);
-		    err.name.equal('Unauthorized user');
-		    err.message.should.equal('Authorization details not provided.');
+		    err.name.equal(VALIDATION_MESSAGES.ERROR_TYPE_UNAUTHORIZED_USER);
+		    err.message.should.equal(VALIDATION_MESSAGES.AUTH_DETAILS_NOT_PROVIDED);
 
 		    done();
 		} catch(err) {
@@ -290,8 +291,8 @@ describe('Auth Controller', function() {
 		    var err = JSON.parse(httpRes._getData().errors);
 		    should.exist(err);
 		    should.not.exist(httpRes._getData().token);
-		    err.name.should.equal('Unauthorized user');
-		    err.message.should.equal('Invalid authorization details.');
+		    err.name.should.equal(VALIDATION_MESSAGES.ERROR_TYPE_UNAUTHORIZED_USER);
+		    err.message.should.equal(VALIDATION_MESSAGES.AUTH_DETAILS_INVALID);
 
 		    done();
 		} catch(err) {
@@ -422,7 +423,7 @@ describe('Auth Controller', function() {
 		    var err = JSON.parse(httpRes._getData().errors);
 		    should.exist(err);
 		    should.not.exist(httpRes._getData.userId);
-		    err.name.should.equal('Unauthorized user');
+		    err.name.should.equal(VALIDATION_MESSAGES.ERROR_TYPE_UNAUTHORIZED_USER);
 		    err.message.should.equal('Invalid authorization details.');		    
 
 		    done();
@@ -451,7 +452,7 @@ describe('Auth Controller', function() {
 		    var err = JSON.parse(httpRes._getData().errors);
 		    should.exist(err);
 		    should.not.exist(httpRes._getData().userId);
-		    err.name.should.equal('Unauthorized user');
+		    err.name.should.equal(VALIDATION_MESSAGES.ERROR_TYPE_UNAUTHORIZED_USER);
 		    err.message.should.equal('Invalid authorization details.');
 
 		    done();

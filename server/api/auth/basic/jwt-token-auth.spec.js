@@ -1,4 +1,6 @@
 import JWTTokenAuth from './jwt-token-auth';
+
+import { VALIDATION_MESSAGES } from './auth.constants';
 import { UserModel } from '../../user/user.model';
 
 describe('JWT token authenticator', function() {
@@ -30,7 +32,7 @@ describe('JWT token authenticator', function() {
 
 	    should.not.exist(tokenResult.token);
 	    should.exist(tokenResult.error);
-	    tokenResult.error.should.equal('Error: UserId is not provided.');
+	    tokenResult.error.should.equal(VALIDATION_MESSAGES.USERID_UNAVAILABLE);
 	});
 	
 	it('should return an error if unable to generate a token', function() {
@@ -76,7 +78,7 @@ describe('JWT token authenticator', function() {
 
 	    should.not.exist(tokenResult.userId);
 	    should.exist(tokenResult.error);
-	    tokenResult.error.should.match(/JsonWebTokenError:/);
+	    tokenResult.error.should.equal(VALIDATION_MESSAGES.TOKEN_UNAVAILABLE);
 	});
 	
 	it('should return an error if token fails verification', function() {

@@ -1,4 +1,6 @@
 import jwt from 'jsonwebtoken';
+
+import { VALIDATION_MESSAGES } from './auth.constants';
 import config from '../../../config/environment';
 
 import { logger } from '../../../config/app-logger';
@@ -20,7 +22,7 @@ export default class JWTTokenAuth {
 	logger.debug('Options: ', _options);
 	
 	if (!userId) {
-	    return { error: 'Error: UserId is not provided.', token: null }
+	    return { error: VALIDATION_MESSAGES.USERID_UNAVAILABLE, token: null }
 	}
 
 	try {
@@ -41,6 +43,10 @@ export default class JWTTokenAuth {
 	var decoded;
 
 	logger.debug('Token: ', token);
+
+	if (!token)
+	    return { error: VALIDATION_MESSAGES.TOKEN_UNAVAILABLE, token: null }
+	
 	if (config.jwtSecretKey)
 	    logger.debug('Secret key available');
 

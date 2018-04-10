@@ -4,6 +4,7 @@ import { BaseController } from '../../base.controller';
 import { UserModel } from '../../user/user.model';
 import JWTAuthToken from './jwt-token-auth';
 
+import { VALIDATION_MESSAGES } from './auth.constants';
 import { logger } from '../../../config/app-logger';
 
 var jwt = new JWTAuthToken();
@@ -48,14 +49,14 @@ export default class AuthController extends BaseController {
 
     authenticateUser(req, res) {
 	logger.info('---------------AuthController.authenticateUser---------------');
-	logger.debug('Req headers: ', req.headers);
+	logger.debug('Req headers: ', req.headers['authorization']);
 
 	var userCreds = auth(req);
 	if (userCreds)
 	    logger.debug('User creds obtained');
 	
 	if (!userCreds)
-	    res.status(401).json({ errors: { name: 'UnauthorizedUser', message: 'Authorization details not provided.' } });
+	    res.status(401).json({ errors: { name: VALIDATION_MESSAGES.ERROR_TYPE_UNAUTHORIZED_USER, message: VALIDATION_MESSAGES.AUTH_DETAILS_INVALID } });
 
 	UserModel.find({ username: userCreds.name, password: userCreds.pass })
 	    .exec()
@@ -70,7 +71,7 @@ export default class AuthController extends BaseController {
 		    res.status(200).json({ token: tokenResult.token });
 		}
 
-		res.status(401).json({ errors: { name: 'UnauthorizedUser', message: 'Invalid authorization details' } });
+		res.status(401).json({ errors: { name: VALIDATION_MESSAGES.ERROR_TYPE_UNAUTHRORIZED_USER, message: VALIDATION_MESSAGES.AUTH_FAILED } });
 	    })
 	    .catch((err) => {
 		res.status(500).send(err);
