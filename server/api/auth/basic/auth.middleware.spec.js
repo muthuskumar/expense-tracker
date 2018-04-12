@@ -9,7 +9,7 @@ import config from '../../../config/environment';
 import { VALIDATION_MESSAGES } from './auth.constants';
 import { testValidUser, testUserWithoutUsername } from '../../user/user.fixtures';
 
-describe('Auth Controller', function() {
+describe('Auth Middleware', function() {
     var httpReq;
     var httpRes;
 
@@ -24,7 +24,7 @@ describe('Auth Controller', function() {
 	httpRes = null;
     });
 
-    context('Verify Token For Secure Paths', function() {
+    context('verify token for secure paths', function() {
 	const unsecurePaths = [{ path: '/api/users/', method: 'POST' }];
 	const TEST_USER_ID = 12345;
 	var token;

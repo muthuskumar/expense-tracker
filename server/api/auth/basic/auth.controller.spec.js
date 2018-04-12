@@ -23,7 +23,7 @@ describe('Auth Controller', function() {
 	httpRes = null;
     });
 
-    context('Login', function() {
+    context('login', function() {
 	var userMock
 
 	beforeEach(function() {

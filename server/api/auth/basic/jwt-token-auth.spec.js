@@ -4,7 +4,7 @@ import { VALIDATION_MESSAGES } from './auth.constants';
 import { UserModel } from '../../user/user.model';
 
 describe('JWT token authenticator', function() {
-    context('#Sign Token', function() {
+    context('sign token', function() {
 	var jwtTokenAuthenticator;
 	var tokenResult;
 	
@@ -50,7 +50,7 @@ describe('JWT token authenticator', function() {
 	});
     });
     
-    context('#Verify Token', function() {
+    context('verify token', function() {
 	var jwtTokenAuthenticator;
 	var token;
 	var tokenResult;

@@ -24,7 +24,7 @@ describe('User Controller ', function() {
 	httpRes = null;
     });
 
-    context('#find users', function() {
+    context('find users', function() {
 	var userModelMock;
 
 	beforeEach(function() {
@@ -158,7 +158,7 @@ describe('User Controller ', function() {
 	});
     });
 
-    context('#get user', function() {
+    context('get user', function() {
 	var userModelMock;
 
 	beforeEach(function() {
@@ -354,7 +354,7 @@ describe('User Controller ', function() {
 	});
     });
     
-    context('#save user', function() {
+    context('save user', function() {
 	var userProtoMock;
 	
 	beforeEach(function() {
@@ -476,7 +476,7 @@ describe('User Controller ', function() {
 	});
     });
 
-    context('#update user', function() {
+    context('update user', function() {
 	var userModelMock;
 	var userDetailsWithoutUniqueFields;
 	
@@ -641,7 +641,7 @@ describe('User Controller ', function() {
 	});
     });
 
-    context('#remove user', function() {
+    context('remove user', function() {
 	var userModelMock;
 
 	beforeEach(function() {
