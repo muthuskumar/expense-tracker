@@ -44,7 +44,7 @@ describe('JWT token authenticator', function() {
 
 	    should.not.exist(tokenResult.token);
 	    should.exist(tokenResult.error);
-	    tokenResult.error.should.match(/Error:/);
+	    tokenResult.error.should.equal(VALIDATION_MESSAGES.JWT_SECRET_UNAVAILABLE);
 
 	    config.jwtSecretKey = secretKey;
 	});
@@ -67,14 +67,14 @@ describe('JWT token authenticator', function() {
 	
 	it('should populate request with userId if token is verified', function() {
 	    token = jwtTokenAuthenticator.signUserId(1).token;
-	    tokenResult = jwtTokenAuthenticator.verifyUserId(token);
+	    tokenResult = jwtTokenAuthenticator.verifyToken(token);
 
 	    tokenResult.userId.should.equal(1);
 	    should.not.exist(tokenResult.error);
 	});
 
 	it('should return an error if token is not provided', function() {
-	    tokenResult = jwtTokenAuthenticator.verifyUserId(null);
+	    tokenResult = jwtTokenAuthenticator.verifyToken(null);
 
 	    should.not.exist(tokenResult.userId);
 	    should.exist(tokenResult.error);
@@ -82,7 +82,7 @@ describe('JWT token authenticator', function() {
 	});
 	
 	it('should return an error if token fails verification', function() {
-	    tokenResult = jwtTokenAuthenticator.verifyUserId('12345');
+	    tokenResult = jwtTokenAuthenticator.verifyToken('12345');
 
 	    should.not.exist(tokenResult.userId);
 	    should.exist(tokenResult.error);

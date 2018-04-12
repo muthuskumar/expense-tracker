@@ -16,11 +16,13 @@ export default class JWTTokenAuth {
 
 	var token;
 
-	logger.debug('UserId: ', userId);
+
 	if (config.jwtSecretKey)
 	    logger.debug('Secret available' );
-	logger.debug('Options: ', _options);
+	else
+	    return { error: VALIDATION_MESSAGES.JWT_SECRET_UNAVAILABLE, token: null }
 	
+	logger.debug('UserId: ', userId);	
 	if (!userId) {
 	    return { error: VALIDATION_MESSAGES.USERID_UNAVAILABLE, token: null }
 	}
@@ -37,8 +39,8 @@ export default class JWTTokenAuth {
 	}
     }
 
-    verifyUserId(token) {
-	logger.info('---------------verifyUserId---------------');
+    verifyToken(token) {
+	logger.info('---------------verifyToken---------------');
 
 	var decoded;
 
