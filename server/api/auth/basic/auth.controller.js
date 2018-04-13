@@ -19,7 +19,6 @@ export default class AuthController extends BaseController {
 	    res.status(401).json({ errors: { name: VALIDATION_MESSAGES.ERROR_TYPE_UNAUTHORIZED_USER, message: VALIDATION_MESSAGES.AUTH_DETAILS_NOT_PROVIDED } });
 	
 	var userCreds = auth(req);
-	logger.debug('userCreds:', userCreds);	
 	if (userCreds)
 	    logger.debug('User creds obtained');
 	else
