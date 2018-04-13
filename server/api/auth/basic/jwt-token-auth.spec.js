@@ -1,3 +1,5 @@
+/*global should*/
+
 import JWTTokenAuth from './jwt-token-auth';
 
 import { VALIDATION_MESSAGES } from './auth.constants';

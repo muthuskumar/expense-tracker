@@ -1,3 +1,5 @@
+/*global should, sinon*/
+
 var events = require('events');
 import { createRequest, createResponse } from 'node-mocks-http';
 
@@ -36,7 +38,7 @@ describe('Auth Controller', function() {
 	});
 	
 	it('should return a token and status if user is authenticated', function(done) {
-	    const searchCriteria = { username: testValidUser.username, password: testValidUser.password };
+	    const searchCriteria = { username: testValidUser.username };
 
 	    httpReq = createRequest({
 		method: 'POST',
@@ -45,14 +47,19 @@ describe('Auth Controller', function() {
 		}
 	    });
 
+	    var user = new UserModel(testValidUser);
+	    user.authenticate = (password) => {
+		return true;
+	    };
+
 	    userMock
 		.expects('find').withArgs(searchCriteria)
 		.chain('exec')
-		.resolves([new UserModel(testValidUser)]);
+		.resolves([ user ]);
 
 	    httpRes.on('end', () => {
 		try {
-		    httpRes.statusCode.should.equal(200);
+		    httpRes.statusCode.should.equal(201);
 
 		    var response = JSON.parse(httpRes._getData());
 		    should.exist(response.token);
@@ -68,7 +75,7 @@ describe('Auth Controller', function() {
 	});
 	
 	it('should return error and appropriate status if unable to authenticate user', function(done) {
-	    const searchCriteria = { username: 'Invalid User', password: 'Invalid Pwd' };
+	    const searchCriteria = { username: 'Invalid User' };
 	    httpReq = createRequest({
 		method: 'POST',
 		headers: {
@@ -129,7 +136,6 @@ describe('Auth Controller', function() {
 	});
 
 	it('should return error and appropriate status if authentication details are invalid', function(done) {
-	    const searchCriteria = { username: 'Invalid User', password: 'Invalid Pwd' };
 	    httpReq = createRequest({
 		method: 'POST',
 		headers: {
@@ -159,7 +165,7 @@ describe('Auth Controller', function() {
 	});
 	
 	it('should return error and appropriate status on database exceptions', function(done) {
-	    const searchCriteria = { username: testValidUser.username, password: testValidUser.password };
+	    const searchCriteria = { username: testValidUser.username };
 	    httpReq = createRequest({
 		method: 'POST',
 		headers: {
@@ -193,7 +199,7 @@ describe('Auth Controller', function() {
 	});
 
 	it('should return error and appropriate status if unable to generate a token', function(done) {
-	    const searchCriteria = { username: ' ', password: testValidUser.password };
+	    const searchCriteria = { username: ' ' };
 	    httpReq = createRequest({
 		method: 'POST',
 		headers: {

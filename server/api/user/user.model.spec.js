@@ -353,6 +353,27 @@ describe('User', function() {
 	    sinon.assert.calledOnce(next);
 	});
 
+	it('should be able to compare with encrypted password', function() {
+	    const pwd = 'Test@123';
+	    user = new UserModel({
+		username: 'testuser',
+		email: 'testuser@test.com',
+		firstName: 'Test',
+		lastName: 'User',
+		password: 'Test@123'
+	    });
+
+	    var thisContext = user;
+	    var boundMiddleWareFn = _bind(UserSchema._middlewareFunctions.encryptPassword, thisContext);
+	    var next = sinon.spy();
+	    
+	    boundMiddleWareFn(next);
+
+	    sinon.assert.calledOnce(next);
+	    user.password.should.not.equal(pwd);
+	    user.authenticate(pwd).should.equal(true);
+	});
+
 	it('should have default active status', function() {
 	    user = new UserModel({});
 	    

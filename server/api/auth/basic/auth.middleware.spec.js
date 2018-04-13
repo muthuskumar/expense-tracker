@@ -1,3 +1,5 @@
+/*global should*/
+
 var events = require('events');
 import jwt from 'jsonwebtoken';
 import { createRequest, createResponse } from 'node-mocks-http';
@@ -135,6 +137,35 @@ describe('Auth Middleware', function() {
 		    should.exist(err);
 		    err.name.should.equal(VALIDATION_MESSAGES.ERROR_TYPE_UNAUTHORIZED_USER);
 		    err.message.should.equal('invalid signature');
+
+		    done();
+		} catch(err) {
+		    done(err);
+		}
+	    });
+
+	    var authMw = new AuthMiddleware();
+	    var mwFn = authMw.verifyUserOnlyForSecurePaths(unsecurePaths);
+	    assert.isFunction(mwFn);
+
+	    mwFn(httpReq, httpRes, (err) => {});	    
+	});
+
+	it('should return error and appropriate status if token is not provided', function(done) {
+	    httpReq = createRequest({
+		method: 'POST',
+	    });
+
+	    httpRes.on('end', () => {
+		try {
+		    httpRes.statusCode.should.equal(401);
+
+		    var err = JSON.parse(httpRes._getData()).errors;
+
+		    should.not.exist(httpReq.userId);
+		    should.exist(err);
+		    err.name.should.equal(VALIDATION_MESSAGES.ERROR_TYPE_UNAUTHORIZED_USER);
+		    err.message.should.equal(VALIDATION_MESSAGES.TOKEN_UNAVAILABLE);
 
 		    done();
 		} catch(err) {
