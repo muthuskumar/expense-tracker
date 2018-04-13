@@ -14,6 +14,17 @@ import { VALIDATION_MESSAGES } from './auth.constants';
 import { logger } from '../../../config/app-logger';
 
 describe('Auth API', function() {
+    before(function() {
+	if (mongoose.connection.readyState === 0)
+	    mongoose.connect(config.mongo.uri, config.mongo.options)
+	    .then(() => {
+		logger.info("Database connection established!");
+	    })
+	    .catch((err) => {
+		logger.error("An error occured while starting the database.", err);
+	    });
+    });
+
     after(function() {
 	mongoose.models = {};
 	mongoose.modelSchemas = {};

@@ -15,6 +15,17 @@ import { logger } from '../../config/app-logger';
 
 describe('User API:', function() {
     var token;
+
+    before(function() {
+	if (mongoose.connection.readyState === 0)
+	    mongoose.connect(config.mongo.uri, config.mongo.options)
+	    .then(() => {
+		logger.info("Database connection established!");
+	    })
+	    .catch((err) => {
+		logger.error("An error occured while starting the database.", err);
+	    });
+    });
     
     after(function() {
 	mongoose.models = {};
@@ -40,7 +51,7 @@ describe('User API:', function() {
 		.then(() => {
 		    UserModel.create(testUsers)
 			.then((users) => {
-			    	token = jwt.sign({ userId: users[0]._id }, config.jwtSecretKey, { expiresIn: '5h' });
+			    token = jwt.sign({ userId: users[0]._id }, config.jwtSecretKey, { expiresIn: '5h' });
 			    done();
 			})
 			.catch((err) => {
@@ -272,7 +283,7 @@ describe('User API:', function() {
 		    done(err);
 		});
 	});
-		   
+	
 	afterEach(function(done) {
 	    UserModel.findOneAndRemove({ username: testUsers[0].username })
 		.exec()
@@ -456,7 +467,7 @@ describe('User API:', function() {
 		    done(err);
 		});
 	});
-		   
+	
 	afterEach(function(done) {
 	    UserModel.findOneAndRemove({ username: testUsers[0].username })
 		.exec()
@@ -579,7 +590,7 @@ describe('User API:', function() {
 		    done(err);
 		});
 	});
-		   
+	
 	afterEach(function(done) {
 	    UserModel.findOneAndRemove({ username: testUsers[0].username })
 		.exec()
