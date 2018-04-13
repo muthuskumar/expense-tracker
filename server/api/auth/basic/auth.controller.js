@@ -40,6 +40,7 @@ export default class AuthController extends BaseController {
 
 			res.status(201).json({ token: tokenResult.token });
 		    } else {
+			logger.debug('Authentication failed.');
 			res.status(401).json({ errors: { name: VALIDATION_MESSAGES.ERROR_TYPE_UNAUTHORIZED_USER, message: VALIDATION_MESSAGES.AUTH_FAILED } });
 		    }
 		} else {

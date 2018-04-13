@@ -7,6 +7,8 @@ import ExpressConfig from './config/express';
 import config from './config/environment';
 import registerRoutes from './routes';
 
+import AuthMiddleware from './api/auth/basic/auth.middleware';
+
 mongoose.Promise = bluebird;
 mongoose.connect(config.mongo.uri, config.mongo.options)
     .then(() => {
@@ -19,6 +21,14 @@ mongoose.connect(config.mongo.uri, config.mongo.options)
 var app = express();
 
 new ExpressConfig(app);
+
+const unsecureRoutes = [
+    { path: '/api/users', method: 'POST' },
+    { path: '/api/session', method: 'POST' }
+];
+var authMiddleware = new AuthMiddleware();
+app.use(authMiddleware.verifyTokenOnlyForSecurePaths(unsecureRoutes));
+
 registerRoutes(app);
 
 exports = module.exports = app;

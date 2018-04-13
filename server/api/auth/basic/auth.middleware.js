@@ -6,7 +6,7 @@ import { logger } from '../../../config/app-logger';
 var jwt = new JWTTokenAuth();
 
 export default class AuthMiddleware {
-    verifyUserOnlyForSecurePaths(unsecurePaths) {
+    verifyTokenOnlyForSecurePaths(unsecurePaths) {
 	logger.info('---------------AuthMiddleware.verifyUserOnlyForSecurePaths---------------');
 	return (req, res, next) => {
 	    logger.debug('Req path: ', req.path);
@@ -22,11 +22,11 @@ export default class AuthMiddleware {
 	    if (isUnsecureRoute)
 		next();
 	    else
-		this.verifyUser(req, res, next);
+		this.verifyToken(req, res, next);
 	}
     }
     
-    verifyUser(req, res, next) {
+    verifyToken(req, res, next) {
 	logger.info('---------------AuthMiddelware.verifyUser---------------');	
 	logger.debug('Req headers: ', req.headers['authorization']);
 

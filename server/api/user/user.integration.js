@@ -2,8 +2,10 @@
 
 import request from 'supertest';
 import mongoose from 'mongoose';
+import jwt from 'jsonwebtoken';
 
 import app from '../../app';
+import config from '../../config/environment';
 import { UserModel } from './user.model';
 
 import { testUsers, testInvalidUser, testInvalidId } from './user.fixtures';
@@ -12,6 +14,8 @@ import { VALIDATION_MESSAGES, STATUSES } from './user.constants';
 import { logger } from '../../config/app-logger';
 
 describe('User API:', function() {
+    var token;
+    
     after(function() {
 	mongoose.models = {};
 	mongoose.modelSchemas = {};
@@ -20,14 +24,23 @@ describe('User API:', function() {
 	    logger.info('Closing mongoose database connection.');
 	});
     });
+
+    beforeEach(function() {
+
+    });
+
+    afterEach(function() {
+	token = null;
+    });
     
-    describe('GET users', function() {
+    describe('GET Users', function() {
 	beforeEach(function(done) {
 	    UserModel.deleteMany({ username: /testuser/})
 		.exec()
 		.then(() => {
 		    UserModel.create(testUsers)
-			.then((users) => { // eslint-disable-line no-unused-vars
+			.then((users) => {
+			    	token = jwt.sign({ userId: users[0]._id }, config.jwtSecretKey, { expiresIn: '5h' });
 			    done();
 			})
 			.catch((err) => {
@@ -47,11 +60,13 @@ describe('User API:', function() {
 		.catch((err) => {
 		    done(err);
 		});
+	    token = null;
 	});
 	
 	it('should fetch all users', function(done) {
 	    request(app)
 		.get('/api/users')
+		.set('Authorization', 'JWT ' + token)
 		.expect(200)
 		.expect('Content-Type', /json/)
 		.end(function(err, res) {
@@ -71,6 +86,7 @@ describe('User API:', function() {
 	    request(app)
 		.get('/api/users')
 		.query({ status: STATUSES[0] })
+    		.set('Authorization', 'JWT ' + token)
 		.expect(200)
 		.expect('Content-Type', /json/)
 		.end(function(err, res) {
@@ -90,6 +106,7 @@ describe('User API:', function() {
 	    request(app)
 		.get('/api/users')
 		.query({ status: 'NOTAVALIDSTATUS' })
+    		.set('Authorization', 'JWT ' + token)	    
 		.expect(200)
 		.end(function(err, res) {
 		    if (err)
@@ -106,6 +123,7 @@ describe('User API:', function() {
 	it('should fetch user based on username and password', function(done) {
 	    request(app)
 		.get('/api/users')
+    		.set('Authorization', 'JWT ' + token)	    
 		.query({ username: testUsers[0].username })
 		.query({ password: testUsers[0].passwrod })
 		.expect(200)
@@ -127,6 +145,7 @@ describe('User API:', function() {
 	it('should not return password in it\'s response', function(done) {
 	    request(app)
 		.get('/api/users')
+    		.set('Authorization', 'JWT ' + token)	    
 		.query({ username: testUsers[0].username })
 		.expect(200)
 		.expect('Content-Type', /json/)
@@ -144,7 +163,7 @@ describe('User API:', function() {
 	});
     });
 
-    describe('POST users', function() {
+    describe('POST Users', function() {
 	var newUser;
 	
 	beforeEach(function(done) {
@@ -231,7 +250,7 @@ describe('User API:', function() {
 	});
     });
 
-    describe('PUT users', function() {
+    describe('PUT Users', function() {
 	var originalUser;
 	
 	beforeEach(function(done) {
@@ -242,6 +261,7 @@ describe('User API:', function() {
 		    originalUser.save()
 			.then((user) => {
 			    originalUser = user;
+			    token = jwt.sign({ userId: user._id }, config.jwtSecretKey, { expiresIn: '5h' });
 			    done();
 			})
 			.catch((err) => {
@@ -261,12 +281,14 @@ describe('User API:', function() {
 		})
 		.catch((err) => {
 		    done(err);
-		})
+		});
+	    token = null;
 	});
 
 	it('should update the current user with new user details', function(done) {
 	    request(app)
 		.put('/api/users/'+originalUser._id)
+		.set('Authorization', 'JWT ' + token)
 		.send(testUsers[1])
 		.expect(200)
 		.expect('Content-Type', /json/)
@@ -285,6 +307,7 @@ describe('User API:', function() {
 	it('should update the status of current user appropriately', function(done) {
 	    request(app)
 		.put('/api/users/'+originalUser._id)
+		.set('Authorization', 'JWT ' + token)	    
 		.send({ status: STATUSES[1] })
 		.expect(200)
 		.expect('Content-Type', /json/)
@@ -303,6 +326,7 @@ describe('User API:', function() {
 	it('should not update the current user\'s username and email with new user details', function(done) {
 	    request(app)
 		.put('/api/users/'+originalUser._id)
+		.set('Authorization', 'JWT ' + token)	    
 		.send(testUsers[1])
 		.expect(200)
 		.expect('Content-Type', /json/)	    
@@ -324,6 +348,7 @@ describe('User API:', function() {
 	it('should not return password in it\'s response', function(done) {
 	    request(app)
 		.put('/api/users/'+originalUser._id)
+		.set('Authorization', 'JWT ' + token)	    
 		.send(testUsers[1])
 		.expect(200)
 		.expect('Content-Type', /json/)
@@ -341,6 +366,7 @@ describe('User API:', function() {
 	it('should return an error if id is not provided', function(done) {
 	    request(app)
 		.put('/api/users/""')
+		.set('Authorization', 'JWT ' + token)	    
 		.send(testUsers[1])
 		.expect('Content-Type', /json/)	    
 		.expect(500)
@@ -358,6 +384,7 @@ describe('User API:', function() {
 	it('should return an error if user details are not provided', function(done) {
 	    request(app)
 		.put('/api/users/'+originalUser._id)
+		.set('Authorization', 'JWT ' + token)	    
 		.expect(500)
 		.expect('Content-Type', /json/)	    
 		.end(function(err, res) {
@@ -374,6 +401,7 @@ describe('User API:', function() {
 	it('should return an error if user details are invalid', function(done) {
 	    request(app)
 		.put('/api/users/'+originalUser._id)
+		.set('Authorization', 'JWT ' + token)	    
 		.send(testInvalidUser)
 		.expect(500)
 		.expect('Content-Type', /json/)	    
@@ -394,6 +422,7 @@ describe('User API:', function() {
 	it('should return appropriate error if user is not found', function(done) {
 	    request(app)
 		.put('/api/users/' + testInvalidId)
+		.set('Authorization', 'JWT ' + token)	    
 		.send(testUsers[0])
 		.expect(404)
 		.end(function(err, res) { // eslint-disable-line no-unused-vars
@@ -416,6 +445,7 @@ describe('User API:', function() {
 		    originalUser.save()
 			.then((user) => {
 			    originalUser = user;
+			    token = jwt.sign({ userId: user._id }, config.jwtSecretKey, { expiresIn: '5h' });
 			    done();
 			})
 			.catch((err) => {
@@ -435,12 +465,15 @@ describe('User API:', function() {
 		})
 		.catch((err) => {
 		    done(err);
-		})
+		});
+	    
+	    token = null;
 	});
 	
 	it('should get userdetails for requested id', function(done) {
 	    request(app)
 		.get('/api/users/' + originalUser._id)
+		.set('Authorization', 'JWT ' + token)	    
 		.expect(200)
 		.expect('Content-Type', /json/)
 		.end(function(err, res) {
@@ -458,6 +491,7 @@ describe('User API:', function() {
 	it('should get userdetails for requested username', function(done) {
 	    request(app)
 		.get('/api/users/' + originalUser.username)
+		.set('Authorization', 'JWT ' + token)	    
 		.expect(200)
 		.expect('Content-Type', /json/)
 		.end(function(err, res) {
@@ -475,6 +509,7 @@ describe('User API:', function() {
 	it('should get userdetails for requested email', function(done) {
 	    request(app)
 		.get('/api/users/' + originalUser.email)
+		.set('Authorization', 'JWT ' + token)	    
 		.expect(200)
 		.expect('Content-Type', /json/)
 		.end(function(err, res) {
@@ -492,6 +527,7 @@ describe('User API:', function() {
 	it('should not return password in it\'s response', function(done) {
 	    request(app)
 		.get('/api/users/' + originalUser._id)
+		.set('Authorization', 'JWT ' + token)	    
 		.expect(200)
 		.expect('Content-Type', /json/)
 		.end(function(err, res) {
@@ -510,6 +546,7 @@ describe('User API:', function() {
 	it('should return appropriate error if user is not found', function(done) {
 	    request(app)
 		.get('/api/users/' + testInvalidId)
+		.set('Authorization', 'JWT ' + token)	    
 		.expect(404)
 		.end(function(err, res) { // eslint-disable-line no-unused-vars
 		    if (err)
@@ -531,6 +568,7 @@ describe('User API:', function() {
 		    originalUser.save()
 			.then((user) => {
 			    originalUser = user;
+			    token = jwt.sign({ userId: user._id }, config.jwtSecretKey, { expiresIn: '5h' });
 			    done();
 			})
 			.catch((err) => {
@@ -556,6 +594,7 @@ describe('User API:', function() {
 	it('should remove a valid user', function(done) {
 	    request(app)
 		.delete('/api/users/' + originalUser._id)
+		.set('Authorization', 'JWT ' + token)	    
 		.expect(204)
 		.end(function(err, res) { // eslint-disable-line no-unused-vars
 		    if (err)
@@ -568,6 +607,7 @@ describe('User API:', function() {
 	it('should return appropriate error if user is not found', function(done) {
 	    request(app)
 		.delete('/api/users/' + testInvalidId)
+		.set('Authorization', 'JWT ' + token)	    
 		.expect(404)
 		.end(function(err, res) { // eslint-disable-line no-unused-vars
 		    if (err)

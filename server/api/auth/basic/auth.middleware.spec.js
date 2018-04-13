@@ -27,8 +27,11 @@ describe('Auth Middleware', function() {
     });
 
     context('verify token for secure paths', function() {
-	const unsecurePaths = [{ path: '/api/users/', method: 'POST' }];
-	const TEST_USER_ID = 12345;
+	const unsecurePaths = [
+	    { path: '/api/users', method: 'POST' },
+	    { path: '/api/session', method: 'POST' }
+	];
+	const TEST_USER_ID = testValidUser.username;
 	var token;
 
 	beforeEach(function() {
@@ -41,7 +44,7 @@ describe('Auth Middleware', function() {
 	
 	it('should populate request with userId if token is verified for secure routes - 1', function(done) {
 	    httpReq = createRequest({
-		path: '/api/users/',
+		path: '/api/users',
 		method: 'GET',
 		headers: {
 		    'Authorization': 'JWT ' + token
@@ -49,7 +52,7 @@ describe('Auth Middleware', function() {
 	    });
 	    
 	    const authMw = new AuthMiddleware();
-	    var mwFn = authMw.verifyUserOnlyForSecurePaths(unsecurePaths);
+	    var mwFn = authMw.verifyTokenOnlyForSecurePaths(unsecurePaths);
 
 	    assert.isFunction(mwFn);
 
@@ -68,7 +71,7 @@ describe('Auth Middleware', function() {
 
 	it('should populate request with userId if token is verified for secure routes - 2', function(done) {
 	    httpReq = createRequest({
-		path: '/api/user/',
+		path: '/api/user',
 		method: 'POST',
 		headers: {
 		    'Authorization': 'JWT ' + token
@@ -76,7 +79,7 @@ describe('Auth Middleware', function() {
 	    });
 	    
 	    const authMw = new AuthMiddleware();
-	    var mwFn = authMw.verifyUserOnlyForSecurePaths(unsecurePaths);
+	    var mwFn = authMw.verifyTokenOnlyForSecurePaths(unsecurePaths);
 
 	    assert.isFunction(mwFn);
 
@@ -93,9 +96,9 @@ describe('Auth Middleware', function() {
 	    });
 	});
 	
-	it('should not perform verification for unsecure routes', function(done) {
+	it('should not perform verification for unsecure routes - 1', function(done) {
 	    httpReq = createRequest({
-		path: '/api/users/',
+		path: '/api/users',
 		method: 'POST',
 		headers: {
 		    'Authorization': 'JWT ' + token
@@ -103,7 +106,33 @@ describe('Auth Middleware', function() {
 	    });
 	    
 	    const authMw = new AuthMiddleware();
-	    var mwFn = authMw.verifyUserOnlyForSecurePaths(unsecurePaths);
+	    var mwFn = authMw.verifyTokenOnlyForSecurePaths(unsecurePaths);
+
+	    assert.isFunction(mwFn);
+
+	    mwFn(httpReq, httpRes, (err) => {
+		try {
+		    should.not.exist(err);
+
+		    should.not.exist(httpReq.userId);
+		    done();
+		} catch(err) {
+		    done(err);
+		}
+	    });
+	});
+
+	it('should not perform verification for unsecure routes - 2', function(done) {
+	    httpReq = createRequest({
+		path: '/api/session',
+		method: 'POST',
+		headers: {
+		    'Authorization': 'JWT ' + token
+		}		
+	    });
+	    
+	    const authMw = new AuthMiddleware();
+	    var mwFn = authMw.verifyTokenOnlyForSecurePaths(unsecurePaths);
 
 	    assert.isFunction(mwFn);
 
@@ -145,7 +174,7 @@ describe('Auth Middleware', function() {
 	    });
 
 	    var authMw = new AuthMiddleware();
-	    var mwFn = authMw.verifyUserOnlyForSecurePaths(unsecurePaths);
+	    var mwFn = authMw.verifyTokenOnlyForSecurePaths(unsecurePaths);
 	    assert.isFunction(mwFn);
 
 	    mwFn(httpReq, httpRes, (err) => {});	    
@@ -174,7 +203,7 @@ describe('Auth Middleware', function() {
 	    });
 
 	    var authMw = new AuthMiddleware();
-	    var mwFn = authMw.verifyUserOnlyForSecurePaths(unsecurePaths);
+	    var mwFn = authMw.verifyTokenOnlyForSecurePaths(unsecurePaths);
 	    assert.isFunction(mwFn);
 
 	    mwFn(httpReq, httpRes, (err) => {});	    
