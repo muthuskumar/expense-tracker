@@ -5,10 +5,9 @@ import { createRequest, createResponse } from 'node-mocks-http';
 
 import AuthController from './auth.controller';
 import { UserModel } from '../../user/user.model';
-import config from '../../../config/environment';
 
 import { VALIDATION_MESSAGES } from './auth.constants';
-import { testValidUser, testUserWithoutUsername } from '../../user/user.fixtures';
+import { testValidUser } from '../../user/user.fixtures';
 
 describe('Auth Controller', function() {
     var httpReq;
@@ -48,7 +47,7 @@ describe('Auth Controller', function() {
 	    });
 
 	    var user = new UserModel(testValidUser);
-	    user.authenticate = (password) => {
+	    user.authenticate = (password) => { // eslint-disable-line no-unused-vars
 		return true;
 	    };
 

@@ -1,15 +1,14 @@
-/*global should*/
+/*global assert, should*/
 
 var events = require('events');
 import jwt from 'jsonwebtoken';
 import { createRequest, createResponse } from 'node-mocks-http';
 
 import AuthMiddleware from './auth.middleware';
-import { UserModel } from '../../user/user.model';
 import config from '../../../config/environment';
 
 import { VALIDATION_MESSAGES } from './auth.constants';
-import { testValidUser, testUserWithoutUsername } from '../../user/user.fixtures';
+import { testValidUser } from '../../user/user.fixtures';
 
 describe('Auth Middleware', function() {
     var httpReq;
@@ -177,7 +176,7 @@ describe('Auth Middleware', function() {
 	    var mwFn = authMw.verifyTokenOnlyForSecurePaths(unsecurePaths);
 	    assert.isFunction(mwFn);
 
-	    mwFn(httpReq, httpRes, (err) => {});	    
+	    mwFn(httpReq, httpRes, (err) => {}); // eslint-disable-line no-unused-vars
 	});
 
 	it('should return error and appropriate status if token is not provided', function(done) {
@@ -206,7 +205,7 @@ describe('Auth Middleware', function() {
 	    var mwFn = authMw.verifyTokenOnlyForSecurePaths(unsecurePaths);
 	    assert.isFunction(mwFn);
 
-	    mwFn(httpReq, httpRes, (err) => {});	    
+	    mwFn(httpReq, httpRes, (err) => {}); // eslint-disable-line no-unused-vars
 	});
     });
 });

@@ -121,10 +121,6 @@ describe('Auth API', function() {
     });
 
     context('Token Authentication', function() {
-	const unsecurePaths = [
-	    { path: '/api/users/', method: 'POST' },
-	    { path: '/api/session/', method: 'POST' }
-	];
 	const TEST_USER_ID = testValidUser.username;
 	var token;
 
@@ -164,7 +160,7 @@ describe('Auth API', function() {
 		.get('/api/users')
 		.set('Authorization', 'JWT ' + token)
 		.expect(200)
-		.end((err, res) => {
+		.end((err, res) => { // eslint-disable-line no-unused-vars
 		    if (err)
 			done(err);
 		    else 
@@ -177,7 +173,7 @@ describe('Auth API', function() {
 	    request(app)
 		.get('/api/users')
 		.expect(401)
-		.end((err, res) => {
+		.end((err, res) => { // eslint-disable-line no-unused-vars
 		    if (err)
 			done(err);
 		    else 
@@ -190,7 +186,7 @@ describe('Auth API', function() {
 		.post('/api/session')
 		.set('Authorization', 'Basic ' + new Buffer(testValidUser.username + ':' + testValidUser.password).toString('base64'))	    
 		.expect(201)
-		.end((err, res) => {
+		.end((err, res) => { // eslint-disable-line no-unused-vars
 		    if (err)
 			done(err);
 		    else 
