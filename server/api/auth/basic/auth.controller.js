@@ -24,15 +24,15 @@ export default class AuthController extends BaseController {
 	else
 	    res.status(401).json({ errors: { name: VALIDATION_MESSAGES.ERROR_TYPE_UNAUTHORIZED_USER, message: VALIDATION_MESSAGES.AUTH_DETAILS_INVALID } });
 
-	UserModel.find({ username: userCreds.name })
+	UserModel.findOne({ username: userCreds.name })
 	    .exec()
-	    .then((users) => {
-		logger.debug('Users:', users);
+	    .then((user) => {
+		logger.debug('User:', user);
 
-		if (users && users.length == 1) {
-		    if (users[0].authenticate(userCreds.pass)) {
+		if (user) {
+		    if (user.authenticate(userCreds.pass)) {
 			logger.debug('Password matched.');
-			var tokenResult = jwt.signUserId(users[0]._id);
+			var tokenResult = jwt.signUserId(user._id);
 
 			if(tokenResult.error)
 			    res.status(500).json({ errors: { name: VALIDATION_MESSAGES.ERROR_TYPE_INTERNAL_SERVER, message: tokenResult.error } });

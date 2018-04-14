@@ -52,9 +52,9 @@ describe('Auth Controller', function() {
 	    };
 
 	    userMock
-		.expects('find').withArgs(searchCriteria)
+		.expects('findOne').withArgs(searchCriteria)
 		.chain('exec')
-		.resolves([ user ]);
+		.resolves(user);
 
 	    httpRes.on('end', () => {
 		try {
@@ -83,9 +83,9 @@ describe('Auth Controller', function() {
 	    });
 
 	    userMock
-		.expects('find').withArgs(searchCriteria)
+		.expects('findOne').withArgs(searchCriteria)
 		.chain('exec')
-		.resolves([]);
+		.resolves(null);
 
 	    httpRes.on('end', () => {
 		try {
@@ -173,7 +173,7 @@ describe('Auth Controller', function() {
 	    });
 
 	    userMock
-		.expects('find').withArgs(searchCriteria)
+		.expects('findOne').withArgs(searchCriteria)
 		.chain('exec')
 		.rejects({ errors: { name: 'MongoError', code: 1 } });
 
@@ -207,9 +207,9 @@ describe('Auth Controller', function() {
 	    });
 
 	    userMock
-		.expects('find').withArgs(searchCriteria)
+		.expects('findOne').withArgs(searchCriteria)
 		.chain('exec')
-		.resolves([testValidUser]);
+		.resolves(testValidUser);
 
 	    httpRes.on('end', () => {
 		try {
