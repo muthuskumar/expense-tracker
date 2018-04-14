@@ -40,9 +40,10 @@ export default class AuthMiddleware {
 	var tokenResult = jwt.verifyToken(token);
 	logger.debug('Token Result: ', tokenResult);
 	
-	if (tokenResult.userId)
+	if (tokenResult.userId) {
 	    req.userId = tokenResult.userId;
-	else {
+	    next();
+	} else {
 	    if (tokenResult.error) {
 		if (tokenResult.error.message)
 		    res.status(401).json({ errors: { name: VALIDATION_MESSAGES.ERROR_TYPE_UNAUTHORIZED_USER, message: tokenResult.error.message } });
@@ -51,7 +52,7 @@ export default class AuthMiddleware {
 	    }
 	}
 
-	next();
+
     }
 }
 
