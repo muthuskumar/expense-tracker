@@ -10,46 +10,61 @@ import { logger } from '../../../config/app-logger';
 
 var jwt = new JWTTokenAuth();
 
-export default class AuthController extends BaseController {
-    authenticateUser(req, res) {
-	logger.info('---------------AuthController.authenticateUser---------------');
+const validators = {
+    checkAuthHeader: (req) => {
 	logger.debug('Req headers: ', req.headers['authorization']);
-
 	if (!req.headers['authorization'])
-	    res.status(401).json({ errors: { name: VALIDATION_MESSAGES.ERROR_TYPE_UNAUTHORIZED_USER, message: VALIDATION_MESSAGES.AUTH_DETAILS_NOT_PROVIDED } });
-	
-	var userCreds = auth(req);
+	    throw new Error({ status: 401, errors: { name: VALIDATION_MESSAGES.ERROR_TYPE_UNAUTHORIZED_USER, message: VALIDATION_MESSAGES.AUTH_DETAILS_NOT_PROVIDED } });
+	    throw new Error('Error');
+    },
+
+    checkUserCreds: (userCreds) => {
 	if (userCreds)
 	    logger.debug('User creds obtained');
 	else
-	    res.status(401).json({ errors: { name: VALIDATION_MESSAGES.ERROR_TYPE_UNAUTHORIZED_USER, message: VALIDATION_MESSAGES.AUTH_DETAILS_INVALID } });
+	    throw ({ 'status': '401', 'errors': { 'name': 'VALIDATION_MESSAGES.ERROR_TYPE_UNAUTHORIZED_USER', 'message': 'VALIDATION_MESSAGES.AUTH_DETAILS_INVALID' } });
+    }
+};
 
-	UserModel.findOne({ username: userCreds.name })
-	    .exec()
-	    .then((user) => {
-		logger.debug('User:', user);
+export default class AuthController extends BaseController {
+    authenticateUser(req, res) {
+	logger.info('---------------AuthController.authenticateUser---------------');
+	try {
+	    validators.checkAuthHeader(req);
+	    
+	    var userCreds = auth(req);
+	    validators.checkUserCreds(userCreds);
 
-		if (user) {
-		    if (user.authenticate(userCreds.pass)) {
-			logger.debug('Password matched.');
-			var tokenResult = jwt.signUserId(user._id);
+	    UserModel.findOne({ username: userCreds.name })
+		.exec()
+		.then((user) => {
+		    logger.debug('User:', user);
 
-			if(tokenResult.error)
-			    res.status(500).json({ errors: { name: VALIDATION_MESSAGES.ERROR_TYPE_INTERNAL_SERVER, message: tokenResult.error } });
+		    if (user) {
+			if (user.authenticate(userCreds.pass)) {
+			    logger.debug('Password matched.');
+			    var tokenResult = jwt.signUserId(user._id);
 
-			res.status(201).json({ token: tokenResult.token });
+			    if(tokenResult.error)
+				res.status(500).json({ errors: { name: VALIDATION_MESSAGES.ERROR_TYPE_INTERNAL_SERVER, message: tokenResult.error } });
+
+			    res.status(201).json({ token: tokenResult.token });
+			} else {
+			    logger.debug('Authentication failed.');
+			    res.status(401).json({ errors: { name: VALIDATION_MESSAGES.ERROR_TYPE_UNAUTHORIZED_USER, message: VALIDATION_MESSAGES.AUTH_FAILED } });
+			}
 		    } else {
-			logger.debug('Authentication failed.');
 			res.status(401).json({ errors: { name: VALIDATION_MESSAGES.ERROR_TYPE_UNAUTHORIZED_USER, message: VALIDATION_MESSAGES.AUTH_FAILED } });
 		    }
-		} else {
-		    res.status(401).json({ errors: { name: VALIDATION_MESSAGES.ERROR_TYPE_UNAUTHORIZED_USER, message: VALIDATION_MESSAGES.AUTH_FAILED } });
-		}
-	    })
-	    .catch((err) => {
-		logger.error('An error occurred while processing request: ', err);
-		res.status(500).json({ errors: {name: VALIDATION_MESSAGES.ERROR_TYPE_INTERNAL_SERVER, message: err } });
-	    });
+		})
+		.catch((err) => {
+		    logger.error('An error occurred while processing request: ', err);
+		    res.status(500).json({ errors: {name: VALIDATION_MESSAGES.ERROR_TYPE_INTERNAL_SERVER, message: err } });
+		});
+	} catch(err) {
+	    logger.error('An error occurred while processing request - ', err);
+	    res.status(err.status).json(err.errors);
+	}
     }
 }
 
