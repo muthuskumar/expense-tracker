@@ -1,90 +1,91 @@
 {
-    "name": "expense-tracker",
-    "version": "0.0.1",
-    "description": "Expense tracker application to track user's expense and finance details.",
-    "config": {
-	"serverPath": "server",
-	"serverUnitTests": "server/**/*.spec.js",
-	"serverIntTests": "server/**/*integration.js",
-	"serverTests": "server/**/*.{spec,integration}.js"
-    },
-    "nodemonConfig": {
-	"ext": "[ js, json ]",
-	"ignore": "$npm_package_config_serverTests"
-    },
-    "main": "dist/server/index.js",
-    "scripts": {
-	"start": "node dist/server/",
-	"start:dev": "export NODE_ENV=development && nodemon server",
-	"pretest:unit": "export NODE_ENV=test",
-	"test:unit": "mocha $npm_package_config_serverUnitTests --require babel-core/register --require mocha.conf --reporter spec --timeout 5s",
-	"test:unit:watch": "npm run test:unit -- --watch",
-	"pretest:integration": "export NODE_ENV=test",
-	"test:integration": "mocha $npm_package_config_serverIntTests --require babel-core/register --require mocha.conf --reporter spec --timeout 5s",
-	"test:integration:watch": "npm run test:integration -- --watch",
-	"pretest": "export NODE_ENV=test",
-	"test": "npm run test:unit && npm run test:integration",
-	"test:watch": "concurrently \"npm run test:unit -- --watch\" \" npm run test:integration -- --watch\"",
-	"code-coverage": "nyc npm run test",
-	"lint": "eslint --config .eslintrc.json --format stylish $npm_package_config_serverPath/**/*.js --ignore-pattern $npm_package_config_serverUnitTests --ignore-pattern $npm_package_config_serverIntTests",
-	"lint:testcases": "eslint --config .eslintrc.json --format stylish $npm_package_config_serverUnitTests $npm_package_config_serverIntTests",
-	"clean": "rm -rf dist/$npm_package_config_serverPath/*",
-	"precompile": "npm run clean",
-	"compile": "babel $npm_package_config_serverPath --ignore $npm_package_config_serverUnitTests, $npm_package_config_serverIntTests --out-dir dist/$npm_package_config_serverPath",
-	"build": "npm run lint && npm run compile",
-	"debug": "echo dist/$npm_package_config_serverPath"
-    },
-    "repository": {
-	"type": "git",
-	"url": "git+https://github.com/muthuskumar/expense-tracker.git"
-    },
-    "keywords": [
-	"expense",
-	"tracker",
-	"MEAN",
-	"microservices"
-    ],
-    "author": "muthuskumar",
-    "license": "MIT",
-    "bugs": {
-	"url": "https://github.com/muthuskumar/expense-tracker/issues"
-    },
-    "homepage": "https://github.com/muthuskumar/expense-tracker#readme",
-    "devDependencies": {
-	"babel-cli": "^6.26.0",
-	"babel-core": "^6.26.0",
-	"babel-preset-env": "^1.6.1",
-	"babel-preset-es2015": "^6.24.1",
-	"babel-register": "^6.26.0",
-	"chai": "^4.1.2",
-	"chai-as-promised": "^7.1.1",
-	"concurrently": "^3.5.1",
-	"eslint": "^4.19.1",
-	"eslint-config-google": "^0.9.1",
-	"mocha": "^5.0.0",
-	"node-mocks-http": "^1.5.8",
-	"nyc": "^11.6.0",
-	"sinon": "^4.3.0",
-	"sinon-chai": "^2.14.0",
-	"sinon-mongoose": "^2.0.2",
-	"sinon-test": "^2.1.3",
-	"supertest": "^3.0.0",
-	"uglify-js": "^3.3.16"
-    },
-    "dependencies": {
-	"basic-auth": "^2.0.0",
-	"bcryptjs": "^2.4.3",
-	"bluebird": "^3.5.1",
-	"body-parser": "^1.18.2",
-	"bunyan": "^1.8.12",
-	"compression": "^1.7.2",
-	"cookie-parser": "^1.4.3",
-	"errorhandler": "^1.5.0",
-	"express": "^4.16.3",
-	"jsonwebtoken": "^8.2.0",
-	"lodash": "^4.17.5",
-	"method-override": "^2.3.10",
-	"mongoose": "^5.0.4",
-	"owasp-password-strength-test": "^1.3.0"
-    }
+			"name": "expense-tracker",
+			"version": "0.0.1",
+			"description": "Expense tracker application to track user's expense and finance details.",
+			"config": {
+						"serverPath": "server",
+						"serverUnitTests": "server/**/*.spec.js",
+						"serverIntTests": "server/**/*integration.js",
+						"serverTests": "server/**/*.{spec,integration}.js"
+			},
+			"nodemonConfig": {
+						"ext": "[ js, json ]",
+						"ignore": "$npm_package_config_serverTests"
+			},
+			"main": "dist/server/index.js",
+			"scripts": {
+						"start": "node dist/server/",
+						"start:dev": "export NODE_ENV=development && nodemon server",
+						"pretest:unit": "export NODE_ENV=test",
+						"test:unit": "mocha $npm_package_config_serverUnitTests --require babel-core/register --require mocha.conf --reporter spec --timeout 5s",
+						"test:unit:watch": "npm run test:unit -- --watch",
+						"pretest:integration": "export NODE_ENV=test",
+						"test:integration": "mocha $npm_package_config_serverIntTests --require babel-core/register --require mocha.conf --reporter spec --timeout 5s",
+						"test:integration:watch": "npm run test:integration -- --watch",
+						"pretest": "export NODE_ENV=test",
+						"test": "npm run test:unit && npm run test:integration",
+						"test:watch": "concurrently \"npm run test:unit -- --watch\" \" npm run test:integration -- --watch\"",
+						"code-coverage": "nyc npm run test",
+						"lint": "eslint --config .eslintrc.json --format stylish $npm_package_config_serverPath/**/*.js --ignore-pattern $npm_package_config_serverUnitTests --ignore-pattern $npm_package_config_serverIntTests",
+						"lint:testcases": "eslint --config .eslintrc.json --format stylish $npm_package_config_serverUnitTests $npm_package_config_serverIntTests",
+						"clean": "rm -rf dist/$npm_package_config_serverPath/*",
+						"precompile": "npm run clean",
+						"compile": "babel $npm_package_config_serverPath --ignore $npm_package_config_serverUnitTests, $npm_package_config_serverIntTests --out-dir dist/$npm_package_config_serverPath",
+						"build": "npm run lint && npm run compile",
+						"debug": "echo dist/$npm_package_config_serverPath"
+			},
+			"repository": {
+						"type": "git",
+						"url": "git+https://github.com/muthuskumar/expense-tracker.git"
+			},
+			"keywords": [
+						"expense",
+						"tracker",
+						"MEAN",
+						"microservices"
+			],
+			"author": "muthuskumar",
+			"license": "MIT",
+			"bugs": {
+						"url": "https://github.com/muthuskumar/expense-tracker/issues"
+			},
+			"homepage": "https://github.com/muthuskumar/expense-tracker#readme",
+			"devDependencies": {
+						"babel-cli": "^6.26.0",
+						"babel-core": "^6.26.0",
+						"babel-plugin-transform-builtin-extend": "^1.1.2",
+						"babel-preset-env": "^1.6.1",
+						"babel-preset-es2015": "^6.24.1",
+						"babel-register": "^6.26.0",
+						"chai": "^4.1.2",
+						"chai-as-promised": "^7.1.1",
+						"concurrently": "^3.5.1",
+						"eslint": "^4.19.1",
+						"eslint-config-google": "^0.9.1",
+						"mocha": "^5.0.0",
+						"node-mocks-http": "^1.5.8",
+						"nyc": "^11.6.0",
+						"sinon": "^4.3.0",
+						"sinon-chai": "^2.14.0",
+						"sinon-mongoose": "^2.0.2",
+						"sinon-test": "^2.1.3",
+						"supertest": "^3.0.0",
+						"uglify-js": "^3.3.16"
+			},
+			"dependencies": {
+						"basic-auth": "^2.0.0",
+						"bcryptjs": "^2.4.3",
+						"bluebird": "^3.5.1",
+						"body-parser": "^1.18.2",
+						"bunyan": "^1.8.12",
+						"compression": "^1.7.2",
+						"cookie-parser": "^1.4.3",
+						"errorhandler": "^1.5.0",
+						"express": "^4.16.3",
+						"jsonwebtoken": "^8.2.0",
+						"lodash": "^4.17.5",
+						"method-override": "^2.3.10",
+						"mongoose": "^5.0.4",
+						"owasp-password-strength-test": "^1.3.0"
+			}
 }

@@ -1,10 +1,15 @@
 {
    "presets": [
-      "es2015",
       ["env", {
          "targets": {
 	    "node": "current"
 	 }
+      }],
+      "es2015"      
+   ],
+   "plugins": [
+      ["babel-plugin-transform-builtin-extend", {
+          globals: ["Error", "Array"]
       }]
    ]
 }

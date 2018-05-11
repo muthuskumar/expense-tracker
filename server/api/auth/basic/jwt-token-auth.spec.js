@@ -2,6 +2,7 @@
 
 import JWTTokenAuth from './jwt-token-auth';
 
+import ValidationError from '../../validation.error';
 import { VALIDATION_MESSAGES } from './auth.constants';
 import { UserModel } from '../../user/user.model';
 
@@ -24,29 +25,25 @@ describe('JWT token authenticator', function() {
 
 	    tokenResult = jwtTokenAuthenticator.signUserId(user._id);
 
-	    should.exist(tokenResult.token);
-	    should.not.exist(tokenResult.error);
-	    tokenResult.token.should.not.equal(user._id);
+	    tokenResult.should.be.fulfilled;
 	});
 
 	it('should return an error if userid is not provided', function() {
 	    tokenResult = jwtTokenAuthenticator.signUserId(null);
 
-	    should.not.exist(tokenResult.token);
-	    should.exist(tokenResult.error);
-	    tokenResult.error.should.equal(VALIDATION_MESSAGES.USERID_UNAVAILABLE);
+	    tokenResult.should.be.rejected;
+	    tokenResult.should.be.rejectedWith(ValidationError, VALIDATION_MESSAGES.USERID_UNAVAILABLE);
 	});
 	
-	it('should return an error if unable to generate a token', function() {
+	it('should return an error if secret is not provided', function() {
 	    var config = require('../../../config/environment');
 	    var secretKey = config.jwtSecretKey;
 	    config.jwtSecretKey = null;
 	    
 	    tokenResult = jwtTokenAuthenticator.signUserId(-1);
 
-	    should.not.exist(tokenResult.token);
-	    should.exist(tokenResult.error);
-	    tokenResult.error.should.equal(VALIDATION_MESSAGES.JWT_SECRET_UNAVAILABLE);
+	    tokenResult.should.be.rejected;
+	    tokenResult.should.be.rejectedWith(ValidationError, VALIDATION_MESSAGES.JWT_SECRET__UNAVAILABLE);
 
 	    config.jwtSecretKey = secretKey;
 	});
@@ -54,7 +51,6 @@ describe('JWT token authenticator', function() {
     
     context('verify token', function() {
 	var jwtTokenAuthenticator;
-	var token;
 	var tokenResult;
 	
 	beforeEach(function() {
@@ -63,32 +59,31 @@ describe('JWT token authenticator', function() {
 
 	afterEach(function() {
 	    tokenResult = null;
-	    token = null;
 	    jwtTokenAuthenticator = null;
 	});
 	
-	it('should populate request with userId if token is verified', function() {
-	    token = jwtTokenAuthenticator.signUserId(1).token;
-	    tokenResult = jwtTokenAuthenticator.verifyToken(token);
+	it('should return userId if token is verified', function() {
+	    jwtTokenAuthenticator.signUserId(1)
+		.then((token) => {
+		    tokenResult = jwtTokenAuthenticator.verifyToken(token);
 
-	    tokenResult.userId.should.equal(1);
-	    should.not.exist(tokenResult.error);
+		    tokenResult.should.be.fulfilled;
+		    tokenResult.should.eventually.equal(1);
+		});
 	});
 
 	it('should return an error if token is not provided', function() {
 	    tokenResult = jwtTokenAuthenticator.verifyToken(null);
 
-	    should.not.exist(tokenResult.userId);
-	    should.exist(tokenResult.error);
-	    tokenResult.error.should.equal(VALIDATION_MESSAGES.TOKEN_UNAVAILABLE);
+	    tokenResult.should.be.rejected;
+	    tokenResult.should.be.rejectedWith(ValidationError, VALIDATION_MESSAGES.TOKEN_UNAVAILABLE);
 	});
 	
 	it('should return an error if token fails verification', function() {
 	    tokenResult = jwtTokenAuthenticator.verifyToken('12345');
 
-	    should.not.exist(tokenResult.userId);
-	    should.exist(tokenResult.error);
-	    tokenResult.error.should.match(/JsonWebTokenError:/);
+	    tokenResult.should.be.rejected;
+	    tokenResult.should.be.rejectedWith('jwt malformed');
 	});
     });
 });

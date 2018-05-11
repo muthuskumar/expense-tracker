@@ -1,12 +1,45 @@
 import jwt from 'jsonwebtoken';
 
-import { VALIDATION_MESSAGES } from './auth.constants';
 import config from '../../../config/environment';
+import { VALIDATION_MESSAGES } from './auth.constants';
+import ValidationError from '../../validation.error';
 
 import { logger } from '../../../config/app-logger';
 
 var _options = {
     expiresIn: '5h'
+};
+
+const validators = {
+    isSecretAvailable(secret) {
+	logger.info('---------------isSecretAvailable---------------');
+
+	if (!secret) {
+	    throw new ValidationError(VALIDATION_MESSAGES.JWT_SECRET_UNAVAILABLE);
+	}
+
+	logger.debug('Secret available');
+    },
+    
+    isUserIdAvailable(userId) {
+	logger.info('---------------isUserIdAvailable---------------');
+	
+	if(!userId) {
+	    throw new ValidationError(VALIDATION_MESSAGES.USERID_UNAVAILABLE);
+	}
+
+	logger.debug('UserId: ', userId);
+    },
+
+    isTokenAvailable(token) {
+	logger.info('---------------isTokenAvailable---------------');
+	
+	if(!token) {
+	    throw new ValidationError(VALIDATION_MESSAGES.TOKEN_UNAVAILABLE);
+	}
+
+	logger.debug('Token available');
+    }
 };
 
 export default class JWTTokenAuth {
@@ -15,51 +48,53 @@ export default class JWTTokenAuth {
 	logger.info('---------------signUserId---------------');
 
 	var token;
-
-
-	if (config.jwtSecretKey)
-	    logger.debug('Secret available' );
-	else
-	    return { error: VALIDATION_MESSAGES.JWT_SECRET_UNAVAILABLE, token: null }
+	var error;
 	
-	logger.debug('UserId: ', userId);	
-	if (!userId) {
-	    return { error: VALIDATION_MESSAGES.USERID_UNAVAILABLE, token: null }
-	}
-
 	try {
+	    validators.isSecretAvailable(config.jwtSecretKey);
+	    validators.isUserIdAvailable(userId);
+	
 	    token = jwt.sign({ userId: userId }, config.jwtSecretKey, _options);
-
 	    logger.debug('Token generated: ', token);
-	    
-	    return { error: null, token: token };
-	} catch(err) {
-	    logger.error('Error while generating token - ', err);
-	    return { error: err, token: token };
+	} catch (err) {
+	    logger.error(err);
+	    error = err;
 	}
+
+	return new Promise(function(resolve, reject) {
+	    if (token)
+		resolve(token)
+	    else if (error)
+		reject(error)
+	    else
+		reject();
+	});
     }
 
     verifyToken(token) {
 	logger.info('---------------verifyToken---------------');
 
 	var decoded;
-
-	logger.debug('Token: ', token);
-
-	if (!token)
-	    return { error: VALIDATION_MESSAGES.TOKEN_UNAVAILABLE, token: null }
+	var error;
 	
-	if (config.jwtSecretKey)
-	    logger.debug('Secret key available');
-
 	try {
+	    validators.isTokenAvailable(token);
+	    validators.isSecretAvailable(config.jwtSecretKey);
+	    
 	    decoded = jwt.verify(token, config.jwtSecretKey);
 	    logger.debug('Token verification result: ', decoded);
-	    
-	    return { error: null, userId: decoded.userId};
 	} catch(err) {
-	    logger.error('Error while decoding token - ', err);
-	    return { error: err, userId: null };
+	    logger.error(err);
+	    error = err;
 	}
+
+	return new Promise(function(resolve, reject) {
+	    if (decoded)
+		resolve(decoded.userId);
+	    else if (error)
+		reject(error);
+	    else
+		reject(err);
+	});
     }
 }
