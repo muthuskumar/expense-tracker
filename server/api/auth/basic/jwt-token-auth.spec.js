@@ -70,6 +70,8 @@ describe('JWT token authenticator', function() {
 		    tokenResult.should.be.fulfilled;
 		    tokenResult.should.eventually.equal(1);
 		});
+
+	    	
 	});
 
 	it('should return an error if token is not provided', function() {
