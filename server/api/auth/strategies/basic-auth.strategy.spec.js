@@ -4,7 +4,7 @@ import { basicAuthStrategy } from './basic-auth.strategy';
 import { UserSchema, UserModel } from '../../user/user.model';
 
 import AuthorizationError from '../../auth.error.js';
-import { VALIDATION_MESSAGES } from './auth.constants';
+import { VALIDATION_MESSAGES } from '../auth.constants';
 
 import { testValidUser } from '../../user/user.fixtures';
 

@@ -1,6 +1,6 @@
 import { UserModel } from '../../user/user.model';
 
-import { VALIDATION_MESSAGES } from './auth.constants';
+import { VALIDATION_MESSAGES } from '../auth.constants';
 import ValidationError from '../../validation.error';
 import AuthorizationError from '../../auth.error';
 
