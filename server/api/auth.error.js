@@ -6,3 +6,5 @@ export default class AuthorizationError extends Error {
 	this.name = ERROR_NAME;
     }
 }
+
+module.exports.errorName = ERROR_NAME;

@@ -6,5 +6,7 @@ export default class ValidationError extends Error {
 	this.name = ERROR_NAME;
 	this.path = path;
     }
-}
+};
+
+module.exports.errorName = ERROR_NAME;
 

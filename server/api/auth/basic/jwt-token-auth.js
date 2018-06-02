@@ -1,7 +1,7 @@
 import jwt from 'jsonwebtoken';
 
 import config from '../../../config/environment';
-import { VALIDATION_MESSAGES } from './auth.constants';
+import { VALIDATION_MESSAGES } from '../auth.constants';
 import ValidationError from '../../validation.error';
 
 import { logger } from '../../../config/app-logger';
@@ -15,7 +15,7 @@ const validators = {
 	logger.info('---------------isSecretAvailable---------------');
 
 	if (!secret) {
-	    throw new ValidationError(VALIDATION_MESSAGES.JWT_SECRET_UNAVAILABLE);
+	    throw new ValidationError('secret', VALIDATION_MESSAGES.JWT_SECRET_UNAVAILABLE);
 	}
 
 	logger.debug('Secret available');
@@ -25,7 +25,7 @@ const validators = {
 	logger.info('---------------isUserIdAvailable---------------');
 	
 	if(!userId) {
-	    throw new ValidationError(VALIDATION_MESSAGES.USERID_UNAVAILABLE);
+	    throw new ValidationError('userId', VALIDATION_MESSAGES.USERID_UNAVAILABLE);
 	}
 
 	logger.debug('UserId: ', userId);
@@ -35,7 +35,7 @@ const validators = {
 	logger.info('---------------isTokenAvailable---------------');
 	
 	if(!token) {
-	    throw new ValidationError(VALIDATION_MESSAGES.TOKEN_UNAVAILABLE);
+	    throw new ValidationError('token', VALIDATION_MESSAGES.TOKEN_UNAVAILABLE);
 	}
 
 	logger.debug('Token available');

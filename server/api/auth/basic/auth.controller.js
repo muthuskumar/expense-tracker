@@ -32,5 +32,25 @@ export default class AuthController extends BaseController {
 	    res.status(400).json({ errors: { name: err.name, message: err.message } });
 	}
     }
+
+    reqLoginCb(user, res) {
+	return function(err) {
+	    if (err) {
+		return res.status(400).json({ errors: { name: err.name, message: err.message } });
+	    }
+	    
+	    const jwtTokenAuth = new JWTTokenAuth();
+	    const tokenResult = jwtTokenAuth.signUserId(user._id);
+
+	    tokenResult
+		.then((token) => {
+		    return res.status(201).json({ token: token });
+		})
+		.catch((err) => {
+		    return res.status(400).json({ errors: { name: err.name, message: err.message } });
+		});
+
+	};
+    }
 }
 
