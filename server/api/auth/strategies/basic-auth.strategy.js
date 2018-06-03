@@ -1,6 +1,6 @@
 import { UserModel } from '../../user/user.model';
 
-import { VALIDATION_MESSAGES } from '../auth.constants';
+import { VALIDATION_MESSAGES, AUTH_ERR_MESSAGES } from '../auth.constants';
 import ValidationError from '../../validation.error';
 import AuthorizationError from '../../auth.error';
 
@@ -41,10 +41,10 @@ module.exports.basicAuthStrategy = function (username, password, done) {
     UserModel.findOne({ username: username }).exec()
 	.then((user) => {
 	    if (!user)
-		return done(new AuthorizationError(VALIDATION_MESSAGES.USER_NOT_FOUND), null);
+		return done(new AuthorizationError(AUTH_ERR_MESSAGES.USER_NOT_FOUND), null);
 
 	    if (!user.authenticate(password))
-		return done(new AuthorizationError(VALIDATION_MESSAGES.INVALID_PASSWORD), null);
+		return done(new AuthorizationError(AUTH_ERR_MESSAGES.INVALID_PASSWORD), null);
 
 	    return done(null, user);
 	})

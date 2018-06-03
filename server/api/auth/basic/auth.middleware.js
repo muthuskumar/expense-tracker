@@ -51,8 +51,6 @@ export default class AuthMiddleware {
 		    res.status(401).json({ errors: { name: VALIDATION_MESSAGES.ERROR_TYPE_UNAUTHORIZED_USER, message: tokenResult.error } });
 	    }
 	}
-
-
     }
 }
 

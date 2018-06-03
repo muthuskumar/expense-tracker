@@ -8,8 +8,11 @@ import app from '../../../app';
 import config from '../../../config/environment';
 
 import { UserModel } from '../../user/user.model';
+import AuthError from '../../auth.error';
 import { testUsers, testValidUser } from '../../user/user.fixtures';
-import { VALIDATION_MESSAGES } from './auth.constants';
+import { VALIDATION_MESSAGES, AUTH_ERR_MESSAGES } from '../auth.constants';
+import { errorName as authErrName } from '../../auth.error';
+import { errorName as validationErrName } from '../../validation.error';
 
 import { logger } from '../../../config/app-logger';
 
@@ -93,8 +96,8 @@ describe('Auth API', function() {
 			var error = res.body.errors;
 
 			should.exist(error);
-			error.name.should.equal(VALIDATION_MESSAGES.ERROR_TYPE_UNAUTHORIZED_USER);
-			error.message.should.equal(VALIDATION_MESSAGES.AUTH_FAILED);
+			error.name.should.equal(authErrName);
+			error.message.should.equal(AUTH_ERR_MESSAGES.INVALID_PASSWORD);
 			done();
 		    }
 		});
@@ -103,7 +106,7 @@ describe('Auth API', function() {
 	it('should respond with error message for requests without credentials', function(done) {
 	    request(app)
 		.post('/api/session')
-		.expect(401)
+		.expect(400)
 		.expect('Content-Type', /json/)
 		.end((err, res) => {
 		    if (err)
@@ -112,8 +115,8 @@ describe('Auth API', function() {
 			var error = res.body.errors;
 
 			should.exist(error);
-			error.name.should.equal(VALIDATION_MESSAGES.ERROR_TYPE_UNAUTHORIZED_USER);
-			error.message.should.equal(VALIDATION_MESSAGES.AUTH_DETAILS_NOT_PROVIDED);
+			error.name.should.equal(validationErrName);
+			error.message.should.equal(VALIDATION_MESSAGES.BASIC_AUTH_DETAILS_UNAVAILABLE);
 			done();
 		    }
 		});

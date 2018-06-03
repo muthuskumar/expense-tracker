@@ -8,6 +8,7 @@ import config from './config/environment';
 import registerRoutes from './routes';
 
 import AuthMiddleware from './api/auth/basic/auth.middleware';
+require('./api/auth/strategies');
 
 mongoose.Promise = bluebird;
 mongoose.connect(config.mongo.uri, config.mongo.options)

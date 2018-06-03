@@ -2,8 +2,10 @@ import express from 'express';
 import AuthController from './auth.controller';
 
 var router = express.Router();
-var controller = new AuthController();
+var authController = new AuthController();
 
-router.post('/', controller.authenticateUser);
+/*authController uses 'this' within the code. Hence it needs to be binded to itself
+while setting up the route. Otherwise 'this' will be undefined.*/
+router.post('/', authController.authenticateUser.bind(authController));
 
 module.exports = router;

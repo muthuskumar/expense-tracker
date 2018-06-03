@@ -1,6 +1,6 @@
-const ERROR_NAME = 'AuthorizationError';
+const ERROR_NAME = 'AuthError';
 
-export default class AuthorizationError extends Error {
+export default class AuthError extends Error {
     constructor(message) {
 	super(message);
 	this.name = ERROR_NAME;

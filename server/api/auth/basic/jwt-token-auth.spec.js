@@ -89,3 +89,4 @@ describe('JWT token authenticator', function() {
 	});
     });
 });
+

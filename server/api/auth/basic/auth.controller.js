@@ -1,12 +1,12 @@
 import passport from 'passport';
 
 import JWTTokenAuth from './jwt-token-auth';
-
 import { BaseController } from '../../base.controller';
 import { UserModel } from '../../user/user.model';
 
+import AuthError from '../../auth.error';
 import ValidationError from '../../validation.error';
-import { VALIDATION_MESSAGES } from '../auth.constants';
+import { VALIDATION_MESSAGES, AUTH_ERR_MESSAGES } from '../auth.constants';
 
 import { logger } from '../../../config/app-logger';
 
@@ -23,18 +23,53 @@ const validators = {
     }
 };
 
-export default class AuthController extends BaseController {
+var authCtrl;
+
+export default class AuthController {
+    constructor() {
+	authCtrl = this;
+    }
+    
     authenticateUser(req, res) {
 	logger.info('---------------AuthController.authenticateUser---------------');
+
 	try {
 	    validators.isAuthHeaderAvailable(req);
+
+	    passport.authenticate('basic', { session: false }, authCtrl.passportAuthenticateCb(req, res))(req, res);
+
 	} catch(err) {
+	    logger.error('Error: ', err);
 	    res.status(400).json({ errors: { name: err.name, message: err.message } });
+	}
+
+    }
+
+    passportAuthenticateCb(req, res) {
+	logger.info('---------------AuthController.passportAuthenticateCb---------------');
+
+	return function (err, user, info) {
+	    try {
+		if (err)
+		    throw err;
+
+		if (!user) 
+		    throw new AuthError(AUTH_ERR_MESSAGES.AUTH_FAILED);
+		
+		req.login(user, { session: false }, authCtrl.reqLoginCb(user, res));
+
+	    } catch(err) {
+		logger.error('Error: ', err);
+		res.status(401).json({ errors: { name: err.name, message: err.message } });
+	    }
+
 	}
     }
 
     reqLoginCb(user, res) {
-	return function(err) {
+	logger.info('---------------AuthController.reqLoginCb---------------');
+	
+	return (err) => {
 	    if (err) {
 		return res.status(400).json({ errors: { name: err.name, message: err.message } });
 	    }
@@ -49,8 +84,9 @@ export default class AuthController extends BaseController {
 		.catch((err) => {
 		    return res.status(400).json({ errors: { name: err.name, message: err.message } });
 		});
-
 	};
-    }
+    }    
 }
+
+
 
