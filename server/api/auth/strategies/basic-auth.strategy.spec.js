@@ -29,7 +29,7 @@ describe('Basic Auth Strategy', function() {
 	validUserMock.restore();	
     });
     
-    it('should invoke done with an user on successful username and password validation', function(done) {
+    it('should return an user on successful username and password validation', function(done) {
 	validUserMock
 	    .expects('authenticate').withArgs(testValidUser.password)
 	    .returns(true);
@@ -49,7 +49,7 @@ describe('Basic Auth Strategy', function() {
 	});
     });
     
-    it('should invoke done with an error when username is not provided', function(done) {
+    it('should return an error when username is not provided', function(done) {
 	basicAuthStrategy(null, testValidUser.password, function(err, user) {
 	    isDoneCalled = true;
 	    
@@ -62,7 +62,7 @@ describe('Basic Auth Strategy', function() {
 	});
     });
     
-    it('should invoke done with an error when password is not provided', function(done) {
+    it('should return an error when password is not provided', function(done) {
 	basicAuthStrategy(testValidUser.username, null, function(err, user) {
 	    should.exist(err);
 	    should.not.exist(user);
@@ -73,7 +73,7 @@ describe('Basic Auth Strategy', function() {
 	});
     });
     
-    it('should invoke done with an error when user is not found', function(done) {
+    it('should return an error when user is not found', function(done) {
 	userModelMock
 	    .expects('findOne').withArgs({ username: testValidUser.username })
 	    .chain('exec')
@@ -87,7 +87,7 @@ describe('Basic Auth Strategy', function() {
 	});
     });
     
-    it('should invoke done with an error when password is wrong', function(done) {
+    it('should return an error when password is wrong', function(done) {
 	validUserMock
 	    .expects('authenticate').withArgs(testValidUser.password)
 	    .returns(false);
@@ -105,7 +105,7 @@ describe('Basic Auth Strategy', function() {
 	});
     });
     
-    it('should invoke done with an error on technical errors', function(done) {
+    it('should return an error on any other technical errors', function(done) {
 	const ERR_MSG = 'Test invalid password';
 	
 	userModelMock

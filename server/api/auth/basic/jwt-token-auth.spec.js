@@ -3,7 +3,7 @@
 import JWTTokenAuth from './jwt-token-auth';
 
 import ValidationError from '../../validation.error';
-import { VALIDATION_MESSAGES } from './auth.constants';
+import { VALIDATION_MESSAGES } from '../auth.constants';
 import { UserModel } from '../../user/user.model';
 
 describe('JWT token authenticator', function() {
