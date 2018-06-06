@@ -1,9 +1,11 @@
 import { logger } from '../config/app-logger';
+import ValidationError from './validation.error';
+import AuthError from './auth.error';
 
 export class BaseController {
 
 	respondWithResult(res, statusCode) {
-		logger.info('---------------respondWithResult---------------');
+		logger.info('---------------BaseController.respondWithResult---------------');
 
 		const _statusCode = statusCode || 200;
 		logger.debug('_statusCode: ', _statusCode);
@@ -19,7 +21,7 @@ export class BaseController {
 	}
 
 	handleEntityNotFound(res, statusCode) {
-		logger.info('---------------handleEntityNotFound---------------');
+		logger.info('---------------BaseController.handleEntityNotFound---------------');
 
 		const _statusCode = statusCode || 404;
 		logger.debug('_statusCode: ', _statusCode);
@@ -37,7 +39,7 @@ export class BaseController {
 	}
 
 	handleError(res, statusCode) {
-		logger.info('---------------handleError---------------');
+		logger.info('---------------BaseController.handleError---------------');
 
 		const _statusCode = statusCode || 500;
 		logger.debug('_statusCode: ', _statusCode);
@@ -50,11 +52,22 @@ export class BaseController {
 	}
 
 	handleErrorAsync(err, res, statusCode) {
-		logger.debug('---------------handleErrorSync---------------');
+		logger.info('---------------BaseController.handleErrorSync---------------');
 
 		const _statusCode = statusCode || 500;
 		logger.debug('_statusCode: ', _statusCode);
 
 		res.status(_statusCode).json({ errors: { name: err.name, message: err.message } });
+	}
+
+	getStatusCodeForError(err) {
+		logger.info('---------------BaseController.getStatusCodeForError---------------');
+
+		if (err instanceof ValidationError)
+			return 401;
+		if (err instanceof AuthError)
+			return 404;
+
+		return 500;
 	}
 }
