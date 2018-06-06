@@ -36,6 +36,7 @@ export const testUsers = Object.freeze([
 		lastName: 'user five',
 		status: 'DEACTIVATED'
 	}
+]);
 
 export const testValidUser = Object.freeze({
 	username: 'testuser1',

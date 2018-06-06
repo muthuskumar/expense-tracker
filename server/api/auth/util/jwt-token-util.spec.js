@@ -1,6 +1,6 @@
 /*global should*/
 
-import JWTTokenAuth from './jwt-token-auth';
+import JWTTokenAuth from './jwt-token-util';
 
 import ValidationError from '../../validation.error';
 import { VALIDATION_MESSAGES } from '../auth.constants';

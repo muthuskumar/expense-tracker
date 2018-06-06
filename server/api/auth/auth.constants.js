@@ -4,7 +4,8 @@ const VALIDATION_MESSAGES = Object.freeze({
     PASSWORD_UNAVAILABLE: 'Password not provided.',
     JWT_SECRET_UNAVAILABLE: 'JWT secret unavailable',
     USERID_UNAVAILABLE: 'User Id not provided.',
-    TOKEN_UNAVAILABLE: 'Token not provided.'
+    TOKEN_UNAVAILABLE: 'Token not provided.',
+    SERIALIZER_UNAVAILABLE: 'Output Serializer is not provided.'
 });
 
 const AUTH_ERR_MESSAGES = Object.freeze({

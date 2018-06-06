@@ -87,14 +87,14 @@ describe('Auth API', function () {
 			request(app)
 				.post('/api/session')
 				.set('Authorization', 'Basic ' + new Buffer(testUsers[0].username + ':' + 'WrongPassword').toString('base64'))
-				.expect(401)
+				.expect(404)
 				.expect('Content-Type', /json/)
 				.end((err, res) => {
 					if (err)
 						done(err);
 					else {
 						var error = res.body.errors;
-
+						
 						should.exist(error);
 						error.name.should.equal(authErrName);
 						error.message.should.equal(AUTH_ERR_MESSAGES.INVALID_PASSWORD);

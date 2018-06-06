@@ -1,16 +1,13 @@
 import passport from 'passport';
 
-import JWTTokenAuth from './jwt-token-auth';
+import tokenSerializer from '../output-serializers/token.serializer';
 import { PassportBaseController } from '../passport-base.controller';
-import { UserModel } from '../../user/user.model';
 
 import AuthError from '../../auth.error';
 import ValidationError from '../../validation.error';
 import { VALIDATION_MESSAGES, AUTH_ERR_MESSAGES } from '../auth.constants';
 
 import { logger } from '../../../config/app-logger';
-
-var jwt = new JWTTokenAuth();
 
 const validators = {
 	isAuthHeaderAvailable: (req) => {
@@ -37,7 +34,7 @@ export default class AuthController extends PassportBaseController {
 		try {
 			validators.isAuthHeaderAvailable(req);
 
-			passport.authenticate('basic', { session: false }, authCtrl.passportAuthenticateCb(req, res))(req, res);
+			passport.authenticate('basic', { session: false }, super.passportAuthenticateCb(req, res, tokenSerializer))(req, res);
 
 		} catch (err) {
 			logger.error('Error: ', err);
@@ -45,47 +42,4 @@ export default class AuthController extends PassportBaseController {
 		}
 
 	}
-
-	passportAuthenticateCb(req, res) {
-		logger.info('---------------AuthController.passportAuthenticateCb---------------');
-
-		return function (err, user, info) {
-			try {
-				if (err)
-					throw err;
-
-				if (!user)
-					throw new AuthError(AUTH_ERR_MESSAGES.AUTH_FAILED);
-
-				req.login(user, { session: false }, authCtrl.reqLoginCb(user, res));
-
-			} catch (err) {
-				logger.error('Error: ', err);
-				res.status(401).json({ errors: { name: err.name, message: err.message } });
-			}
-
-		}
-	}
-
-	reqLoginCb(user, res) {
-		logger.info('---------------AuthController.reqLoginCb---------------');
-
-		return (err) => {
-			if (err) {
-				return res.status(400).json({ errors: { name: err.name, message: err.message } });
-			}
-
-			const jwtTokenAuth = new JWTTokenAuth();
-			const tokenResult = jwtTokenAuth.signUserId(user._id);
-
-			tokenResult
-				.then((token) => {
-					return res.status(201).json({ token: token });
-				})
-				.catch((err) => {
-					return res.status(400).json({ errors: { name: err.name, message: err.message } });
-				});
-		};
-	}
 }
-

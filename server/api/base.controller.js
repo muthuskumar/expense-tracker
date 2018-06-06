@@ -51,7 +51,7 @@ export class BaseController {
 		}
 	}
 
-	handleErrorAsync(err, res, statusCode) {
+	handleErrorSync(err, res, statusCode) {
 		logger.info('---------------BaseController.handleErrorSync---------------');
 
 		const _statusCode = statusCode || 500;
