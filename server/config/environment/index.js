@@ -27,17 +27,17 @@ var all = {
 
     // Secret for session, you will want to change this and make it an environment variable
     secrets: {
-	session: 'expense-tracker-secret'
+        session: 'expense-tracker-secret'
     },
 
     // MongoDB connection options
     mongo: {
-	options: {}
+        options: {}
     },
 
     // Default logger
     loggerConfig: {
-	name: 'expense-tracker'
+        name: 'expense-tracker'
     }
 };
 

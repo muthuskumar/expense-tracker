@@ -1,73 +1,71 @@
-import { UserModel } from './user.model';
+export const testUsers = Object.freeze([
+	{
+		username: 'testuser1',
+		email: 'testuser1@test.com',
+		password: 'Test@123',
+		firstName: 'test',
+		lastName: 'user one'
+	},
+	{
+		username: 'testuser2',
+		email: 'testuser2@test.com',
+		password: 'Test@123',
+		firstName: 'test',
+		lastName: 'user two'
+	},
+	{
+		username: 'testuser3',
+		email: 'testuser3@test.com',
+		password: 'Test@123',
+		firstName: 'test',
+		lastName: 'user three',
+		status: 'DEACTIVATED'
+	},
+	{
+		username: 'testuser4',
+		email: 'testuser4@test.com',
+		password: 'Test@123',
+		firstName: 'test',
+		lastName: 'user four'
+	},
+	{
+		username: 'testuser5',
+		email: 'testuser5@test.com',
+		password: 'Test@123',
+		firstName: 'test',
+		lastName: 'user five',
+		status: 'DEACTIVATED'
+	}
 
-module.exports.testUsers = Object.freeze([
-    {
+export const testValidUser = Object.freeze({
 	username: 'testuser1',
 	email: 'testuser1@test.com',
 	password: 'Test@123',
 	firstName: 'test',
 	lastName: 'user one'
-    },
-    {
-	username: 'testuser2',
-	email: 'testuser2@test.com',
-	password: 'Test@123',
-	firstName: 'test',
-	lastName: 'user two'
-    },
-    {
-	username: 'testuser3',
-	email: 'testuser3@test.com',
-	password: 'Test@123',
-	firstName: 'test',
-	lastName: 'user three',
-	status: 'DEACTIVATED'
-    },
-    {
-	username: 'testuser4',
-	email: 'testuser4@test.com',
-	password: 'Test@123',
-	firstName: 'test',
-	lastName: 'user four'
-    },
-    {
-	username: 'testuser5',
-	email: 'testuser5@test.com',
-	password: 'Test@123',
-	firstName: 'test',
-	lastName: 'user five',
-	status: 'DEACTIVATED'
-    }
-]);
+});
 
-module.exports.testValidUser = Object.freeze({
-    username: 'testuser1',
-    email: 'testuser1@test.com',
-    password: 'Test@123',
-    firstName: 'test',
-    lastName: 'user one'});
-
-module.exports.testUserWithoutUsername = Object.freeze({
+export const testUserWithoutUsername = Object.freeze({
 	email: 'testuser1@test.com',
 	password: 'Test@123',
 	firstName: 'test',
 	lastName: 'user one'
 });
 
-module.exports.testInvalidUser = Object.freeze({
-    username: 'test',
-    email: 'nottherightformat',
-    firstName: 'contains1',
-    lastName: 'contains@'
+export const testInvalidUser = Object.freeze({
+	username: 'test',
+	email: 'nottherightformat',
+	firstName: 'contains1',
+	lastName: 'contains@'
 });
 
-module.exports.testUpdatedUser = Object.freeze({
-    username: 'testuser1',
-    email: 'testuser2@test.com',
-    password: 'Test@123',
-    firstName: 'test',
-    lastName: 'user two'
+export const testUpdatedUser = Object.freeze({
+	username: 'testuser1',
+	email: 'testuser2@test.com',
+	password: 'Test@123',
+	firstName: 'test',
+	lastName: 'user two'
 });
 
-module.exports.testInvalidId = '5abbeb40404d8c2d7cf4bcca';
+export const testInvalidId = '5abbeb40404d8c2d7cf4bcca';
 

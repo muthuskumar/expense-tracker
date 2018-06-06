@@ -10,203 +10,203 @@ import config from '../../../config/environment';
 import { VALIDATION_MESSAGES } from './auth.constants';
 import { testValidUser } from '../../user/user.fixtures';
 
-describe('Auth Middleware', function() {
-    var httpReq;
-    var httpRes;
+describe('Auth Middleware', function () {
+	var httpReq;
+	var httpRes;
 
-    beforeEach(function() {
-	httpRes = createResponse({
-	    eventEmitter: events.EventEmitter
-	});
-    });
-    
-    afterEach(function() {
-	httpReq = null;
-	httpRes = null;
-    });
-
-    context('verify token for secure paths', function() {
-	const unsecurePaths = [
-	    { path: '/api/users', method: 'POST' },
-	    { path: '/api/session', method: 'POST' }
-	];
-	const TEST_USER_ID = testValidUser.username;
-	var token;
-
-	beforeEach(function() {
-	    token = jwt.sign({ userId: TEST_USER_ID }, config.jwtSecretKey, { expiresIn: '5h' });
+	beforeEach(function () {
+		httpRes = createResponse({
+			eventEmitter: events.EventEmitter
+		});
 	});
 
-	afterEach(function() {
-	    token = null;
-	});
-	
-	it('should populate request with userId if token is verified for secure routes - 1', function(done) {
-	    httpReq = createRequest({
-		path: '/api/users',
-		method: 'GET',
-		headers: {
-		    'Authorization': 'JWT ' + token
-		}		
-	    });
-	    
-	    const authMw = new AuthMiddleware();
-	    var mwFn = authMw.verifyTokenOnlyForSecurePaths(unsecurePaths);
-
-	    assert.isFunction(mwFn);
-
-	    mwFn(httpReq, httpRes, (err) => {
-		try {
-		    should.not.exist(err);
-
-		    should.exist(httpReq.userId);
-		    httpReq.userId.should.equal(TEST_USER_ID);
-		    done();
-		} catch(err) {
-		    done(err);
-		}
-	    });
+	afterEach(function () {
+		httpReq = null;
+		httpRes = null;
 	});
 
-	it('should populate request with userId if token is verified for secure routes - 2', function(done) {
-	    httpReq = createRequest({
-		path: '/api/user',
-		method: 'POST',
-		headers: {
-		    'Authorization': 'JWT ' + token
-		}		
-	    });
-	    
-	    const authMw = new AuthMiddleware();
-	    var mwFn = authMw.verifyTokenOnlyForSecurePaths(unsecurePaths);
+	context('verify token for secure paths', function () {
+		const unsecurePaths = [
+			{ path: '/api/users', method: 'POST' },
+			{ path: '/api/session', method: 'POST' }
+		];
+		const TEST_USER_ID = testValidUser.username;
+		var token;
 
-	    assert.isFunction(mwFn);
+		beforeEach(function () {
+			token = jwt.sign({ userId: TEST_USER_ID }, config.jwtSecretKey, { expiresIn: '5h' });
+		});
 
-	    mwFn(httpReq, httpRes, (err) => {
-		try {
-		    should.not.exist(err);
+		afterEach(function () {
+			token = null;
+		});
 
-		    should.exist(httpReq.userId);
-		    httpReq.userId.should.equal(TEST_USER_ID);
-		    done();
-		} catch(err) {
-		    done(err);
-		}
-	    });
+		it('should populate request with userId if token is verified for secure routes - 1', function (done) {
+			httpReq = createRequest({
+				path: '/api/users',
+				method: 'GET',
+				headers: {
+					'Authorization': 'JWT ' + token
+				}
+			});
+
+			const authMw = new AuthMiddleware();
+			var mwFn = authMw.verifyTokenOnlyForSecurePaths(unsecurePaths);
+
+			assert.isFunction(mwFn);
+
+			mwFn(httpReq, httpRes, (err) => {
+				try {
+					should.not.exist(err);
+
+					should.exist(httpReq.userId);
+					httpReq.userId.should.equal(TEST_USER_ID);
+					done();
+				} catch (err) {
+					done(err);
+				}
+			});
+		});
+
+		it('should populate request with userId if token is verified for secure routes - 2', function (done) {
+			httpReq = createRequest({
+				path: '/api/user',
+				method: 'POST',
+				headers: {
+					'Authorization': 'JWT ' + token
+				}
+			});
+
+			const authMw = new AuthMiddleware();
+			var mwFn = authMw.verifyTokenOnlyForSecurePaths(unsecurePaths);
+
+			assert.isFunction(mwFn);
+
+			mwFn(httpReq, httpRes, (err) => {
+				try {
+					should.not.exist(err);
+
+					should.exist(httpReq.userId);
+					httpReq.userId.should.equal(TEST_USER_ID);
+					done();
+				} catch (err) {
+					done(err);
+				}
+			});
+		});
+
+		it('should not perform verification for unsecure routes - 1', function (done) {
+			httpReq = createRequest({
+				path: '/api/users',
+				method: 'POST',
+				headers: {
+					'Authorization': 'JWT ' + token
+				}
+			});
+
+			const authMw = new AuthMiddleware();
+			var mwFn = authMw.verifyTokenOnlyForSecurePaths(unsecurePaths);
+
+			assert.isFunction(mwFn);
+
+			mwFn(httpReq, httpRes, (err) => {
+				try {
+					should.not.exist(err);
+
+					should.not.exist(httpReq.userId);
+					done();
+				} catch (err) {
+					done(err);
+				}
+			});
+		});
+
+		it('should not perform verification for unsecure routes - 2', function (done) {
+			httpReq = createRequest({
+				path: '/api/session',
+				method: 'POST',
+				headers: {
+					'Authorization': 'JWT ' + token
+				}
+			});
+
+			const authMw = new AuthMiddleware();
+			var mwFn = authMw.verifyTokenOnlyForSecurePaths(unsecurePaths);
+
+			assert.isFunction(mwFn);
+
+			mwFn(httpReq, httpRes, (err) => {
+				try {
+					should.not.exist(err);
+
+					should.not.exist(httpReq.userId);
+					done();
+				} catch (err) {
+					done(err);
+				}
+			});
+		});
+
+		it('should return error and appropriate status if token fails verification', function (done) {
+			httpReq = createRequest({
+				method: 'POST',
+				headers: {
+					'Authorization': 'JWT ' + token + 's'
+				}
+			});
+
+			httpRes.on('end', () => {
+				try {
+					httpRes.statusCode.should.equal(401);
+
+					var err = JSON.parse(httpRes._getData()).errors;
+
+					should.not.exist(httpReq.userId);
+					should.exist(err);
+					err.name.should.equal(VALIDATION_MESSAGES.ERROR_TYPE_UNAUTHORIZED_USER);
+					err.message.should.equal('invalid signature');
+
+					done();
+				} catch (err) {
+					done(err);
+				}
+			});
+
+			var authMw = new AuthMiddleware();
+			var mwFn = authMw.verifyTokenOnlyForSecurePaths(unsecurePaths);
+			assert.isFunction(mwFn);
+
+			mwFn(httpReq, httpRes, (err) => { }); // eslint-disable-line no-unused-vars
+		});
+
+		it('should return error and appropriate status if token is not provided', function (done) {
+			httpReq = createRequest({
+				method: 'POST',
+			});
+
+			httpRes.on('end', () => {
+				try {
+					httpRes.statusCode.should.equal(401);
+
+					var err = JSON.parse(httpRes._getData()).errors;
+
+					should.not.exist(httpReq.userId);
+					should.exist(err);
+					err.name.should.equal(VALIDATION_MESSAGES.ERROR_TYPE_UNAUTHORIZED_USER);
+					err.message.should.equal(VALIDATION_MESSAGES.TOKEN_UNAVAILABLE);
+
+					done();
+				} catch (err) {
+					done(err);
+				}
+			});
+
+			var authMw = new AuthMiddleware();
+			var mwFn = authMw.verifyTokenOnlyForSecurePaths(unsecurePaths);
+			assert.isFunction(mwFn);
+
+			mwFn(httpReq, httpRes, (err) => { }); // eslint-disable-line no-unused-vars
+		});
 	});
-	
-	it('should not perform verification for unsecure routes - 1', function(done) {
-	    httpReq = createRequest({
-		path: '/api/users',
-		method: 'POST',
-		headers: {
-		    'Authorization': 'JWT ' + token
-		}		
-	    });
-	    
-	    const authMw = new AuthMiddleware();
-	    var mwFn = authMw.verifyTokenOnlyForSecurePaths(unsecurePaths);
-
-	    assert.isFunction(mwFn);
-
-	    mwFn(httpReq, httpRes, (err) => {
-		try {
-		    should.not.exist(err);
-
-		    should.not.exist(httpReq.userId);
-		    done();
-		} catch(err) {
-		    done(err);
-		}
-	    });
-	});
-
-	it('should not perform verification for unsecure routes - 2', function(done) {
-	    httpReq = createRequest({
-		path: '/api/session',
-		method: 'POST',
-		headers: {
-		    'Authorization': 'JWT ' + token
-		}		
-	    });
-	    
-	    const authMw = new AuthMiddleware();
-	    var mwFn = authMw.verifyTokenOnlyForSecurePaths(unsecurePaths);
-
-	    assert.isFunction(mwFn);
-
-	    mwFn(httpReq, httpRes, (err) => {
-		try {
-		    should.not.exist(err);
-
-		    should.not.exist(httpReq.userId);
-		    done();
-		} catch(err) {
-		    done(err);
-		}
-	    });
-	});
-	
-	it('should return error and appropriate status if token fails verification', function(done) {
-	    httpReq = createRequest({
-		method: 'POST',
-		headers: {
-		    'Authorization': 'JWT ' + token + 's'
-		}		
-	    });
-
-	    httpRes.on('end', () => {
-		try {
-		    httpRes.statusCode.should.equal(401);
-
-		    var err = JSON.parse(httpRes._getData()).errors;
-
-		    should.not.exist(httpReq.userId);
-		    should.exist(err);
-		    err.name.should.equal(VALIDATION_MESSAGES.ERROR_TYPE_UNAUTHORIZED_USER);
-		    err.message.should.equal('invalid signature');
-
-		    done();
-		} catch(err) {
-		    done(err);
-		}
-	    });
-
-	    var authMw = new AuthMiddleware();
-	    var mwFn = authMw.verifyTokenOnlyForSecurePaths(unsecurePaths);
-	    assert.isFunction(mwFn);
-
-	    mwFn(httpReq, httpRes, (err) => {}); // eslint-disable-line no-unused-vars
-	});
-
-	it('should return error and appropriate status if token is not provided', function(done) {
-	    httpReq = createRequest({
-		method: 'POST',
-	    });
-
-	    httpRes.on('end', () => {
-		try {
-		    httpRes.statusCode.should.equal(401);
-
-		    var err = JSON.parse(httpRes._getData()).errors;
-
-		    should.not.exist(httpReq.userId);
-		    should.exist(err);
-		    err.name.should.equal(VALIDATION_MESSAGES.ERROR_TYPE_UNAUTHORIZED_USER);
-		    err.message.should.equal(VALIDATION_MESSAGES.TOKEN_UNAVAILABLE);
-
-		    done();
-		} catch(err) {
-		    done(err);
-		}
-	    });
-
-	    var authMw = new AuthMiddleware();
-	    var mwFn = authMw.verifyTokenOnlyForSecurePaths(unsecurePaths);
-	    assert.isFunction(mwFn);
-
-	    mwFn(httpReq, httpRes, (err) => {}); // eslint-disable-line no-unused-vars
-	});
-    });
 });
 

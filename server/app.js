@@ -13,10 +13,10 @@ require('./api/auth/strategies');
 mongoose.Promise = bluebird;
 mongoose.connect(config.mongo.uri, config.mongo.options)
     .then(() => {
-	logger.info("Database connection established!");
+        logger.info("Database connection established!");
     })
     .catch((err) => {
-	logger.error("An error occured while starting the database.", err);
+        logger.error("An error occured while starting the database.", err);
     });
 
 var app = express();

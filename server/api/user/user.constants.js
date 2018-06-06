@@ -1,4 +1,4 @@
-const STATUSES = Object.freeze([ 'ACTIVE', 'DEACTIVATED' ]);
+const STATUSES = Object.freeze(['ACTIVE', 'DEACTIVATED']);
 
 const VALIDATION_MESSAGES = Object.freeze({
     USERNAME_MANDATORY: 'Username is mandatory!',
