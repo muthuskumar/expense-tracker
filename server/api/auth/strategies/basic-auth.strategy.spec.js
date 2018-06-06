@@ -1,16 +1,12 @@
-import _bind from 'lodash/bind';
-
-import { basicAuthStrategy } from './basic-auth.strategy';
-import { UserSchema, UserModel } from '../../user/user.model';
+import basicAuthStrategy from './basic-auth.strategy';
 
 import AuthorizationError from '../../auth.error.js';
 import { VALIDATION_MESSAGES } from '../auth.constants';
 
+import { UserModel } from '../../user/user.model';
 import { testValidUser } from '../../user/user.fixtures';
 
 describe('Basic Auth Strategy', function () {
-
-	var isDoneCalled;
 	var userModelMock;
 	var validUserMock;
 	var validUser;
@@ -51,8 +47,6 @@ describe('Basic Auth Strategy', function () {
 
 	it('should return an error when username is not provided', function (done) {
 		basicAuthStrategy(null, testValidUser.password, function (err, user) {
-			isDoneCalled = true;
-
 			should.exist(err);
 			should.not.exist(user);
 

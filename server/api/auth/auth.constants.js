@@ -11,7 +11,8 @@ const VALIDATION_MESSAGES = Object.freeze({
 const AUTH_ERR_MESSAGES = Object.freeze({
     AUTH_FAILED: 'Authorization failed.',
     USER_NOT_FOUND: 'User with username not found.',
-    INVALID_PASSWORD: 'Invalid Password.'
+    INVALID_PASSWORD: 'Invalid Password.',
+    INVALID_TOKEN: 'Invalid Token.'
 });
 
 module.exports = {

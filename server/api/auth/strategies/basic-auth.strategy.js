@@ -28,7 +28,7 @@ var validators = {
 	}
 };
 
-export function basicAuthStrategy(username, password, done) {
+export default function basicAuthStrategy(username, password, done) {
 	logger.info('---------------basicAuthStrategy---------------');
 	try {
 		validators.isUsernameAvailable(username);
