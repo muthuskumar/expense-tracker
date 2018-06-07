@@ -25,7 +25,7 @@ export default class PassportBaseController extends BaseController {
                 if (!outputSerializer)
                     throw new ValidationError('outputSerializer', VALIDATION_MESSAGES.SERIALIZER_UNAVAILABLE);
 
-                req.login(user, { session: false }, outputSerializer(user, res));
+                outputSerializer(user, req, res);    
 
             } catch (err) {
                 logger.error('Error: ', err);

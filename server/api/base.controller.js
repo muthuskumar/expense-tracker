@@ -38,16 +38,36 @@ export class BaseController {
 		}
 	}
 
-	handleError(res, statusCode) {
+	handleError(res, statusCode, err) {
 		logger.info('---------------BaseController.handleError---------------');
 
-		const _statusCode = statusCode || 500;
+		var _statusCode;
+		
+		_statusCode = statusCode || 500;
 		logger.debug('_statusCode: ', _statusCode);
 
 		return (err) => {
 			logger.debug('Error: ', err);
 
 			res.status(_statusCode).send(err);
+		}
+	}
+
+	handleErrorAsync(res, statusCode) {
+		logger.info('---------------BaseController.handleErrorAsync---------------');
+		
+		return (err) => {
+			logger.debug('Error: ', err);
+			
+			var _statusCode;
+			if (statusCode) {
+				_statusCode = statusCode;
+			} else {
+				_statusCode = this.getStatusCodeForError(err);
+			}
+			logger.debug('_statusCode: ', _statusCode);
+
+			res.status(_statusCode).json({ errors: { name: err.name, message: err.message } });
 		}
 	}
 

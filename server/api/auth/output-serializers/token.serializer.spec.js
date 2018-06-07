@@ -32,7 +32,7 @@ describe('tokenSerializer', function () {
                 httpRes.statusCode.should.equal(201);
 
                 var err = JSON.parse(httpRes._getData()).errors;
-                var token = JSON.parse(httpRes._getData()).token;
+                var token = JSON.parse(httpRes._getData());
 
                 should.not.exist(err);
                 should.exist(token);
@@ -43,35 +43,7 @@ describe('tokenSerializer', function () {
             }
         });
 
-        const cbFn = tokenSerializer(user, httpRes);
-        cbFn();
-    });
-
-    it('should return error if there are errors', function (done) {
-        const user = new UserModel(testValidUser);
-        const TEST_ERR_MSG = 'Test Error Message.';
-
-        httpRes.on('end', () => {
-            try {
-                httpRes.statusCode.should.equal(400);
-
-                var err = JSON.parse(httpRes._getData()).errors;
-                var token = JSON.parse(httpRes._getData()).token;
-
-                should.not.exist(token);
-
-                should.exist(err);
-                err.name.should.equal(authErrorName);
-                err.message.should.equal(TEST_ERR_MSG);
-
-                done();
-            } catch (err) {
-                done(err);
-            }
-        });
-
-        const cbFn = tokenSerializer(user, httpRes);
-        cbFn(new AuthError(TEST_ERR_MSG));
+        tokenSerializer(user, httpReq, httpRes);
     });
 
     it('should return error if there are jwt errors', function (done) {
@@ -97,7 +69,6 @@ describe('tokenSerializer', function () {
             }
         });
 
-        const cbFn = tokenSerializer(testUser, httpRes);
-        cbFn();
+        tokenSerializer(testUser, httpReq, httpRes);
     });
 });

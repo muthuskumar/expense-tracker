@@ -75,8 +75,8 @@ describe('Auth API', function () {
 					if (err)
 						done(err);
 					else {
-						var tokenResult = res.body;
-						should.exist(tokenResult.token);
+						var token = res.body;
+						should.exist(token);
 
 						done();
 					}
