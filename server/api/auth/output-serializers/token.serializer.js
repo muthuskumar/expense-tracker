@@ -6,7 +6,7 @@ import { logger } from '../../../config/app-logger';
 var baseController = new BaseController();
 
 export default function tokenSerializer(user, req, res) {
-    logger.info('---------------AuthController.reqLoginCb---------------');
+    logger.info('---------------tokenSerializer---------------');
 
     const jwtTokenAuth = new JWTTokenAuth();
     const tokenResult = jwtTokenAuth.signUserId(user._id);
