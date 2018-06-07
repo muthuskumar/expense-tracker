@@ -1,18 +1,18 @@
 import { EventEmitter } from "events";
 import { createRequest, createResponse } from 'node-mocks-http';
 
-import { testValidUser } from '../../user/user.fixtures';
 import { UserModel } from '../../user/user.model';
 import { errorName as validationErrorName } from '../../validation.error';
 import { VALIDATION_MESSAGES } from '../auth.constants';
 
-import tokenSerializer from './token.serializer';
+import userIdSerializer from './userId.serializer';
 
-describe('tokenSerializer', function () {
+describe('userIdSerializer', function () {
     var httpReq;
     var httpRes;
 
     beforeEach(function () {
+        httpReq = createRequest({});
         httpRes = createResponse({
             eventEmitter: EventEmitter
         });
@@ -23,29 +23,16 @@ describe('tokenSerializer', function () {
         httpRes = null;
     });
 
-    it('should return token if there are no errors', function (done) {
-        const user = new UserModel(testValidUser);
+    it('should populate request object with user id when id is available', function (done) {
+        var testUser = new UserModel({});
 
-        httpRes.on('end', () => {
-            try {
-                httpRes.statusCode.should.equal(201);
+        userIdSerializer(testUser, httpReq, httpRes);
+        httpReq.userId.should.equal(testUser._id);
 
-                var err = JSON.parse(httpRes._getData()).errors;
-                var token = JSON.parse(httpRes._getData());
-
-                should.not.exist(err);
-                should.exist(token);
-
-                done();
-            } catch (err) {
-                done(err);
-            }
-        });
-
-        tokenSerializer(user, httpReq, httpRes);
+        done();
     });
 
-    it('should return error if there are jwt errors', function (done) {
+    it('should return an error when user id is not available', function (done) {
         var testUser = {};
         testUser._id = null;
 
@@ -65,6 +52,6 @@ describe('tokenSerializer', function () {
             }
         });
 
-        tokenSerializer(testUser, httpReq, httpRes);
+        userIdSerializer(testUser, httpReq, httpRes);
     });
 });
