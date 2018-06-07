@@ -20,14 +20,7 @@ const validators = {
 	}
 };
 
-var authCtrl;
-
 export default class AuthController extends PassportBaseController {
-	constructor() {
-		super();
-		authCtrl = this;
-	}
-
 	authenticateUser(req, res) {
 		logger.info('---------------AuthController.authenticateUser---------------');
 
