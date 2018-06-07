@@ -20,4 +20,4 @@ export default function tokenSerializer(user, res) {
                 return res.status(400).json({ errors: { name: err.name, message: err.message } });
             });
     };
-}
+};

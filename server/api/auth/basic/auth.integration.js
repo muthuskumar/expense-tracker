@@ -87,7 +87,7 @@ describe('Auth API', function () {
 			request(app)
 				.post('/api/session')
 				.set('Authorization', 'Basic ' + new Buffer(testUsers[0].username + ':' + 'WrongPassword').toString('base64'))
-				.expect(404)
+				.expect(401)
 				.expect('Content-Type', /json/)
 				.end((err, res) => {
 					if (err)

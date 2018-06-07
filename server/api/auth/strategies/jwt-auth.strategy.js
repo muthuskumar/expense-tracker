@@ -14,7 +14,7 @@ export default function jwtAuthStrategy(payload, done) {
 export function constructOptions () {
     var opts = {};
 
-    opts.secretOrKey = config.secretjwtSecretKey;
+    opts.secretOrKey = config.jwtSecretKey;
     opts.jwtFromRequest = ExtractJwt.fromAuthHeaderAsBearerToken();
 
     return opts;

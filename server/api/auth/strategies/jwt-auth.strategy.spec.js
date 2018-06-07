@@ -35,7 +35,7 @@ describe('JWT Auth Strategy', function () {
             var opts = constructOptions();
 
             should.exist(opts);
-            opts.secretOrKey = config.secretjwtSecretKey;
+            opts.secretOrKey = config.jwtSecretKey;
 
             done();
         });

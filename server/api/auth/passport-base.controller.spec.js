@@ -31,7 +31,7 @@ describe('passportAuthenticateCb', function () {
 
         httpRes.on('end', () => {
             try {
-                httpRes.statusCode.should.equal(404);
+                httpRes.statusCode.should.equal(401);
 
                 var err = JSON.parse(httpRes._getData()).errors;
                 var token = JSON.parse(httpRes._getData()).token;
@@ -59,7 +59,7 @@ describe('passportAuthenticateCb', function () {
 
         httpRes.on('end', () => {
             try {
-                httpRes.statusCode.should.equal(404);
+                httpRes.statusCode.should.equal(401);
 
                 var err = JSON.parse(httpRes._getData()).errors;
                 var token = JSON.parse(httpRes._getData()).token;
@@ -88,7 +88,7 @@ describe('passportAuthenticateCb', function () {
         httpReq = createRequest({});
         httpRes.on('end', () => {
             try {
-                httpRes.statusCode.should.equal(401);
+                httpRes.statusCode.should.equal(400);
 
                 var err = JSON.parse(httpRes._getData()).errors;
                 var token = JSON.parse(httpRes._getData()).token;

@@ -64,9 +64,9 @@ export class BaseController {
 		logger.info('---------------BaseController.getStatusCodeForError---------------');
 
 		if (err instanceof ValidationError)
-			return 401;
+			return 400;
 		if (err instanceof AuthError)
-			return 404;
+			return 401;
 
 		return 500;
 	}
