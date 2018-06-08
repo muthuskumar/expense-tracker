@@ -4,18 +4,34 @@ import config from '../../../config/environment';
 import AuthError from "../../auth.error";
 import { AUTH_ERR_MESSAGES } from '../auth.constants';
 
-export default function jwtAuthStrategy(payload, done) {
-    if (!payload)
-        done(new AuthError(AUTH_ERR_MESSAGES.INVALID_TOKEN), null);
+import { logger } from '../../../config/app-logger';
 
-    done(null, payload);
+export default function jwtAuthStrategy(payload, done) {
+    logger.info('---------------jwtAuthStrategy---------------');
+
+    if (!payload || (Object.keys(payload).length === 0 && payload.constructor === Object)) {
+        logger.debug('Payload unavailable');
+        return done(null, false);
+    }
+
+    if (!payload.userId) {
+        logger.debug('UserId unavailable in payload');
+        return done(null, false);
+    }
+        
+    logger.debug('Payload available', payload);
+    return done(null, payload);
 };
 
 export function constructOptions () {
+    logger.info('---------------constructOptions---------------');
+
     var opts = {};
 
     opts.secretOrKey = config.jwtSecretKey;
     opts.jwtFromRequest = ExtractJwt.fromAuthHeaderAsBearerToken();
+
+    logger.debug('Opts: ' + opts);
 
     return opts;
 };
