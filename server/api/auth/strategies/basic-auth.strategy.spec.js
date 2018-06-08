@@ -1,6 +1,6 @@
 import basicAuthStrategy from './basic-auth.strategy';
 
-import AuthorizationError from '../../auth.error.js';
+import InternalServerError from '../../internal-server.error';
 import { VALIDATION_MESSAGES } from '../auth.constants';
 
 import { UserModel } from '../../user/user.model';
@@ -13,6 +13,7 @@ describe('Basic Auth Strategy', function () {
 
 	beforeEach(function () {
 		validUser = new UserModel(testValidUser);
+
 		userModelMock = sinon.mock(UserModel);
 		validUserMock = sinon.mock(validUser);
 	});
@@ -37,51 +38,31 @@ describe('Basic Auth Strategy', function () {
 
 		basicAuthStrategy(testValidUser.username, testValidUser.password, function (err, user) {
 			should.not.exist(err);
-			should.exist(user);
 
+			should.exist(user);
 			user.should.equal(validUser);
 
 			done();
 		});
 	});
 
-	it('should return an error when username is not provided', function (done) {
-		basicAuthStrategy(null, testValidUser.password, function (err, user) {
-			should.exist(err);
-			should.not.exist(user);
-
-			err.message.should.equal(VALIDATION_MESSAGES.USERNAME_UNAVAILABLE);
-
-			done();
-		});
-	});
-
-	it('should return an error when password is not provided', function (done) {
-		basicAuthStrategy(testValidUser.username, null, function (err, user) {
-			should.exist(err);
-			should.not.exist(user);
-
-			err.message.should.equal(VALIDATION_MESSAGES.PASSWORD_UNAVAILABLE);
-
-			done();
-		});
-	});
-
-	it('should return an error when user is not found', function (done) {
+ 	it('should return user field as false when user is not found', function (done) {
 		userModelMock
 			.expects('findOne').withArgs({ username: testValidUser.username })
 			.chain('exec')
 			.resolves(null);
 
 		basicAuthStrategy(testValidUser.username, testValidUser.password, function (err, user) {
-			should.exist(err);
-			should.not.exist(user);
+			should.not.exist(err);
+			
+			should.exist(user);
+			user.should.equal(false);
 
 			done();
 		});
 	});
 
-	it('should return an error when password is wrong', function (done) {
+	it('should return user field as false when password is wrong', function (done) {
 		validUserMock
 			.expects('authenticate').withArgs(testValidUser.password)
 			.returns(false);
@@ -92,24 +73,27 @@ describe('Basic Auth Strategy', function () {
 			.resolves(validUser);
 
 		basicAuthStrategy(testValidUser.username, testValidUser.password, function (err, user) {
-			should.exist(err);
-			should.not.exist(user);
+			should.not.exist(err);
+
+			should.exist(user);
+			user.should.equal(false);
 
 			done();
 		});
 	});
 
 	it('should return an error on any other technical errors', function (done) {
-		const ERR_MSG = 'Test invalid password';
+		const ERR_MSG = 'Test Error';
 
 		userModelMock
 			.expects('findOne').withArgs({ username: testValidUser.username })
 			.chain('exec')
-			.rejects(new AuthorizationError(ERR_MSG));
+			.rejects(new InternalServerError(ERR_MSG));
 
 		basicAuthStrategy(testValidUser.username, testValidUser.password, function (err, user) {
 			should.exist(err);
 			err.message.should.equal(ERR_MSG);
+			
 			should.not.exist(user);
 
 			done();
