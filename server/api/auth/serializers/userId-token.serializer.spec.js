@@ -6,7 +6,7 @@ import { UserModel } from '../../user/user.model';
 import { errorName as validationErrorName } from '../../validation.error';
 import { VALIDATION_MESSAGES } from '../auth.constants';
 
-import tokenSerializer from './token.serializer';
+import UserIdTokenSerializer from "./userId-token.serializer";
 
 describe('tokenSerializer', function () {
     var httpReq;
@@ -25,6 +25,10 @@ describe('tokenSerializer', function () {
 
     it('should return token if there are no errors', function (done) {
         const user = new UserModel(testValidUser);
+        var next = sinon.spy();
+
+        httpReq = createRequest({});
+        httpReq.user = user;
 
         httpRes.on('end', () => {
             try {
@@ -42,29 +46,36 @@ describe('tokenSerializer', function () {
             }
         });
 
-        tokenSerializer(user, httpReq, httpRes);
+        var serializer = new UserIdTokenSerializer();
+        serializer.middlewareFn(httpReq, httpRes, next);
     });
 
-    it('should return error if there are jwt errors', function (done) {
-        var testUser = {};
-        testUser._id = null;
+    it('should call next with error if user is not present in request', function (done) {
 
-        httpRes.on('end', () => {
-            try {
-                httpRes.statusCode.should.equal(400);
+        httpReq = createRequest({});
+        var next = sinon.spy();
+        
+        var serializer = new UserIdTokenSerializer();
+        serializer.middlewareFn(httpReq, httpRes, next);
+        
+        next.calledOnce;
 
-                var err = JSON.parse(httpRes._getData()).errors;
+        done();
+    });
 
-                should.exist(err);
-                err.name.should.equal(validationErrorName);
-                err.message.should.equal(VALIDATION_MESSAGES.USERID_UNAVAILABLE);
+    it('should call next with error if there are jwt errors', function (done) {
+        const user = new UserModel(testValidUser);
+        user._id = null;
 
-                done();
-            } catch (err) {
-                done(err);
-            }
-        });
+        httpReq = createRequest({});
+        httpReq.user = user;
+        var next = sinon.spy();
+        
+        var serializer = new UserIdTokenSerializer();
+        serializer.middlewareFn(httpReq, httpRes, next);
 
-        tokenSerializer(testUser, httpReq, httpRes);
+        next.calledOnce;
+        
+        done();
     });
 });

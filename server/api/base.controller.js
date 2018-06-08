@@ -42,7 +42,7 @@ export class BaseController {
 		logger.info('---------------BaseController.handleError---------------');
 
 		var _statusCode;
-		
+
 		_statusCode = statusCode || 500;
 		logger.debug('_statusCode: ', _statusCode);
 
@@ -55,10 +55,10 @@ export class BaseController {
 
 	handleErrorAsync(res, statusCode) {
 		logger.info('---------------BaseController.handleErrorAsync---------------');
-		
+
 		return (err) => {
 			logger.debug('Error: ', err);
-			
+
 			var _statusCode;
 			if (statusCode) {
 				_statusCode = statusCode;
@@ -89,5 +89,13 @@ export class BaseController {
 			return 401;
 
 		return 500;
+	}
+
+	callErrorMiddleware(next) {
+		logger.info('---------------BaseController.callErrorMiddleware---------------');
+
+		return (err) => {
+			next(err);
+		}
 	}
 }
