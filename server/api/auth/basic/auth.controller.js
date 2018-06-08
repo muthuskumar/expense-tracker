@@ -3,7 +3,6 @@ import passport from 'passport';
 import tokenSerializer from '../output-serializers/token.serializer';
 import PassportBaseController from '../passport-base.controller';
 
-import AuthError from '../../auth.error';
 import ValidationError from '../../validation.error';
 import { VALIDATION_MESSAGES, AUTH_ERR_MESSAGES } from '../auth.constants';
 

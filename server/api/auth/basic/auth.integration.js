@@ -2,7 +2,6 @@
 
 import request from 'supertest';
 import mongoose from 'mongoose';
-import jwt from 'jsonwebtoken';
 
 import app from '../../../app';
 import config from '../../../config/environment';
@@ -120,81 +119,6 @@ describe('Auth API', function () {
 						done();
 					}
 				});
-		});
-	});
-
-	context('Token Authentication', function () {
-		const TEST_USER_ID = testValidUser.username;
-		var token;
-
-		beforeEach(function (done) {
-			token = jwt.sign({ userId: TEST_USER_ID }, config.jwtSecretKey, { expiresIn: '5h' });
-
-			UserModel.deleteMany({ username: /testuser/ })
-				.exec()
-				.then(() => {
-					UserModel.create(testUsers)
-						.then((users) => { // eslint-disable-line no-unused-vars
-							done();
-						})
-						.catch((err) => {
-							done(err);
-						});
-				})
-				.catch((err) => {
-					done(err);
-				})
-		});
-
-		afterEach(function (done) {
-			token = null;
-
-			UserModel.deleteMany({ username: /testuser/ })
-				.then(() => {
-					done();
-				})
-				.catch((err) => {
-					done(err);
-				});
-		});
-
-		it('should return results after token verification for secure routes', function (done) {
-			request(app)
-				.get('/api/users')
-				.set('Authorization', 'JWT ' + token)
-				.expect(200)
-				.end((err, res) => { // eslint-disable-line no-unused-vars
-					if (err)
-						done(err);
-					else
-						done();
-				});
-
-		});
-
-		it('should return error if token verification fails for secure routes', function (done) {
-			request(app)
-				.get('/api/users')
-				.expect(401)
-				.end((err, res) => { // eslint-disable-line no-unused-vars
-					if (err)
-						done(err);
-					else
-						done();
-				});
-		});
-
-		it('should return results without token verification for unsecure routes', function (done) {
-			request(app)
-				.post('/api/session')
-				.set('Authorization', 'Basic ' + new Buffer(testValidUser.username + ':' + testValidUser.password).toString('base64'))
-				.expect(201)
-				.end((err, res) => { // eslint-disable-line no-unused-vars
-					if (err)
-						done(err);
-					else
-						done();
-				})
 		});
 	});
 });

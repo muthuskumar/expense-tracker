@@ -7,7 +7,7 @@ import ExpressConfig from './config/express';
 import config from './config/environment';
 import registerRoutes from './routes';
 
-import AuthMiddleware from './api/auth/basic/auth.middleware';
+import AuthMiddleware from './api/auth/jwt';
 require('./api/auth/strategies');
 
 mongoose.Promise = bluebird;

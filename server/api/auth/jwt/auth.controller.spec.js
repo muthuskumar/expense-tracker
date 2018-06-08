@@ -1,13 +1,13 @@
 import { EventEmitter } from "events";
 import { createRequest, createResponse } from 'node-mocks-http';
 
-import AuthController from './auth.controller';
-
 import { UserModel } from '../../user/user.model';
 import { testValidUser } from '../../user/user.fixtures';
 
 import { errorName as validationErrorName } from '../../validation.error';
 import { VALIDATION_MESSAGES } from '../auth.constants';
+
+import AuthController from './auth.controller';
 
 describe('Auth Controller', function () {
 	var httpReq;
@@ -24,7 +24,7 @@ describe('Auth Controller', function () {
 		httpRes = null;
 	});
 
-	it('should return validation error if basic headers is not available', function (done) {
+	it('should return validation error if authorization header is not available', function (done) {
 		httpReq = createRequest({});
 
 		httpRes.on('end', () => {
@@ -36,7 +36,7 @@ describe('Auth Controller', function () {
 				should.exist(err);
 				should.not.exist(JSON.parse(httpRes._getData()).token);
 				err.name.should.equal(validationErrorName);
-				err.message.should.equal(VALIDATION_MESSAGES.BASIC_AUTH_DETAILS_UNAVAILABLE);
+				err.message.should.equal(VALIDATION_MESSAGES.AUTH_HEADER_UNAVAILABLE);
 
 				done();
 			} catch (err) {

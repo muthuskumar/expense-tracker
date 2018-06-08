@@ -8,7 +8,7 @@ import { logger } from '../../config/app-logger';
 
 
 export default class PassportBaseController extends BaseController {
-    passportAuthenticateCb(req, res, outputSerializer) {
+    passportAuthenticateCb(req, res, next, outputSerializer) {
         logger.info('---------------PassportBaseController.passportAuthenticateCb---------------');
 
         var getStatusCodeForError = super.getStatusCodeForError;
@@ -16,6 +16,8 @@ export default class PassportBaseController extends BaseController {
 
         return function (err, user, info) {
             try {
+                logger.debug(info);
+                
                 if (err)
                     throw err;
 
@@ -26,10 +28,11 @@ export default class PassportBaseController extends BaseController {
                     throw new ValidationError('outputSerializer', VALIDATION_MESSAGES.SERIALIZER_UNAVAILABLE);
 
                 outputSerializer(user, req, res);    
-
+                next();
             } catch (err) {
                 logger.error('Error: ', err);
                 handleErrorSync(err, res, getStatusCodeForError(err));
+                next(err);
             }
         }
     }

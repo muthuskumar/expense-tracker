@@ -6,12 +6,12 @@ import { AUTH_ERR_MESSAGES } from '../auth.constants';
 
 describe('JWT Auth Strategy', function () {
     it('should return user object on successful token validation', function (done) {
-        var testPayload = { sub: 'This is a test token' };
+        var testPayload = { sub: { userId: 'This is a test token' } };
         jwtAuthStrategy(testPayload, function (err, userObj) {
             should.not.exist(err);
 
             should.exist(userObj);
-            userObj._id = testPayload.sub;
+            userObj.should.equal(testPayload.sub);
 
             done();
         });

@@ -1,5 +1,6 @@
 const VALIDATION_MESSAGES = Object.freeze({
     BASIC_AUTH_DETAILS_UNAVAILABLE: 'Basic auth details not provided.',
+    AUTH_HEADER_UNAVAILABLE: 'Authorization header is not provided.',
     USERNAME_UNAVAILABLE: 'Username not provided.',
     PASSWORD_UNAVAILABLE: 'Password not provided.',
     JWT_SECRET_UNAVAILABLE: 'JWT secret unavailable',

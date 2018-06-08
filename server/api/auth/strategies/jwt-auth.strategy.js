@@ -5,10 +5,10 @@ import AuthError from "../../auth.error";
 import { AUTH_ERR_MESSAGES } from '../auth.constants';
 
 export default function jwtAuthStrategy(payload, done) {
-    if (!payload || !payload.sub)
+    if (!payload)
         done(new AuthError(AUTH_ERR_MESSAGES.INVALID_TOKEN), null);
 
-    done(null, { _id: payload.sub });
+    done(null, payload);
 };
 
 export function constructOptions () {

@@ -8,7 +8,7 @@ var validators = {
     isUserIdAvailable: function (user) {
         logger.info('---------------userIdSerializer.isUserIdAvailalbe---------------');
 
-        if (!user || !user._id)
+        if (!user || !user.userId)
             throw new ValidationError('userId', VALIDATION_MESSAGES.USERID_UNAVAILABLE);
     }
 };
@@ -21,7 +21,7 @@ export default function userIdSerializer(user, req, res) {
     try {
         validators.isUserIdAvailable(user);
         
-        req.userId = user._id;
+        req.userId = user.userId;
     } catch (err) {
         baseController.handleErrorSync(err, res, baseController.getStatusCodeForError(err));
     }
