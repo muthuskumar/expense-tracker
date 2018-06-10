@@ -11,6 +11,8 @@ const VALIDATION_MESSAGES = Object.freeze({
 });
 
 const AUTH_ERR_MESSAGES = Object.freeze({
+    PASSPORT_AUTH_ERR_NAME: 'AuthenticationError',
+    UNAUTHORIZED: 'Unauthorized',
     AUTH_FAILED: 'Authorization failed.',
     USER_NOT_FOUND: 'User with username not found.',
     INVALID_PASSWORD: 'Invalid Password.',

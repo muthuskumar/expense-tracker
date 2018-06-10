@@ -1,11 +1,14 @@
-import ValidationError from "./validation.error";
-import AuthError from "./auth.error";
-
-import { logger } from '../config/app-logger';
 import InternalServerError from "./internal-server.error";
 
+import AuthError from "./auth.error";
+import ValidationError from "./validation.error";
+
+import { AUTH_ERR_MESSAGES } from './auth/auth.constants';
+
+import { logger } from '../config/app-logger';
+
 /* Possible error names from various thirdparty libraries.*/
-var authErrNames = ['AuthenticationError'];
+var authErrNames = [ AUTH_ERR_MESSAGES.PASSPORT_AUTH_ERR_NAME ];
 
 export default function errorHandlerMiddleware(err, req, res, next) {
     logger.info('---------------errorHandlerMiddleware---------------');

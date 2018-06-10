@@ -5,6 +5,8 @@ import AuthError, { errorName as authErrorName } from "./auth.error";
 import ValidationError, { errorName as validationErrorName } from "./validation.error";
 import InternalServerError, { errorName as internalServerErrorName } from "./internal-server.error";
 
+import { AUTH_ERR_MESSAGES } from './auth/auth.constants';
+
 import errHandlerMiddleware from './err-handler.middleware';
 
 describe('Error handling middleware', function () {
@@ -78,7 +80,7 @@ describe('Error handling middleware', function () {
 
     it('should return an response with status 401 for error named AuthorizationError', function (done) {
         const TEST_MSG = 'Test Message.';
-        const testAuthErrName = 'AuthenticationError';
+        const testAuthErrName = AUTH_ERR_MESSAGES.PASSPORT_AUTH_ERR_NAME;
         var authErr = new Error(TEST_MSG);
         authErr.name = testAuthErrName;
         var nextSpy = sinon.spy();
