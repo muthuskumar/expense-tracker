@@ -1,13 +1,16 @@
-import AuthController from './auth.controller';
+import passport from 'passport';
 
 import { VALIDATION_MESSAGES } from '../auth.constants';
+
 import { logger } from '../../../config/app-logger';
 
 export default class AuthMiddleware {
 	verifyTokenOnlyForSecurePaths(unsecurePaths) {
 		logger.info('---------------AuthMiddleware.verifyUserOnlyForSecurePaths---------------');
+		
 		return (req, res, next) => {
 			logger.debug('Req path: ', req.path);
+			logger.debug('Headers: ',req.headers);
 			logger.debug('Paths which do not need security authorization: ', unsecurePaths);
 
 			var isUnsecureRoute = false;
@@ -20,17 +23,7 @@ export default class AuthMiddleware {
 			if (isUnsecureRoute)
 				next();
 			else
-				this.verifyToken(req, res, next);
+				passport.authenticate('jwt', { session: false, failWithError: true })(req, res, next);
 		}
 	}
-
-	verifyToken(req, res, next) {
-		logger.info('---------------AuthMiddelware.verifyUser---------------');
-
-		var authCtrl = new AuthController();
-		authCtrl.authenticateUser(req, res, next);
-		
-		next();
-	}
 }
-

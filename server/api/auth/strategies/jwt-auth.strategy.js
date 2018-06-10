@@ -20,7 +20,7 @@ export default function jwtAuthStrategy(payload, done) {
     }
         
     logger.debug('Payload available', payload);
-    return done(null, payload);
+    return done(null, { _id: payload.userId });
 };
 
 export function constructOptions () {

@@ -12,7 +12,7 @@ describe('JWT Auth Strategy', function () {
                 should.not.exist(err);
 
                 should.exist(userObj);
-                userObj.should.equal(testPayload);
+                userObj._id.should.equal(testPayload.userId);
 
                 done();
             });

@@ -2,7 +2,8 @@ import bodyParser from 'body-parser';
 import cookieParser from 'cookie-parser';
 import compression from 'compression';
 import methodOverride from 'method-override';
-import errorHandler from 'errorhandler';
+import AuthMiddleware from '../api/auth/jwt';
+import errorHandlerMiddleware from '../api/err-handler.middleware';
 
 import { logger } from './app-logger';
 
@@ -16,11 +17,14 @@ class Express {
 		app.use(methodOverride());
 		app.use(cookieParser());
 
-		if (env === 'development' || env === 'test') {
-			app.use(errorHandler((err, msg, req) => {
-				logger.error(err, 'An error occurred while processing %s in %s', req.method, req.url);
-			}));
-		}
+		const unsecureRoutes = [
+			{ path: '/api/users', method: 'POST' },
+			{ path: '/api/session', method: 'POST' }
+		];
+		var authMiddleware = new AuthMiddleware();
+		app.use(authMiddleware.verifyTokenOnlyForSecurePaths(unsecureRoutes));
+
+		app.use(errorHandlerMiddleware);
 	}
 }
 
