@@ -3,7 +3,7 @@
 import mongoose from 'mongoose';
 import request from 'supertest';
 
-import JWTTokenAuth from '../util/jwt-token-util';
+import JWTTokenAuth from '../util/jwt-token.util';
 
 import app from '../../../app';
 import config from '../../../config/environment';
@@ -13,7 +13,7 @@ import { testValidUser } from '../../user/user.fixtures';
 
 import { logger } from '../../../config/app-logger';
 
-describe('Token Authentication', function () {
+describe('JWT Auth API', function () {
     const TEST_USER_ID = new UserModel(testValidUser)._id + 0;
     var jwtAuth;
     var token;

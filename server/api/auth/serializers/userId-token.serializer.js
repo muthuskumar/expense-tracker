@@ -1,4 +1,4 @@
-import JWTTokenAuth from '../util/jwt-token-util';
+import JWTTokenAuth from '../util/jwt-token.util';
 import { BaseController } from '../../base.controller';
 
 import ValidationError from '../../validation.error';

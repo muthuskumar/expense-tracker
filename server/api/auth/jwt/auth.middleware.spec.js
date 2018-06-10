@@ -4,7 +4,7 @@ var events = require('events');
 import { createRequest, createResponse } from 'node-mocks-http';
 
 import '../strategies';
-import JWTTokenAuth from '../util/jwt-token-util';
+import JWTTokenAuth from '../util/jwt-token.util';
 import AuthMiddleware from './auth.middleware';
 
 import { VALIDATION_MESSAGES } from '../auth.constants';

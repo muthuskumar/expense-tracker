@@ -15,7 +15,7 @@ import { errorName as validationErrName } from '../../validation.error';
 
 import { logger } from '../../../config/app-logger';
 
-describe('Auth API', function () {
+describe('Basic Auth API', function () {
 	before(function () {
 		if (mongoose.connection.readyState === 0)
 			mongoose.connect(config.mongo.uri, config.mongo.options)
