@@ -87,16 +87,16 @@ describe('Auth API', function () {
 				.post('/api/session')
 				.set('Authorization', 'Basic ' + new Buffer(testUsers[0].username + ':' + 'WrongPassword').toString('base64'))
 				.expect(401)
-				.expect('Content-Type', /json/)
 				.end((err, res) => {
 					if (err)
 						done(err);
 					else {
 						var error = res.body.errors;
-						
+
 						should.exist(error);
-						error.name.should.equal(authErrName);
-						error.message.should.equal(AUTH_ERR_MESSAGES.INVALID_PASSWORD);
+						error.name.should.equal(AUTH_ERR_MESSAGES.PASSPORT_AUTH_ERR_NAME);
+						error.message.should.equal(AUTH_ERR_MESSAGES.UNAUTHORIZED);
+
 						done();
 					}
 				});
@@ -105,8 +105,7 @@ describe('Auth API', function () {
 		it('should respond with error message for requests without credentials', function (done) {
 			request(app)
 				.post('/api/session')
-				.expect(400)
-				.expect('Content-Type', /json/)
+				.expect(401)
 				.end((err, res) => {
 					if (err)
 						done(err);
@@ -114,8 +113,9 @@ describe('Auth API', function () {
 						var error = res.body.errors;
 
 						should.exist(error);
-						error.name.should.equal(validationErrName);
-						error.message.should.equal(VALIDATION_MESSAGES.BASIC_AUTH_DETAILS_UNAVAILABLE);
+						error.name.should.equal(AUTH_ERR_MESSAGES.PASSPORT_AUTH_ERR_NAME);
+						error.message.should.equal(AUTH_ERR_MESSAGES.UNAUTHORIZED);
+
 						done();
 					}
 				});
