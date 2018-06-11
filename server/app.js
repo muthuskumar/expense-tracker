@@ -6,6 +6,7 @@ import { logger } from './config/app-logger';
 import ExpressConfig from './config/express';
 import config from './config/environment';
 import registerRoutes from './routes';
+import errorHandlerMiddleware from './api/err-handler.middleware';
 
 import "./api/auth/strategies";
 
@@ -21,5 +22,7 @@ mongoose.connect(config.mongo.uri, config.mongo.options)
 var app = express();
 new ExpressConfig(app);
 registerRoutes(app);
+
+app.use(errorHandlerMiddleware);
 
 exports = module.exports = app;

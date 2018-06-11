@@ -23,6 +23,7 @@ export default class UserIdTokenSerializer extends BaseController {
         try {
             validators.isUserAvailableInReq(req);
         } catch (err) {
+            logger.error('Error: ', err);
             next(err);
             return;
         }
