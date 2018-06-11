@@ -2,9 +2,10 @@
 
 import JWTTokenAuth from './jwt-token.util';
 
+import config from '../../../config/environment';
+import { UserModel } from '../../user/user.model';
 import ValidationError from '../../validation.error';
 import { VALIDATION_MESSAGES } from '../auth.constants';
-import { UserModel } from '../../user/user.model';
 
 describe('JWT token authenticator', function () {
 	context('sign token', function () {
@@ -36,7 +37,6 @@ describe('JWT token authenticator', function () {
 		});
 
 		it('should return an error if secret is not provided', function () {
-			var config = require('../../../config/environment');
 			var secretKey = config.jwtSecretKey;
 			config.jwtSecretKey = null;
 

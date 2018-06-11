@@ -53,7 +53,6 @@ export default class JWTTokenAuth {
 		try {
 			validators.isSecretAvailable(config.jwtSecretKey);
 			validators.isUserIdAvailable(userId);
-			console.log('Config: ', config);
 
 			token = jwt.sign({ userId: userId }, config.jwtSecretKey, _options);
 		} catch (err) {

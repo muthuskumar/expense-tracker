@@ -4,8 +4,6 @@
 	"description": "Expense tracker application to track user's expense and finance details.",
 	"config": {
 		"serverPath": "server",
-		"serverUnitTests": "server/**/*.spec.js",
-		"serverIntTests": "server/**/*integration.js",
 		"serverTests": "server/**/*.{spec,integration}.js"
 	},
 	"nodemonConfig": {
@@ -17,10 +15,10 @@
 		"start": "node dist/server/",
 		"start:dev": "export NODE_ENV=development && nodemon server",
 		"pretest:unit": "export NODE_ENV=test",
-		"test:unit": "mocha $npm_package_config_serverUnitTests --require babel-core/register --require mocha.conf --reporter spec --timeout 5s",
+		"test:unit": "mocha 'server/api/**/*.spec.js' --require babel-core/register --require mocha.conf --reporter spec --timeout 5s",
 		"test:unit:watch": "npm run test:unit -- --watch",
 		"pretest:integration": "export NODE_ENV=test",
-		"test:integration": "mocha $npm_package_config_serverIntTests --require babel-core/register --require mocha.conf --reporter spec --timeout 5s",
+		"test:integration": "mocha 'server/**/*.integration.js' --require babel-core/register --require mocha.conf --recursive --reporter spec --timeout 5s",
 		"test:integration:watch": "npm run test:integration -- --watch",
 		"pretest": "export NODE_ENV=test",
 		"test": "npm run test:unit && npm run test:integration",

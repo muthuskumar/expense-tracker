@@ -35,4 +35,5 @@ module.exports = {
 	},
 
 	jwtSecretKey: 'expense-tracker-auth-secret-key'
+	
 };

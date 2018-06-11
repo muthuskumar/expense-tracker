@@ -56,7 +56,8 @@ describe('JWT Auth Strategy', function () {
         });
 
         it('should return options object even if secret is unavailable', function (done) {
-            config.jwtSecretKey = null;
+			var secretKey = config.jwtSecretKey;
+			config.jwtSecretKey = null;
 
             var opts = constructOptions();
 
@@ -64,6 +65,8 @@ describe('JWT Auth Strategy', function () {
             should.not.exist(opts.secretOrKey);
             opts.jwtFromRequest.should.be.a('function');
 
+            config.jwtSecretKey = secretKey;
+               
             done();
         });
     });
