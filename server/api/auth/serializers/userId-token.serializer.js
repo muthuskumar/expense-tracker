@@ -34,4 +34,4 @@ export default class UserIdTokenSerializer extends BaseController {
             .then(super.respondWithResult(res, 201))
             .catch(super.callErrorMiddleware(next));
     }
-};
+}

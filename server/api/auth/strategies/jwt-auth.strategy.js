@@ -1,9 +1,6 @@
 import { ExtractJwt } from 'passport-jwt';
 import config from '../../../config/environment';
 
-import AuthError from "../../auth.error";
-import { AUTH_ERR_MESSAGES } from '../auth.constants';
-
 import { logger } from '../../../config/app-logger';
 
 export default function jwtAuthStrategy(payload, done) {
@@ -21,7 +18,7 @@ export default function jwtAuthStrategy(payload, done) {
         
     logger.debug('Payload available', payload);
     return done(null, { _id: payload.userId });
-};
+}
 
 export function constructOptions () {
     logger.info('---------------constructOptions---------------');
@@ -34,4 +31,4 @@ export function constructOptions () {
     logger.debug('Opts: ' + opts);
 
     return opts;
-};
+}

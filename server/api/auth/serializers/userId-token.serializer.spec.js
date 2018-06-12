@@ -1,10 +1,9 @@
+/*global sinon, should*/
 import { EventEmitter } from "events";
 import { createRequest, createResponse } from 'node-mocks-http';
 
 import { testValidUser } from '../../user/user.fixtures';
 import { UserModel } from '../../user/user.model';
-import { errorName as validationErrorName } from '../../validation.error';
-import { VALIDATION_MESSAGES } from '../auth.constants';
 
 import UserIdTokenSerializer from "./userId-token.serializer";
 

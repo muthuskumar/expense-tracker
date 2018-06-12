@@ -7,11 +7,8 @@ import app from '../../../app';
 import config from '../../../config/environment';
 
 import { UserModel } from '../../user/user.model';
-import AuthError from '../../auth.error';
-import { testUsers, testValidUser } from '../../user/user.fixtures';
-import { VALIDATION_MESSAGES, AUTH_ERR_MESSAGES } from '../auth.constants';
-import { errorName as authErrName } from '../../auth.error';
-import { errorName as validationErrName } from '../../validation.error';
+import { testUsers } from '../../user/user.fixtures';
+import { AUTH_ERR_MESSAGES } from '../auth.constants';
 
 import { logger } from '../../../config/app-logger';
 

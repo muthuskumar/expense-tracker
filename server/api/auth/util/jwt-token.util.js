@@ -1,3 +1,4 @@
+/*global Promise*/
 import jwt from 'jsonwebtoken';
 
 import config from '../../../config/environment';
@@ -5,6 +6,7 @@ import { VALIDATION_MESSAGES } from '../auth.constants';
 import ValidationError from '../../validation.error';
 
 import { logger } from '../../../config/app-logger';
+import InternalServerError from '../../internal-server.error';
 
 var _options = {
 	expiresIn: '5h'
@@ -93,7 +95,7 @@ export default class JWTTokenAuth {
 			else if (error)
 				reject(error);
 			else
-				reject(err);
+				reject(new InternalServerError('An error occurred while processing token.'));
 		});
 	}
 }

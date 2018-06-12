@@ -38,7 +38,7 @@ export class BaseController {
 		}
 	}
 
-	handleError(res, statusCode, err) {
+	handleError(res, statusCode) {
 		logger.info('---------------BaseController.handleError---------------');
 
 		var _statusCode;

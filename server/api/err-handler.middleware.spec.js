@@ -1,3 +1,5 @@
+/*global should, sinon*/
+
 import { EventEmitter } from "events";
 import { createRequest, createResponse } from 'node-mocks-http';
 

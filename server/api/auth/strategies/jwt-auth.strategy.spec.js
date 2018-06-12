@@ -1,11 +1,9 @@
+/*global should*/
 import jwtAuthStrategy, { constructOptions } from './jwt-auth.strategy';
 import config from '../../../config/environment';
 
-import { errorName as authErrName } from '../../auth.error';
-import { AUTH_ERR_MESSAGES } from '../auth.constants';
-
 describe('JWT Auth Strategy', function () {
-    context('strategy', function (done) {
+    context('strategy', function () {
         it('should return user object on successful token validation', function (done) {
             var testPayload = { userId: 'This is a test token' };
             jwtAuthStrategy(testPayload, function (err, userObj) {

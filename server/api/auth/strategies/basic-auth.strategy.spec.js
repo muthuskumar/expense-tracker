@@ -1,7 +1,7 @@
+/*global sinon, should*/
 import basicAuthStrategy from './basic-auth.strategy';
 
 import InternalServerError from '../../internal-server.error';
-import { VALIDATION_MESSAGES } from '../auth.constants';
 
 import { UserModel } from '../../user/user.model';
 import { testValidUser } from '../../user/user.fixtures';

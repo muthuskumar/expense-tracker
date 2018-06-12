@@ -8,7 +8,10 @@ import { logger } from './app-logger';
 
 class Express {
 	constructor(app) {
+		logger.info('---------------Express Configuration---------------');
+
 		const env = app.get('env');
+		logger.debug('Environment: ', env);
 
 		app.use(compression());
 		app.use(bodyParser.urlencoded({ extended: false }));

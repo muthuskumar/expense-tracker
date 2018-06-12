@@ -170,7 +170,7 @@ UserSchema.pre('save', UserSchema._middlewareFunctions.encryptPassword);
 
 if (!UserSchema.options.toJSON)
 	UserSchema.options.toJSON = {};
-UserSchema.options.toJSON.transform = (doc, ret, options) => {
+UserSchema.options.toJSON.transform = (doc, ret, options) => { // eslint-disable-line no-unused-vars
 	delete ret.password;
 	return ret;
 };

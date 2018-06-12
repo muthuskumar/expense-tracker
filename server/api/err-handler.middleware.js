@@ -31,4 +31,4 @@ export default function errorHandlerMiddleware(err, req, res, next) {
 
     res.json({ errors: { name: err.name, message: err.message } });
 
-};
+}

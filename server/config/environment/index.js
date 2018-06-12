@@ -3,7 +3,6 @@
 
 import path from 'path';
 import _ from 'lodash';
-import bunyan from 'bunyan';
 
 // All configurations will extend these options
 // ============================================

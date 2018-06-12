@@ -1,7 +1,5 @@
 import passport from 'passport';
 
-import { VALIDATION_MESSAGES } from '../auth.constants';
-
 import { logger } from '../../../config/app-logger';
 
 export default class AuthMiddleware {
@@ -14,7 +12,7 @@ export default class AuthMiddleware {
 			logger.debug('Paths which do not need security authorization: ', unsecurePaths);
 
 			var isUnsecureRoute = false;
-			unsecurePaths.forEach((item, index) => {
+			unsecurePaths.forEach((item, index) => { // eslint-disable-line no-unused-vars
 				if (item.path === req.path && item.method === req.method)
 					isUnsecureRoute = true;
 			});

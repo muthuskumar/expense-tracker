@@ -1,3 +1,4 @@
+/*global Promise, Reflect */
 import mongoose from 'mongoose';
 
 import { BaseController } from '../base.controller';
@@ -87,7 +88,7 @@ export default class UserController extends BaseController {
 		}
 
 		return _isUserIdAvailableInRequest(req)
-			.then((isAvailable) => {
+			.then((isAvailable) => { // eslint-disable-line no-unused-vars
 				UserModel.findOne(searchCriteria)
 					.exec()
 					.then(super.handleEntityNotFound(res))
@@ -102,7 +103,7 @@ export default class UserController extends BaseController {
 		logger.debug('Req body: ', req.body);
 
 		return _isUserAvailableInRequest(req)
-			.then((isAvailable) => {
+			.then((isAvailable) => { // eslint-disable-line no-unused-vars
 				var user = new UserModel(req.body);
 				user.save(req.body)
 					.then(super.respondWithResult(res, 201))
@@ -139,7 +140,7 @@ export default class UserController extends BaseController {
 		logger.debug('Req params: ', req.params);
 
 		return _isUserIdAvailableInRequest(req)
-			.then((isAvailable) => {
+			.then((isAvailable) => { // eslint-disable-line no-unused-vars
 				UserModel.findByIdAndRemove(req.params.id).exec()
 					.then(super.handleEntityNotFound(res))
 					.then(super.respondWithResult(res, 204))

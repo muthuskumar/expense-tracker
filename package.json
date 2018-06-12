@@ -4,6 +4,8 @@
 	"description": "Expense tracker application to track user's expense and finance details.",
 	"config": {
 		"serverPath": "server",
+		"serverUnitTests": "server/**/*.spec.js",
+		"serverIntTests": "server/**/*.integration.js",
 		"serverTests": "server/**/*.{spec,integration}.js"
 	},
 	"nodemonConfig": {
@@ -15,7 +17,7 @@
 		"start": "node dist/server/",
 		"start:dev": "export NODE_ENV=development && nodemon server",
 		"pretest:unit": "export NODE_ENV=test",
-		"test:unit": "mocha 'server/api/**/*.spec.js' --require babel-core/register --require mocha.conf --reporter spec --timeout 5s",
+		"test:unit": "mocha 'server/**/*.spec.js' --require babel-core/register --require mocha.conf --reporter spec --timeout 5s",
 		"test:unit:watch": "npm run test:unit -- --watch",
 		"pretest:integration": "export NODE_ENV=test",
 		"test:integration": "mocha 'server/**/*.integration.js' --require babel-core/register --require mocha.conf --recursive --reporter spec --timeout 5s",
@@ -24,8 +26,8 @@
 		"test": "npm run test:unit && npm run test:integration",
 		"test:watch": "concurrently \"npm run test:unit -- --watch\" \" npm run test:integration -- --watch\"",
 		"code-coverage": "nyc npm run test",
-		"lint": "eslint --config .eslintrc.json --format stylish $npm_package_config_serverPath/**/*.js --ignore-pattern $npm_package_config_serverUnitTests --ignore-pattern $npm_package_config_serverIntTests",
-		"lint:testcases": "eslint --config .eslintrc.json --format stylish $npm_package_config_serverUnitTests $npm_package_config_serverIntTests",
+		"lint": "eslint 'server/**/*.js' --ignore-pattern 'server/**/*.spec.js' --ignore-pattern 'server/**/*.integration.js' --config .eslintrc.json --format stylish",
+		"lint:testcases": "eslint 'server/**/*.spec.js' 'server/**/*.integration.js' --config .eslintrc.json --format stylish",
 		"clean": "rm -rf dist/$npm_package_config_serverPath/*",
 		"precompile": "npm run clean",
 		"compile": "babel $npm_package_config_serverPath --ignore $npm_package_config_serverUnitTests, $npm_package_config_serverIntTests --out-dir dist/$npm_package_config_serverPath",

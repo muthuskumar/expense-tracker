@@ -1,5 +1,3 @@
-/*global should*/
-
 import JWTTokenAuth from './jwt-token.util';
 
 import config from '../../../config/environment';

@@ -7,7 +7,6 @@ import '../strategies';
 import JWTTokenAuth from '../util/jwt-token.util';
 import AuthMiddleware from './auth.middleware';
 
-import { VALIDATION_MESSAGES } from '../auth.constants';
 import { UserModel } from '../../user/user.model';
 import { testValidUser } from '../../user/user.fixtures';
 
@@ -121,7 +120,7 @@ describe('Auth Middleware', function () {
 			var mwFn = authMw.verifyTokenOnlyForSecurePaths(unsecurePaths);
 			assert.isFunction(mwFn);
 
-			mwFn(httpReq, httpRes, (err) => { 
+			mwFn(httpReq, httpRes, (err) => { // eslint-disable-line no-unused-vars
 				try {
 					httpRes.statusCode.should.equal(401);
 					should.not.exist(httpReq.user);
@@ -142,7 +141,7 @@ describe('Auth Middleware', function () {
 			var mwFn = authMw.verifyTokenOnlyForSecurePaths(unsecurePaths);
 			assert.isFunction(mwFn);
 
-			mwFn(httpReq, httpRes, (err) => {
+			mwFn(httpReq, httpRes, (err) => { // eslint-disable-line no-unused-vars
 				try {
 					httpRes.statusCode.should.equal(401);
 					should.not.exist(httpReq.user);
