@@ -13,3 +13,4 @@ var userIdTokenSerializer = new UserIdTokenSerializer();
 router.post('/', passport.authenticate('basic', authOptions), userIdTokenSerializer.middlewareFn);
 
 module.exports = router;
+

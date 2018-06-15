@@ -24,4 +24,5 @@ const VALIDATION_MESSAGES = Object.freeze({
 module.exports = {
     STATUSES: STATUSES,
     VALIDATION_MESSAGES: VALIDATION_MESSAGES
-}
+};
+

@@ -1,4 +1,4 @@
-'use strict'
+'use strict';
 
 /*eslint no-process-env:0*/
 
@@ -9,3 +9,4 @@ if (env === "development" || env === "test") {
 }
 
 exports = module.exports = require('./server');
+

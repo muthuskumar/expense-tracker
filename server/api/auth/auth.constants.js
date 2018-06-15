@@ -22,4 +22,5 @@ const AUTH_ERR_MESSAGES = Object.freeze({
 module.exports = {
     VALIDATION_MESSAGES: VALIDATION_MESSAGES,
     AUTH_ERR_MESSAGES: AUTH_ERR_MESSAGES
-}
+};
+

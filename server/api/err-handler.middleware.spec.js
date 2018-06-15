@@ -165,3 +165,4 @@ describe('Error handling middleware', function () {
         errHandlerMiddleware(testErr, httpReq, httpRes, nextSpy);
     });
 });
+

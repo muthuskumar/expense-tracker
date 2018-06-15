@@ -19,12 +19,12 @@ describe('JWT Auth API', function () {
     before(function () {
         if (mongoose.connection.readyState === 0)
             mongoose.connect(config.mongo.uri, config.mongo.options)
-                .then(() => {
-                    logger.info("Database connection established!");
-                })
-                .catch((err) => {
-                    logger.error("An error occured while starting the database.", err);
-                });
+            .then(() => {
+                logger.info("Database connection established!");
+            })
+            .catch((err) => {
+                logger.error("An error occured while starting the database.", err);
+            });
     });
 
     after(function () {
@@ -107,7 +107,7 @@ describe('JWT Auth API', function () {
                 })
                 .catch((err) => {
                     done(err);
-                })
+                });
         });
 
         afterEach(function (done) {
@@ -130,7 +130,8 @@ describe('JWT Auth API', function () {
                         done(err);
                     else
                         done();
-                })
+                });
         });
     });
 });
+

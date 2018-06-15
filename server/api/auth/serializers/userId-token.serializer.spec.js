@@ -78,3 +78,4 @@ describe('tokenSerializer', function () {
         done();
     });
 });
+

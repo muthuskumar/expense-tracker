@@ -5,3 +5,4 @@ var emailFormatValidationRegex = /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s
 module.exports.noSpecialCharValidationRegex = noSpecialCharValidationRegex;
 module.exports.numberValidationRegex = numberValidationRegex;
 module.exports.emailFormatValidationRegex = emailFormatValidationRegex;
+

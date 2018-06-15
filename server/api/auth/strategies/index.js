@@ -7,3 +7,4 @@ import jwtAuthStrategy, { constructOptions } from './jwt-auth.strategy';
 
 passport.use(new BasicStrategy(basicAuthStrategy));
 passport.use(new JWTStrategy(constructOptions(), jwtAuthStrategy));
+

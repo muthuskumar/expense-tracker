@@ -8,3 +8,4 @@ export default class AuthError extends Error {
 }
 
 module.exports.errorName = ERROR_NAME;
+

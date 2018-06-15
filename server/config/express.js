@@ -7,25 +7,26 @@ import AuthMiddleware from '../api/auth/jwt';
 import { logger } from './app-logger';
 
 class Express {
-	constructor(app) {
-		logger.info('---------------Express Configuration---------------');
+    constructor(app) {
+	logger.info('---------------Express Configuration---------------');
 
-		const env = app.get('env');
-		logger.debug('Environment: ', env);
+	const env = app.get('env');
+	logger.debug('Environment: ', env);
 
-		app.use(compression());
-		app.use(bodyParser.urlencoded({ extended: false }));
-		app.use(bodyParser.json());
-		app.use(methodOverride());
-		app.use(cookieParser());
+	app.use(compression());
+	app.use(bodyParser.urlencoded({ extended: false }));
+	app.use(bodyParser.json());
+	app.use(methodOverride());
+	app.use(cookieParser());
 
-		const unsecureRoutes = [
-			{ path: '/api/users', method: 'POST' },
-			{ path: '/api/session', method: 'POST' }
-		];
-		var authMiddleware = new AuthMiddleware();
-		app.use(authMiddleware.verifyTokenOnlyForSecurePaths(unsecureRoutes));
-	}
+	const unsecureRoutes = [
+	    { path: '/api/users', method: 'POST' },
+	    { path: '/api/session', method: 'POST' }
+	];
+	var authMiddleware = new AuthMiddleware();
+	app.use(authMiddleware.verifyTokenOnlyForSecurePaths(unsecureRoutes));
+    }
 }
 
 module.exports = Express;
+

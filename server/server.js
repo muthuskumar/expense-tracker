@@ -27,3 +27,4 @@ var closeConnections = () => {
 
 process.on('SIGINT', closeConnections);
 process.on('SIGTERM', closeConnections);
+

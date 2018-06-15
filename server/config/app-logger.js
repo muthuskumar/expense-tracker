@@ -8,3 +8,4 @@ if (!logger) {
 }
 
 module.exports.logger = logger;
+

@@ -15,7 +15,7 @@ export default function jwtAuthStrategy(payload, done) {
         logger.debug('UserId unavailable in payload');
         return done(null, false);
     }
-        
+    
     logger.debug('Payload available', payload);
     return done(null, { _id: payload.userId });
 }
@@ -32,3 +32,4 @@ export function constructOptions () {
 
     return opts;
 }
+

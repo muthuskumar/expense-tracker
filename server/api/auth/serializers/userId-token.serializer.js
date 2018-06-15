@@ -16,6 +16,7 @@ var validators = {
         }
     }
 };
+
 export default class UserIdTokenSerializer extends BaseController {
     middlewareFn(req, res, next) {
         logger.info('---------------tokenSerializer---------------');
@@ -35,3 +36,4 @@ export default class UserIdTokenSerializer extends BaseController {
             .catch(super.callErrorMiddleware(next));
     }
 }
+

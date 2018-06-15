@@ -17,7 +17,7 @@ export default function errorHandlerMiddleware(err, req, res, next) {
 
     if (res.headersSent) {
         logger.debug('Headers already sent. Passing to default error handler');
-        return next(err)
+        return next(err);
     }
 
     if (err instanceof ValidationError)
@@ -29,6 +29,7 @@ export default function errorHandlerMiddleware(err, req, res, next) {
     else
         res.status(500);
 
-    res.json({ errors: { name: err.name, message: err.message } });
+    return res.json({ errors: { name: err.name, message: err.message } });
 
 }
+

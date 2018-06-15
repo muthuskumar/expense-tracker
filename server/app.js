@@ -26,3 +26,4 @@ registerRoutes(app);
 app.use(errorHandlerMiddleware);
 
 exports = module.exports = app;
+

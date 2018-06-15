@@ -24,3 +24,10 @@ client/*~
 
 #nyc outputs
 .nyc_output
+
+#tern configuration
+.tern-port
+.tern-project
+
+#vs code editor configuration
+.vscode
