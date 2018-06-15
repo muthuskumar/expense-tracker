@@ -1,4 +1,4 @@
-/*global Promise, Reflect */
+/*global Reflect */
 import mongoose from 'mongoose';
 
 import { BaseController } from '../base.controller';
