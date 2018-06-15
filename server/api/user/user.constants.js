@@ -18,7 +18,9 @@ const VALIDATION_MESSAGES = Object.freeze({
     PASSWORD_UPPERCASE: 'The password must contain at least one uppercase letter.',
     PASSWORD_LOWERCASE: 'The password must contain at least one lowercase letter.',
     PASSWORD_SPECIALCHAR: 'The password must contain at least one special character.',
-    PASSWORD_NUMBERS: 'The password must contain at least one number.'
+    PASSWORD_NUMBERS: 'The password must contain at least one number.',
+    USERDETAILS_UNAVAILABLE: 'User details is not provided.',
+    USERID_UNAVAILABLE: 'User Id is not provided.'
 });
 
 module.exports = {

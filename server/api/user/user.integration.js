@@ -8,8 +8,9 @@ import app from '../../app';
 import config from '../../config/environment';
 import { UserModel } from './user.model';
 
-import { testUsers, testInvalidUser, testInvalidId } from './user.fixtures';
 import { VALIDATION_MESSAGES, STATUSES } from './user.constants';
+import { errorName as validationErrName } from '../validation.error';
+import { testUsers, testInvalidUser, testInvalidId } from './user.fixtures';
 
 import { logger } from '../../config/app-logger';
 
@@ -241,7 +242,7 @@ describe('User API:', function () {
 	    request(app)
 		.post('/api/users')
 		.send(testInvalidUser)
-		.expect(500)
+		.expect(400)
 		.expect('Content-Type', /json/)
 		.end(function (err, res) {
 		    if (err)
@@ -250,11 +251,11 @@ describe('User API:', function () {
 		    var errors = res.body.errors;
 		    should.exist(errors);
 
-		    errors['username'].message.should.contain(VALIDATION_MESSAGES.USERNAME_MINLENGTH);
-		    errors['email'].message.should.contain(VALIDATION_MESSAGES.EMAIL_BADFORMAT);
-		    errors['firstName'].message.should.contain(VALIDATION_MESSAGES.NAME_NUMBERS);
-		    errors['lastName'].message.should.contain(VALIDATION_MESSAGES.NAME_SPECIALCHAR);
-		    errors['password'].message.should.contain(VALIDATION_MESSAGES.PASSWORD_MANDATORY);
+		    errors.message.should.contain(VALIDATION_MESSAGES.USERNAME_MINLENGTH);
+		    errors.message.should.contain(VALIDATION_MESSAGES.EMAIL_BADFORMAT);
+		    errors.message.should.contain(VALIDATION_MESSAGES.NAME_NUMBERS);
+		    errors.message.should.contain(VALIDATION_MESSAGES.NAME_SPECIALCHAR);
+		    errors.message.should.contain(VALIDATION_MESSAGES.PASSWORD_MANDATORY);
 
 		    done();
 		});
@@ -385,8 +386,9 @@ describe('User API:', function () {
 		    if (err)
 			done(err);
 
-		    res.body.name.should.equal('CastError');
-		    res.body.message.should.contain('Cast to ObjectId failed');
+		    var error = res.body.errors;
+		    error.name.should.equal('CastError');
+		    error.message.should.contain('Cast to ObjectId failed');
 
 		    done();
 		});
@@ -396,14 +398,14 @@ describe('User API:', function () {
 	    request(app)
 		.put('/api/users/' + originalUser._id)
 		.set('Authorization', 'bearer ' + token)
-		.expect(500)
+		.expect(400)
 		.expect('Content-Type', /json/)
 		.end(function (err, res) {
 		    if (err)
 			done(err);
-
-		    res.body.name.should.equals('Internal Server Error');
-		    res.body.message.should.equals('User details is not provided.');
+		    var error = res.body.errors;
+		    error.name.should.equals(validationErrName);
+		    error.message.should.equals(VALIDATION_MESSAGES.USERDETAILS_UNAVAILABLE);
 
 		    done();
 		});
@@ -414,7 +416,7 @@ describe('User API:', function () {
 		.put('/api/users/' + originalUser._id)
 		.set('Authorization', 'bearer ' + token)
 		.send(testInvalidUser)
-		.expect(500)
+		.expect(400)
 		.expect('Content-Type', /json/)
 		.end(function (err, res) {
 		    if (err)
@@ -423,8 +425,8 @@ describe('User API:', function () {
 		    var errors = res.body.errors;
 		    should.exist(errors);
 
-		    errors['firstName'].message.should.contain(VALIDATION_MESSAGES.NAME_NUMBERS);
-		    errors['lastName'].message.should.contain(VALIDATION_MESSAGES.NAME_SPECIALCHAR);
+		    errors.message.should.contain(VALIDATION_MESSAGES.NAME_NUMBERS);
+		    errors.message.should.contain(VALIDATION_MESSAGES.NAME_SPECIALCHAR);
 
 		    done();
 		});

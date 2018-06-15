@@ -8,6 +8,10 @@ import { UserModel } from './user.model';
 import UserController from './user.controller';
 import { testUsers, testValidUser, testUserWithoutUsername, testUpdatedUser } from './user.fixtures';
 
+import { errorName as validationErrorName } from '../validation.error';
+import { VALIDATION_MESSAGES } from './user.constants';
+import errorHandlerMiddleware  from '../err-handler.middleware';
+
 describe('User Controller ', function () {
 
     var httpReq;
@@ -143,7 +147,7 @@ describe('User Controller ', function () {
 		try {
 		    httpRes.statusCode.should.equal(500);
 
-		    var err = httpRes._getData();
+		    var err = JSON.parse(httpRes._getData()).errors;
 		    should.exist(err);
 		    err.name.should.equal('MongoError');
 
@@ -154,7 +158,9 @@ describe('User Controller ', function () {
 	    });
 
 	    const userCtrl = new UserController();
-	    userCtrl.getUsers(httpReq, httpRes);
+	    userCtrl.getUsers(httpReq, httpRes, (err) => {
+		errorHandlerMiddleware(err, httpReq, httpRes, null);
+	    });
 	});
     });
 
@@ -274,12 +280,12 @@ describe('User Controller ', function () {
 
 	    httpRes.on('end', () => {
 		try {
-		    httpRes.statusCode.should.equal(500);
+		    httpRes.statusCode.should.equal(400);
 
-		    var err = httpRes._getData();
+		    var err = JSON.parse(httpRes._getData()).errors;
 		    should.exist(err);
-		    err.name.should.equal('Internal Server Error');
-		    err.message.should.equal('UserId is not provided.');
+		    err.name.should.equal(validationErrorName);
+		    err.message.should.equal(VALIDATION_MESSAGES.USERID_UNAVAILABLE);
 
 		    done();
 		} catch (err) {
@@ -288,7 +294,9 @@ describe('User Controller ', function () {
 	    });
 
 	    const userCtrl = new UserController();
-	    userCtrl.getUser(httpReq, httpRes);
+	    userCtrl.getUser(httpReq, httpRes, (err) => {
+		errorHandlerMiddleware(err, httpReq, httpRes, null);
+	    });
 	});
 
 	it('should respond with error message & status code if user is not found', function (done) {
@@ -339,7 +347,7 @@ describe('User Controller ', function () {
 		try {
 		    httpRes.statusCode.should.equal(500);
 
-		    var err = httpRes._getData();
+		    var err = JSON.parse(httpRes._getData()).errors;
 		    should.exist(err);
 		    err.name.should.equal('MongoError');
 
@@ -350,10 +358,13 @@ describe('User Controller ', function () {
 	    });
 
 	    const userCtrl = new UserController();
-	    userCtrl.getUser(httpReq, httpRes);
+	    userCtrl.getUser(httpReq, httpRes, (err) => {
+		errorHandlerMiddleware(err, httpReq, httpRes, null);
+	    });
 	});
     });
 
+    
     context('save user', function () {
 	var userProtoMock;
 
@@ -401,12 +412,12 @@ describe('User Controller ', function () {
 
 	    httpRes.on('end', () => {
 		try {
-		    httpRes.statusCode.should.equal(500);
+		    httpRes.statusCode.should.equal(400);
 
-		    var err = httpRes._getData();
+		    var err = JSON.parse(httpRes._getData()).errors;
 		    should.exist(err);
-		    err.name.should.equal('Internal Server Error');
-		    err.message.should.equal('User details is not provided.');
+		    err.name.should.equal(validationErrorName);
+		    err.message.should.equal(VALIDATION_MESSAGES.USERDETAILS_UNAVAILABLE);
 
 		    done();
 		} catch (err) {
@@ -415,7 +426,9 @@ describe('User Controller ', function () {
 	    });
 
 	    const userCtrl = new UserController();
-	    userCtrl.createUser(httpReq, httpRes);
+	    userCtrl.createUser(httpReq, httpRes, (err) => {
+		errorHandlerMiddleware(err, httpReq, httpRes, null);
+	    });
 	});
 
 	it('should respond with error message & status code if user details is invalid', function (done) {
@@ -430,11 +443,11 @@ describe('User Controller ', function () {
 
 	    httpRes.on('end', () => {
 		try {
-		    httpRes.statusCode.should.equal(500);
+		    httpRes.statusCode.should.equal(400);
 
-		    var err = httpRes._getData();
+		    var err = JSON.parse(httpRes._getData()).errors;
 		    should.exist(err);
-		    err.name.should.equal('ValidationError');
+		    err.name.should.equal(validationErrorName);
 		    err.message.should.equal('Username is mandatory!');
 
 		    done();
@@ -444,7 +457,9 @@ describe('User Controller ', function () {
 	    });
 
 	    const userCtrl = new UserController();
-	    userCtrl.createUser(httpReq, httpRes);
+	    userCtrl.createUser(httpReq, httpRes, (err) => {
+		errorHandlerMiddleware(err, httpReq, httpRes, null);
+	    });
 	});
 
 	it('should respond with error message & status code for db exceptions', function (done) {
@@ -461,7 +476,7 @@ describe('User Controller ', function () {
 		try {
 		    httpRes.statusCode.should.equal(500);
 
-		    var err = httpRes._getData();
+		    var err = JSON.parse(httpRes._getData()).errors;
 		    should.exist(err);
 		    err.name.should.equal('MongoError');
 
@@ -472,7 +487,9 @@ describe('User Controller ', function () {
 	    });
 
 	    const userCtrl = new UserController();
-	    userCtrl.createUser(httpReq, httpRes);
+	    userCtrl.createUser(httpReq, httpRes, (err) => {
+		errorHandlerMiddleware(err, httpReq, httpRes, null);
+	    });
 	});
     });
 
@@ -533,12 +550,12 @@ describe('User Controller ', function () {
 
 	    httpRes.on('end', () => {
 		try {
-		    httpRes.statusCode.should.equal(500);
+		    httpRes.statusCode.should.equal(400);
 
-		    var err = httpRes._getData();
+		    var err = JSON.parse(httpRes._getData()).errors;
 		    should.exist(err);
-		    err.name.should.equal('Internal Server Error');
-		    err.message.should.equal('UserId is not provided.');
+		    err.name.should.equal(validationErrorName);
+		    err.message.should.equal(VALIDATION_MESSAGES.USERID_UNAVAILABLE);
 
 		    done();
 		} catch (err) {
@@ -547,7 +564,9 @@ describe('User Controller ', function () {
 	    });
 
 	    const userCtrl = new UserController();
-	    userCtrl.updateUser(httpReq, httpRes);
+	    userCtrl.updateUser(httpReq, httpRes, (err) => {
+		errorHandlerMiddleware(err, httpReq, httpRes, null);
+	    });
 	});
 
 	it('should respond with error message & status code when user details are not provided', function (done) {
@@ -560,12 +579,12 @@ describe('User Controller ', function () {
 
 	    httpRes.on('end', () => {
 		try {
-		    httpRes.statusCode.should.equal(500);
+		    httpRes.statusCode.should.equal(400);
 
-		    var err = httpRes._getData();
+		    var err = JSON.parse(httpRes._getData()).errors;
 		    should.exist(err);
-		    err.name.should.equal('Internal Server Error');
-		    err.message.should.equal('User details is not provided.');
+		    err.name.should.equal(validationErrorName);
+		    err.message.should.equal(VALIDATION_MESSAGES.USERDETAILS_UNAVAILABLE);
 
 		    done();
 		} catch (err) {
@@ -574,7 +593,9 @@ describe('User Controller ', function () {
 	    });
 
 	    const userCtrl = new UserController();
-	    userCtrl.updateUser(httpReq, httpRes);
+	    userCtrl.updateUser(httpReq, httpRes, (err) => {
+		errorHandlerMiddleware(err, httpReq, httpRes, null);
+	    });
 	});
 
 	it('should respond with error message & status code if user is not found.', function (done) {
@@ -626,7 +647,7 @@ describe('User Controller ', function () {
 		try {
 		    httpRes.statusCode.should.equal(500);
 
-		    var err = httpRes._getData();
+		    var err = JSON.parse(httpRes._getData()).errors;
 		    should.exist(err);
 		    err.name.should.equal('MongoError');
 
@@ -637,7 +658,9 @@ describe('User Controller ', function () {
 	    });
 
 	    const userCtrl = new UserController();
-	    userCtrl.updateUser(httpReq, httpRes);
+	    userCtrl.updateUser(httpReq, httpRes, (err) => {
+		errorHandlerMiddleware(err, httpReq, httpRes, null);
+	    });
 	});
     });
 
@@ -688,12 +711,12 @@ describe('User Controller ', function () {
 
 	    httpRes.on('end', () => {
 		try {
-		    httpRes.statusCode.should.equal(500);
+		    httpRes.statusCode.should.equal(400);
 
-		    var err = httpRes._getData();
+		    var err = JSON.parse(httpRes._getData()).errors;
 		    should.exist(err);
-		    err.name.should.equal('Internal Server Error');
-		    err.message.should.equal('UserId is not provided.');
+		    err.name.should.equal(validationErrorName);
+		    err.message.should.equal(VALIDATION_MESSAGES.USERID_UNAVAILABLE);
 
 		    done();
 		} catch (err) {
@@ -702,7 +725,9 @@ describe('User Controller ', function () {
 	    });
 
 	    const userCtrl = new UserController();
-	    userCtrl.removeUser(httpReq, httpRes);
+	    userCtrl.removeUser(httpReq, httpRes, (err) => {
+		errorHandlerMiddleware(err, httpReq, httpRes, null);
+	    });
 	});
 
 	it('should respond with error message status code if user is not found.', function (done) {
@@ -751,7 +776,7 @@ describe('User Controller ', function () {
 		try {
 		    httpRes.statusCode.should.equal(500);
 
-		    var err = httpRes._getData();
+		    var err = JSON.parse(httpRes._getData()).errors;
 		    should.exist(err);
 		    err.name.should.equal('MongoError');
 
@@ -762,7 +787,9 @@ describe('User Controller ', function () {
 	    });
 
 	    const userCtrl = new UserController();
-	    userCtrl.removeUser(httpReq, httpRes);
+	    userCtrl.removeUser(httpReq, httpRes, (err) => {
+		errorHandlerMiddleware(err, httpReq, httpRes, null);
+	    });
 	});
     });
 });

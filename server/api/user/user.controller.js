@@ -5,38 +5,33 @@ import { BaseController } from '../base.controller';
 import { UserModel } from './user.model';
 import { emailFormatValidationRegex } from '../../utils/custom.validators';
 
+import ValidationError from '../validation.error';
+import { VALIDATION_MESSAGES } from './user.constants';
+
 import { logger } from '../../config/app-logger';
 
 function _isUserIdAvailableInRequest(req) {
     logger.info('---------------_isUserIdAvailableInRequest---------------');
 
-    return new Promise((resolve, reject) => {
-	if (req.params.id) {
-	    logger.debug('id available');
+    if (req.params.id) {
+	logger.debug('id available');
+    } else {
 
-	    resolve(true);
-	} else {
-	    logger.debug('id unavailable');
-
-	    reject({ name: 'Internal Server Error', message: 'UserId is not provided.' });
-	}
-    });
+	logger.debug('id unavailable');
+	throw new ValidationError('userId', VALIDATION_MESSAGES.USERID_UNAVAILABLE);
+    }
 }
 
 function _isUserAvailableInRequest(req) {
     logger.info('---------------_isUserAvailableInRequest---------------');
 
-    return new Promise((resolve, reject) => {
-	if (req.body.constructor === Object && Object.keys(req.body).length === 0) {
-	    logger.debug('Empty req.body');
+    if (req.body.constructor === Object && Object.keys(req.body).length === 0) {
 
-	    reject({ name: 'Internal Server Error', message: 'User details is not provided.' });
-	} else {
-	    logger.debug('req.body available');
-
-	    resolve(true);
-	}
-    });
+	logger.debug('Empty req.body');
+	throw new ValidationError('headers',VALIDATION_MESSAGES.USERDETAILS_UNAVAILABLE);
+    } else {
+	logger.debug('req.body available');
+    }
 }
 
 function _stripUniqueIdsBeforeUpdate(req) {
@@ -56,7 +51,7 @@ function _stripUniqueIdsBeforeUpdate(req) {
 
 export default class UserController extends BaseController {
 
-    getUsers(req, res) {
+    getUsers(req, res, next) {
 	logger.info('---------------UserController.getUsers---------------');
 	logger.debug('Query params: ', req.query);
 
@@ -67,14 +62,21 @@ export default class UserController extends BaseController {
 	    .sort({ _id: 'asc' })
 	    .exec()
 	    .then(super.respondWithResult(res))
-	    .catch(super.handleError(res));
+	    .catch(super.callErrorMiddleware(next));
     }
 
-    getUser(req, res) {
+    getUser(req, res, next) {
 	logger.info('---------------UserController.getUser---------------');
 	logger.debug('Req params: ', req.params);
 
 	var searchCriteria = {};
+	try {
+	    _isUserIdAvailableInRequest(req);
+	} catch (err) {
+	    next(err);
+	    return;
+	}
+	
 	try {
 	    mongoose.Types.ObjectId(req.params.id);
 	    searchCriteria = { _id: req.params.id };
@@ -87,66 +89,68 @@ export default class UserController extends BaseController {
 		searchCriteria = { username: req.params.id };
 	}
 
-	return _isUserIdAvailableInRequest(req)
-	    .then((isAvailable) => { // eslint-disable-line no-unused-vars
-		UserModel.findOne(searchCriteria)
-		    .exec()
-		    .then(super.handleEntityNotFound(res))
-		    .then(super.respondWithResult(res))
-		    .catch(super.handleError(res));
-	    })
-	    .catch(super.handleError(res));
+	UserModel.findOne(searchCriteria)
+	    .exec()
+	    .then(super.handleEntityNotFound(res))
+	    .then(super.respondWithResult(res))
+	    .catch(super.callErrorMiddleware(next));
+
     }
 
-    createUser(req, res) {
+    createUser(req, res, next) {
 	logger.info('---------------UserController.createUser---------------');
 	logger.debug('Req body: ', req.body);
 
-	return _isUserAvailableInRequest(req)
-	    .then((isAvailable) => { // eslint-disable-line no-unused-vars
-		var user = new UserModel(req.body);
-		user.save(req.body)
-		    .then(super.respondWithResult(res, 201))
-		    .catch(super.handleError(res));
-	    })
-	    .catch(super.handleError(res));
+	try {
+	    _isUserAvailableInRequest(req);
+	} catch (err) {
+	    next(err);
+	    return;
+	}
+
+	var user = new UserModel(req.body);
+	user.save(req.body)
+	    .then(super.respondWithResult(res, 201))
+	    .catch(super.callErrorMiddleware(next));
+
     }
 
-    updateUser(req, res) {
+    updateUser(req, res, next) {
 	logger.info('---------------UserController.updateUser---------------');
 	logger.debug('Req params: ', req.params);
 	logger.debug('Req body', req.body);
 
-	return Promise.all([_isUserIdAvailableInRequest(req), _isUserAvailableInRequest(req)])
-	    .then((areAvailable) => {
-		logger.debug('req params available: ', areAvailable[0]);
-		logger.debug('req body available: ', areAvailable[1]);
+	try{
+	    _isUserIdAvailableInRequest(req);
+	    _isUserAvailableInRequest(req);
+	} catch (err) {
+	    next(err);
+	    return;
+	}
 
-		if (areAvailable[0] && areAvailable[1]) {
-		    _stripUniqueIdsBeforeUpdate(req);
-
-		    UserModel.findByIdAndUpdate(req.params.id, req.body, { new: true, runValidators: true })
-			.exec()
-			.then(super.handleEntityNotFound(res))
-			.then(super.respondWithResult(res))
-			.catch(super.handleError(res));
-		}
-	    })
-	    .catch(super.handleError(res));
+	_stripUniqueIdsBeforeUpdate(req);
+	UserModel.findByIdAndUpdate(req.params.id, req.body, { new: true, runValidators: true })
+	    .exec()
+	    .then(super.handleEntityNotFound(res))
+	    .then(super.respondWithResult(res))
+	    .catch(super.callErrorMiddleware(next));
     }
 
-    removeUser(req, res) {
+    removeUser(req, res, next) {
 	logger.info('---------------UserController.removeUser---------------');
 	logger.debug('Req params: ', req.params);
 
-	return _isUserIdAvailableInRequest(req)
-	    .then((isAvailable) => { // eslint-disable-line no-unused-vars
-		UserModel.findByIdAndRemove(req.params.id).exec()
-		    .then(super.handleEntityNotFound(res))
-		    .then(super.respondWithResult(res, 204))
-		    .catch(super.handleError(res));
-	    })
-	    .catch(super.handleError(res));
+	try {
+	    _isUserIdAvailableInRequest(req);
+	} catch (err) {
+	    next(err);
+	    return;
+	}
+
+	UserModel.findByIdAndRemove(req.params.id).exec()
+	    .then(super.handleEntityNotFound(res))
+	    .then(super.respondWithResult(res, 204))
+	    .catch(super.callErrorMiddleware(next));
     }
 }
 
